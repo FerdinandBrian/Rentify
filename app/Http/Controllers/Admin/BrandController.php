@@ -1,38 +1,32 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class BrandController extends Controller
 {
     public function index()
     {
         $brands = Brand::all();
-        return view('brands.index', compact('brands'));
+        return view('admin.TipeMobil.index', compact('brands'));
     }
 
     public function create()
     {
-        return view('brands.create');
+        return view('admin.TipeMobil.create');
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id'   => 'required|integer|unique:brand,id',
-            'name' => 'required',
+            'name' => 'required|string|max:255',
         ]);
 
         Brand::create($validated);
         return redirect()->route('brands.index')->with('success', 'Brand berhasil ditambahkan.');
-    }
-
-    public function show($id)
-    {
-        $brand = Brand::with('cars')->findOrFail($id);
-        return view('brands.show', compact('brand'));
     }
 
     public function edit($id)

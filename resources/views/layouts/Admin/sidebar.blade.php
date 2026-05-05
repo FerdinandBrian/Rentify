@@ -43,7 +43,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="...">
+                    <a href="{{ route('brands.index') }}">
                         <i class="fas fa-file"></i>
                         <p>Tipe Mobil</p>
                     </a>

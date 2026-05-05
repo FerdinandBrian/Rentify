@@ -9,10 +9,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payment', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->id();
             $table->string('method');
             $table->string('status');
-            $table->float('total_price')->nullable();
+            $table->float('total_price', 10, 2)->nullable();
             $table->string('Order_id');
 
             $table->foreign('Order_id')->references('id')->on('order')->onDelete('cascade');

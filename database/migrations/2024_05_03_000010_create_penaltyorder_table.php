@@ -8,14 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('penaltyorder', function (Blueprint $table) {
-            $table->unsignedBigInteger('Penalty_id');
-            $table->string('Payment_id');
-            $table->string('Payment_Order_id');
+        Schema::create('penalty_payment', function (Blueprint $table) {
+            $table->foreignId('penalty_id')
+                ->constrained('penalty')
+                ->cascadeOnDelete();
 
-            $table->primary(['Penalty_id', 'Payment_id']);
-            $table->foreign('Penalty_id')->references('id')->on('penalty')->onDelete('cascade');
-            $table->foreign('Payment_id')->references('id')->on('payment')->onDelete('cascade');
+            $table->foreignId('payment_id')
+                ->constrained('payment')
+                ->cascadeOnDelete();
+
+            $table->primary(['penalty_id', 'payment_id']);
         });
     }
 

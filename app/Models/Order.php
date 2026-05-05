@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
 	protected $table = 'order';
+	protected $primaryKey = 'id';
 	public $incrementing = false;
 	public $timestamps = false;
 

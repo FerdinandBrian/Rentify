@@ -9,9 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('addon', function (Blueprint $table) {
-            $table->integer('id')->primary();
+            $table->id();
             $table->string('name');
-            $table->float('price');
+            $table->float('price', 10, 2);
+            $table->float('price_per_unit', 10, 2)->nullable();
+            $table->float('price_per_day', 10, 2)->nullable();
         });
     }
 
