@@ -25,6 +25,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/brands/{id}', [BrandController::class, 'edit'])->name('brands.edit');
     Route::put('/admin/brands/{id}', [BrandController::class, 'update'])->name('brands.update');
     Route::delete('/admin/brands/{id}', [BrandController::class, 'destroy'])->name('brands.destroy');
+
+    // Document Management Routes Admin
+    Route::get('/admin/documents', [App\Http\Controllers\Admin\DocumentController::class, 'index'])->name('documents.index');
+    Route::get('/admin/documents/{id}', [App\Http\Controllers\Admin\DocumentController::class, 'show'])->name('documents.show');
+    Route::put('/admin/documents/{id}/change-status', [App\Http\Controllers\Admin\DocumentController::class, 'changeStatus'])->name('document.changeStatus');
+    Route::delete('/admin/documents/{id}', [App\Http\Controllers\Admin\DocumentController::class, 'destroy'])->name('document.destroy');
 });
 
 require __DIR__.'/auth.php';

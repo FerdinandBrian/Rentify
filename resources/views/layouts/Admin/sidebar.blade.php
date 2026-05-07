@@ -61,7 +61,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="...">
+                    <a href="{{ route('documents.index') }}">
                         <i class="fas fa-file"></i>
                         <p>Dokumen</p>
                     </a>

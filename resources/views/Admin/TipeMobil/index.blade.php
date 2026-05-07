@@ -32,7 +32,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
-                                @if (Auth::user()->role_id <= 2)
+                                @if (Auth::user()->role_id == 1)
                                     <th>Action</th>
                                 @endif
                             </tr>
