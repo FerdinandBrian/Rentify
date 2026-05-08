@@ -2,7 +2,7 @@
     <div class="sidebar-logo">
         <div class="logo-header" data-background-color="dark">
             <a href="{{ route('dashboard') }}" class="logo">
-                <span class="text-white fw-bold fs-4">Rentidy</span>
+                <span class="text-white fw-bold fs-4">Rentify</span>
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">

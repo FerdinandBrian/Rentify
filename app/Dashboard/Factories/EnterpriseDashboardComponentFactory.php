@@ -10,7 +10,7 @@ class EnterpriseDashboardComponentFactory implements DashboardComponentFactoryIn
     {
         return [
             $this->makeCard('Total Pesanan', $metrics['total_orders'], 'fas fa-clipboard-list', 'primary'),
-            $this->makeCard('Pesanan Hari Ini', $metrics['today_orders'], 'fas fa-calendar-day', 'success'),
+            $this->makeCard('Pesanan Hari Ini', $metrics['today_orders'], 'fas fa-calendar', 'success'),
             $this->makeCard('Pendapatan', $this->formatCurrency($metrics['total_revenue']), 'fas fa-wallet', 'warning'),
             $this->makeCard('Total Denda', $this->formatCurrency($metrics['total_penalties'] ?? 0), 'fas fa-exclamation-circle', 'danger'),
         ];

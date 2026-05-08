@@ -28,12 +28,12 @@
                 </ul>
             </div>
 
-            <div class="card card-round rentidy-hero-card">
+            <div class="card card-round rentify-hero-card">
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-md-8">
                             <span class="badge bg-white text-primary mb-3">Admin Control Center</span>
-                            <h2 class="fw-bold text-white mb-2">Dashboard Operasional Rentidy</h2>
+                            <h2 class="fw-bold text-white mb-2">Dashboard Operasional Rentify</h2>
                             <p class="text-white-50 mb-0">
                                 Pantau pesanan, pendapatan, denda, dan status rental dari satu panel yang mengikuti template Kaiadmin.
                             </p>
@@ -194,14 +194,14 @@
 
 @section('extraCSS')
     <style>
-        .rentidy-hero-card {
+        .rentify-hero-card {
             background: linear-gradient(135deg, #102a43 0%, #1f7a8c 55%, #f0a202 120%);
             border: 0;
             margin-bottom: 24px;
             overflow: hidden;
         }
 
-        .rentidy-hero-card .card-body {
+        .rentify-hero-card .card-body {
             padding: 32px;
         }
     </style>
