@@ -37,7 +37,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="...">
+                    <a href="{{ route('admin.cars.index') }}">
                         <i class="fas fa-file"></i>
                         <p>Mobil</p>
                     </a>
@@ -55,7 +55,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="...">
+                    <a href="{{ route('admin.addons.index') }}">
                         <i class="fas fa-file"></i>
                         <p>AddOn</p>
                     </a>
