@@ -10,11 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Penaltyorder
- * 
- * @property string $Payment_id
- * @property string $Payment_Order_id
- * @property int $Penalty_id
- * 
+ *
+ * @property int $payment_id
+ * @property int $penalty_id
+ *
  * @property Payment $payment
  * @property Penalty $penalty
  *
@@ -22,29 +21,27 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Penaltyorder extends Model
 {
-	protected $table = 'penaltyorder';
-	public $incrementing = false;
-	public $timestamps = false;
+    protected $table = 'penalty_payment';
+    public $incrementing = false;
+    public $timestamps = false;
 
-	protected $casts = [
-		'Penalty_id' => 'int'
-	];
+    protected $casts = [
+        'payment_id' => 'int',
+        'penalty_id' => 'int',
+    ];
 
-	protected $fillable = [
-		'Payment_id',
-		'Payment_Order_id',
-		'Penalty_id'
-	];
+    protected $fillable = [
+        'payment_id',
+        'penalty_id',
+    ];
 
-	public function payment()
-	{
-		return $this->belongsTo(Payment::class, 'Payment_id')
-					->where('payment.id', '=', 'penaltyorder.Payment_id')
-					->where('payment.Order_id', '=', 'penaltyorder.Payment_Order_id');
-	}
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class, 'payment_id');
+    }
 
-	public function penalty()
-	{
-		return $this->belongsTo(Penalty::class, 'Penalty_id');
-	}
+    public function penalty()
+    {
+        return $this->belongsTo(Penalty::class, 'penalty_id');
+    }
 }

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Order
- * 
+ *
  * @property string $id
  * @property string $name
  * @property string $call_number
@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon $end_rent
  * @property string $Car_series_number
  * @property int $User_id
- * 
+ *
  * @property Car $car
  * @property User $user
  * @property Collection|Payment[] $payments
@@ -31,40 +31,42 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Order extends Model
 {
-	protected $table = 'order';
-	protected $primaryKey = 'id';
-	public $incrementing = false;
-	public $timestamps = false;
+    protected $table = 'order';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    public $timestamps = false;
+    protected $keyType = 'string';
 
-	protected $casts = [
-		'start_rent' => 'datetime',
-		'end_rent' => 'datetime',
-		'User_id' => 'int'
-	];
+    protected $casts = [
+        'start_rent' => 'datetime',
+        'end_rent' => 'datetime',
+        'User_id' => 'int',
+    ];
 
-	protected $fillable = [
-		'name',
-		'call_number',
-		'email',
-		'status',
-		'start_rent',
-		'end_rent',
-		'Car_series_number',
-		'User_id'
-	];
+    protected $fillable = [
+        'id',
+        'name',
+        'call_number',
+        'email',
+        'status',
+        'start_rent',
+        'end_rent',
+        'Car_series_number',
+        'User_id',
+    ];
 
-	public function car()
-	{
-		return $this->belongsTo(Car::class, 'Car_series_number');
-	}
+    public function car()
+    {
+        return $this->belongsTo(Car::class, 'Car_series_number');
+    }
 
-	public function user()
-	{
-		return $this->belongsTo(User::class, 'User_id');
-	}
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'User_id');
+    }
 
-	public function payments()
-	{
-		return $this->hasMany(Payment::class, 'Order_id');
-	}
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'Order_id');
+    }
 }

@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('Car_series_number');
             $table->unsignedBigInteger('User_id');
 
-            $table->foreign('Car_series_number')->references('series_number')->on('car')->onDelete('cascade');
-            $table->foreign('User_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('Car_series_number')->references('series_number')->on('car')->cascadeOnDelete();
+            $table->foreign('User_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 

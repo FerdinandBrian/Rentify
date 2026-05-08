@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Kaiadmin - Bootstrap 5 Admin Dashboard</title>
+    <title>Rentify Admin Dashboard</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
     <link rel="icon" href="{{ asset('assets/img/kaiadmin/favicon.ico') }}" type="image/x-icon" />
 
@@ -42,14 +42,14 @@
 
 <body>
     <div class="wrapper">
-        @include('layouts.admin.sidebar')
+        @include('layouts.Admin.sidebar')
 
         <div class="main-panel">
-            @include('layouts.admin.header')
+            @include('layouts.Admin.header')
 
             @yield('content')
 
-            @include('layouts.admin.footer')
+            @include('layouts.Admin.footer')
         </div>
     </div>
     <!--   Core JS Files   -->

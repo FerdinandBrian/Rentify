@@ -15,7 +15,7 @@ return new class extends Migration
             $table->float('total_price', 10, 2)->nullable();
             $table->string('Order_id');
 
-            $table->foreign('Order_id')->references('id')->on('order')->onDelete('cascade');
+            $table->foreign('Order_id')->references('id')->on('order')->cascadeOnDelete();
         });
     }
 
