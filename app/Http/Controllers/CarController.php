@@ -4,20 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use App\Models\Brand;
+use App\Services\CarFactory;        // tambah ini
 use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
+    protected $factory;
+
+    // Suntikkan Factory via Constructor (Laravel otomatis)
+    public function __construct(CarFactory $factory)
+    {
+        $this->factory = $factory;
+    }
+
     public function index()
     {
         $cars = Car::with('brand')->get();
-        return view('cars.index', compact('cars'));
+        return view('admin.mobil.index', compact('cars'));
     }
 
     public function create()
     {
         $brands = Brand::all();
-        return view('cars.create', compact('brands'));
+        $types = Car::select('type')->distinct()->orderBy('type')->pluck('type');
+        return view('admin.mobil.create', compact('brands', 'types'));
     }
 
     public function store(Request $request)
@@ -32,21 +42,18 @@ class CarController extends Controller
             'Brand_id'      => 'required|exists:brand,id',
         ]);
 
-        Car::create($validated);
-        return redirect()->route('cars.index')->with('success', 'Mobil berhasil ditambahkan.');
-    }
+        // Panggil Factory untuk membuat mobil (Controller tidak perlu tahu cara pembuatan)
+        $this->factory->createCar($validated);
 
-    public function show($series_number)
-    {
-        $car = Car::with('brand')->findOrFail($series_number);
-        return view('cars.show', compact('car'));
+        return redirect()->route('admin.mobil.index')->with('success', 'Mobil berhasil ditambahkan.');
     }
 
     public function edit($series_number)
     {
-        $car = Car::findOrFail($series_number);
+        $car = Car::where('series_number', $series_number)->firstOrFail();
         $brands = Brand::all();
-        return view('cars.edit', compact('car', 'brands'));
+        $types = Car::select('type')->distinct()->orderBy('type')->pluck('type');
+        return view('admin.mobil.edit', compact('car', 'brands', 'types'));
     }
 
     public function update(Request $request, $series_number)
@@ -61,14 +68,16 @@ class CarController extends Controller
             'Brand_id' => 'required|exists:brand,id',
         ]);
 
-        $car->update($validated);
-        return redirect()->route('cars.index')->with('success', 'Mobil berhasil diupdate.');
+        // Panggil Factory untuk update
+        $this->factory->updateCar($car, $validated);
+
+        return redirect()->route('admin.mobil.index')->with('success', 'Mobil berhasil diupdate.');
     }
 
     public function destroy($series_number)
     {
         $car = Car::findOrFail($series_number);
         $car->delete();
-        return redirect()->route('cars.index')->with('success', 'Mobil berhasil dihapus.');
+        return redirect()->route('admin.mobil.index')->with('success', 'Mobil berhasil dihapus.');
     }
 }

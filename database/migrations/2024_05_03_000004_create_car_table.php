@@ -10,14 +10,12 @@ return new class extends Migration
     {
         Schema::create('car', function (Blueprint $table) {
             $table->string('series_number')->primary();
-            $table->string('name');
-            $table->float('price');
+            $table->string('name')->unique();
+            $table->float('price', 10, 2);
             $table->string('type');
             $table->dateTime('year')->nullable();
             $table->string('status');
-            $table->integer('Brand_id');
-
-            $table->foreign('Brand_id')->references('id')->on('brand')->onDelete('cascade');
+            $table->foreignId('brand_id')->constrained('brand')->cascadeOnDelete();
         });
     }
 

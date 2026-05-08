@@ -8,20 +8,23 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('addonpayment', function (Blueprint $table) {
-            $table->integer('AddOn_id');
-            $table->string('Payment_id');
-            $table->float('total_price')->nullable();
-            $table->string('Payment_Order_id');
+        Schema::create('addon_payment', function (Blueprint $table) {
+            $table->foreignId('addon_id')
+                ->constrained('addon')
+                ->cascadeOnDelete();
 
-            $table->primary(['AddOn_id', 'Payment_id']);
-            $table->foreign('AddOn_id')->references('id')->on('addon')->onDelete('cascade');
-            $table->foreign('Payment_id')->references('id')->on('payment')->onDelete('cascade');
+            $table->foreignId('payment_id')
+                ->constrained('payment')
+                ->cascadeOnDelete();
+
+            $table->decimal('total_price', 10, 2)->nullable();
+
+            $table->primary(['addon_id', 'payment_id']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('addonpayment');
+        Schema::dropIfExists('addon_payment');
     }
 };
