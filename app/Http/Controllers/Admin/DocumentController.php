@@ -17,39 +17,55 @@ class DocumentController extends Controller
 
     public function index()
     {
-        $users = $this->userRepository->getCustomers();
-        return view('Admin.Dokumen.index', compact('users'));
+        try {
+            $users = $this->userRepository->getCustomers();
+            return view('Admin.Dokumen.index', compact('users'));
+        } catch (\Exception $e) {
+            return redirect()->route('dashboard')->withErrors(['error' => 'Gagal memuat dokumen pelanggan: ' . $e->getMessage()]);
+        }
     }
 
     public function show($id)
     {
-        $user = $this->userRepository->findById($id);
-        if (!$user) {
-            abort(404);
+        try {
+            $user = $this->userRepository->findById($id);
+            if (!$user) {
+                return redirect()->route('documents.index')->withErrors(['error' => 'Pelanggan tidak ditemukan.']);
+            }
+            return view('Admin.Dokumen.show', compact('user'));
+        } catch (\Exception $e) {
+            return redirect()->route('documents.index')->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
-        return view('Admin.Dokumen.show', compact('user'));
     }
 
     public function changeStatus($id, Request $request)
     {
-        $user = $this->userRepository->findById($id);
-        if (!$user) {
-            abort(404);
-        }
+        try {
+            $user = $this->userRepository->findById($id);
+            if (!$user) {
+                return redirect()->route('documents.index')->withErrors(['error' => 'Pelanggan tidak ditemukan.']);
+            }
 
-        $this->userRepository->update($user, ['status' => $request->status]);
-        return redirect()->route('documents.index')->with('success', 'Status dokumen berhasil diubah.');
+            $this->userRepository->update($user, ['status' => $request->status]);
+            return redirect()->route('documents.index')->with('success', 'Status dokumen berhasil diubah.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal mengubah status dokumen: ' . $e->getMessage()]);
+        }
     }
 
     public function destroy($id)
     {
-        $user = $this->userRepository->findById($id);
-        if (!$user) {
-            abort(404);
-        }
+        try {
+            $user = $this->userRepository->findById($id);
+            if (!$user) {
+                return redirect()->route('documents.index')->withErrors(['error' => 'Pelanggan tidak ditemukan.']);
+            }
 
-        $this->userRepository->update($user, ['document' => null, 'status' => null]);
-        return redirect()->route('documents.index')->with('success', 'Dokumen berhasil dihapus.');
+            $this->userRepository->update($user, ['document' => null, 'status' => null]);
+            return redirect()->route('documents.index')->with('success', 'Dokumen berhasil dihapus.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal menghapus dokumen: ' . $e->getMessage()]);
+        }
     }
 }
 

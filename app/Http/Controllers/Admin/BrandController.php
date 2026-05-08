@@ -32,37 +32,53 @@ class BrandController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        $this->brandRepository->create($validated);
-        return redirect()->route('brands.index')->with('success', 'Brand berhasil ditambahkan.');
+        try {
+            $this->brandRepository->create($validated);
+            return redirect()->route('brands.index')->with('success', 'Merek berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['error' => 'Gagal menambahkan merek: ' . $e->getMessage()]);
+        }
     }
 
     public function edit($id)
     {
-        $brand = $this->brandRepository->findById($id);
-        if (!$brand) {
-            abort(404);
+        try {
+            $brand = $this->brandRepository->findById($id);
+            if (!$brand) {
+                return redirect()->route('brands.index')->withErrors(['error' => 'Merek tidak ditemukan.']);
+            }
+            return view('admin.TipeMobil.edit', compact('brand'));
+        } catch (\Exception $e) {
+            return redirect()->route('brands.index')->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
-        return view('admin.TipeMobil.edit', compact('brand'));
     }
 
     public function update(Request $request, $id)
     {
-        $brand = $this->brandRepository->findById($id);
-        if (!$brand) {
-            abort(404);
-        }
-
         $validated = $request->validate([
-            'name' => 'required',
+            'name' => 'required|string|max:255',
         ]);
 
-        $this->brandRepository->update($brand, $validated);
-        return redirect()->route('brands.index')->with('success', 'Brand berhasil diupdate.');
+        try {
+            $brand = $this->brandRepository->findById($id);
+            if (!$brand) {
+                return redirect()->route('brands.index')->withErrors(['error' => 'Merek tidak ditemukan.']);
+            }
+
+            $this->brandRepository->update($brand, $validated);
+            return redirect()->route('brands.index')->with('success', 'Merek berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['error' => 'Gagal memperbarui merek: ' . $e->getMessage()]);
+        }
     }
 
     public function destroy($id)
     {
-        $this->brandRepository->delete($id);
-        return redirect()->route('brands.index')->with('success', 'Brand berhasil dihapus.');
+        try {
+            $this->brandRepository->delete($id);
+            return redirect()->route('brands.index')->with('success', 'Merek berhasil dihapus.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal menghapus merek: ' . $e->getMessage()]);
+        }
     }
 }

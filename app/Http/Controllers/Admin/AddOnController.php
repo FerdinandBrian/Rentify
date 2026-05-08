@@ -17,8 +17,12 @@ class AddOnController extends Controller
 
     public function index()
     {
-        $addons = $this->addOnRepository->all();
-        return view('admin.addons.index', compact('addons'));
+        try {
+            $addons = $this->addOnRepository->all();
+            return view('admin.addons.index', compact('addons'));
+        } catch (\Exception $e) {
+            return redirect()->route('dashboard')->withErrors(['error' => 'Gagal memuat data AddOn: ' . $e->getMessage()]);
+        }
     }
 
     public function create()
@@ -34,54 +38,71 @@ class AddOnController extends Controller
             'price_per_day'  => 'nullable|numeric|min:0',
         ]);
 
-        $this->addOnRepository->create($validated);
-
-        return redirect()->route('admin.addons.index')
-            ->with('success', 'AddOn berhasil ditambahkan.');
+        try {
+            $this->addOnRepository->create($validated);
+            return redirect()->route('admin.addons.index')
+                ->with('success', 'AddOn berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['error' => 'Gagal menambahkan AddOn: ' . $e->getMessage()]);
+        }
     }
 
     public function show($id)
     {
-        $addon = $this->addOnRepository->findById($id);
-        if (!$addon) {
-            abort(404);
+        try {
+            $addon = $this->addOnRepository->findById($id);
+            if (!$addon) {
+                return redirect()->route('admin.addons.index')->withErrors(['error' => 'AddOn tidak ditemukan.']);
+            }
+            return view('admin.addons.show', compact('addon'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.addons.index')->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
-        return view('admin.addons.show', compact('addon'));
     }
 
     public function edit($id)
     {
-        $addon = $this->addOnRepository->findById($id);
-        if (!$addon) {
-            abort(404);
+        try {
+            $addon = $this->addOnRepository->findById($id);
+            if (!$addon) {
+                return redirect()->route('admin.addons.index')->withErrors(['error' => 'AddOn tidak ditemukan.']);
+            }
+            return view('admin.addons.edit', compact('addon'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.addons.index')->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
-        return view('admin.addons.edit', compact('addon'));
     }
 
     public function update(Request $request, $id)
     {
-        $addon = $this->addOnRepository->findById($id);
-        if (!$addon) {
-            abort(404);
-        }
-
         $validated = $request->validate([
             'name'           => 'required|string|max:100',
             'price_per_unit' => 'nullable|numeric|min:0',
             'price_per_day'  => 'nullable|numeric|min:0',
         ]);
 
-        $this->addOnRepository->update($addon, $validated);
+        try {
+            $addon = $this->addOnRepository->findById($id);
+            if (!$addon) {
+                return redirect()->route('admin.addons.index')->withErrors(['error' => 'AddOn tidak ditemukan.']);
+            }
 
-        return redirect()->route('admin.addons.index')
-            ->with('success', 'AddOn berhasil diperbarui.');
+            $this->addOnRepository->update($addon, $validated);
+            return redirect()->route('admin.addons.index')
+                ->with('success', 'AddOn berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['error' => 'Gagal memperbarui AddOn: ' . $e->getMessage()]);
+        }
     }
 
     public function destroy($id)
     {
-        $this->addOnRepository->delete($id);
-
-        return redirect()->route('admin.addons.index')
-            ->with('success', 'AddOn berhasil dihapus.');
+        try {
+            $this->addOnRepository->delete($id);
+            return redirect()->route('admin.addons.index')
+                ->with('success', 'AddOn berhasil dihapus.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal menghapus AddOn: ' . $e->getMessage()]);
+        }
     }
 }

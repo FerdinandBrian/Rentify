@@ -26,15 +26,23 @@ class CarController extends Controller
 
     public function index()
     {
-        $cars = $this->carRepository->getAllWithBrands();
-        return view('admin.mobil.index', compact('cars'));
+        try {
+            $cars = $this->carRepository->getAllWithBrands();
+            return view('admin.mobil.index', compact('cars'));
+        } catch (\Exception $e) {
+            return redirect()->route('dashboard')->withErrors(['error' => 'Gagal memuat data mobil: ' . $e->getMessage()]);
+        }
     }
 
     public function create()
     {
-        $brands = $this->brandRepository->all();
-        $types = $this->carRepository->getUniqueTypes();
-        return view('admin.mobil.create', compact('brands', 'types'));
+        try {
+            $brands = $this->brandRepository->all();
+            $types = $this->carRepository->getUniqueTypes();
+            return view('admin.mobil.create', compact('brands', 'types'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.cars.index')->withErrors(['error' => 'Gagal memuat form tambah mobil: ' . $e->getMessage()]);
+        }
     }
 
     public function store(Request $request)
@@ -44,7 +52,7 @@ class CarController extends Controller
             'name'          => 'required',
             'price'         => 'required|numeric',
             'type'          => 'required',
-            'year'          => 'nullable|date',
+            'year'          => 'nullable|integer',
             'status'        => 'required',
             'Brand_id'      => 'required|exists:brand,id',
             'is_electric'   => 'boolean',
@@ -54,36 +62,35 @@ class CarController extends Controller
 
         try {
             $this->carFactory->createCar($validated);
-            return redirect()->route('admin.mobil.index')->with('success', 'Mobil berhasil ditambahkan.');
+            return redirect()->route('admin.cars.index')->with('success', 'Mobil berhasil ditambahkan.');
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('error', $e->getMessage());
+            return back()->withInput()->withErrors(['error' => 'Gagal menambahkan mobil: ' . $e->getMessage()]);
         }
     }
 
     public function edit($series_number)
     {
-        $car = $this->carRepository->findById($series_number);
-        if (!$car) {
-            abort(404);
-        }
+        try {
+            $car = $this->carRepository->findById($series_number);
+            if (!$car) {
+                return redirect()->route('admin.cars.index')->withErrors(['error' => 'Mobil tidak ditemukan.']);
+            }
 
-        $brands = $this->brandRepository->all();
-        $types = $this->carRepository->getUniqueTypes();
-        return view('admin.mobil.edit', compact('car', 'brands', 'types'));
+            $brands = $this->brandRepository->all();
+            $types = $this->carRepository->getUniqueTypes();
+            return view('admin.mobil.edit', compact('car', 'brands', 'types'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.cars.index')->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
     }
 
     public function update(Request $request, $series_number)
     {
-        $car = $this->carRepository->findById($series_number);
-        if (!$car) {
-            abort(404);
-        }
-
         $validated = $request->validate([
             'name'     => 'required',
             'price'    => 'required|numeric',
             'type'     => 'required',
-            'year'     => 'nullable|date',
+            'year'     => 'nullable|integer',
             'status'   => 'required',
             'Brand_id' => 'required|exists:brand,id',
             'is_electric' => 'boolean',
@@ -92,16 +99,25 @@ class CarController extends Controller
         $validated['is_electric'] = $request->has('is_electric');
 
         try {
+            $car = $this->carRepository->findById($series_number);
+            if (!$car) {
+                return redirect()->route('admin.cars.index')->withErrors(['error' => 'Mobil tidak ditemukan.']);
+            }
+
             $this->carFactory->updateCar($car, $validated);
-            return redirect()->route('admin.mobil.index')->with('success', 'Mobil berhasil diupdate.');
+            return redirect()->route('admin.cars.index')->with('success', 'Mobil berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('error', $e->getMessage());
+            return back()->withInput()->withErrors(['error' => 'Gagal memperbarui mobil: ' . $e->getMessage()]);
         }
     }
 
     public function destroy($series_number)
     {
-        $this->carRepository->delete($series_number);
-        return redirect()->route('admin.mobil.index')->with('success', 'Mobil berhasil dihapus.');
+        try {
+            $this->carRepository->delete($series_number);
+            return redirect()->route('admin.cars.index')->with('success', 'Mobil berhasil dihapus.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Gagal menghapus mobil: ' . $e->getMessage()]);
+        }
     }
 }
