@@ -13,15 +13,16 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $payment_id
  * @property int $penalty_id
+ *
  * @property Payment $payment
  * @property Penalty $penalty
+ *
+ * @package App\Models
  */
 class Penaltyorder extends Model
 {
     protected $table = 'penalty_payment';
-
     public $incrementing = false;
-
     public $timestamps = false;
 
     protected $casts = [

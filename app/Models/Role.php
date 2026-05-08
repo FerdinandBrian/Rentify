@@ -14,12 +14,14 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $name
+ *
  * @property Collection|User[] $users
+ *
+ * @package App\Models
  */
 class Role extends Model
 {
     protected $table = 'role';
-
     public $timestamps = false;
 
     protected $casts = [

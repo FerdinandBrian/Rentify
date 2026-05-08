@@ -17,16 +17,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $status
  * @property float|null $total_price
  * @property string $Order_id
+ *
  * @property Order $order
  * @property Collection|Addon[] $addons
- * @property Penaltyorder|null $penaltyorder
+ * @property Collection|Penalty[] $penalties
+ *
+ * @package App\Models
  */
 class Payment extends Model
 {
     protected $table = 'payment';
-
     public $incrementing = false;
-
     public $timestamps = false;
 
     protected $casts = [
@@ -37,6 +38,7 @@ class Payment extends Model
         'method',
         'status',
         'total_price',
+        'Order_id',
     ];
 
     public function order()
@@ -46,8 +48,8 @@ class Payment extends Model
 
     public function addons()
     {
-        return $this->belongsToMany(Addon::class, 'addonpayment', 'Payment_id', 'AddOn_id')
-            ->withPivot('total_price', 'Payment_Order_id');
+        return $this->belongsToMany(Addon::class, 'addon_payment', 'payment_id', 'addon_id')
+            ->withPivot('total_price');
     }
 
     public function penaltyorder()

@@ -2,8 +2,8 @@
     <div class="main-header-logo">
         <!-- Logo Header -->
         <div class="logo-header" data-background-color="dark">
-            <a href="index.html" class="logo">
-                <span class="text-white fw-bold fs-4">Rentidy</span>
+            <a href="{{ route('dashboard') }}" class="logo">
+                <span class="text-white fw-bold fs-4">Rentify</span>
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">

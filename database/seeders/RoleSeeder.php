@@ -7,18 +7,30 @@ use Illuminate\Support\Facades\DB;
 
 class RoleSeeder extends Seeder
 {
+
     public function run(): void
     {
         $roles = [
-            ['id' => 1, 'name' => 'admin'],
-            ['id' => 2, 'name' => 'employee'],
-            ['id' => 3, 'name' => 'customer'],
+            [
+                'id' => 1,
+                'name' => 'admin',
+            ],
+            [
+                'id' => 2,
+                'name' => 'employee',
+            ],
+            [
+                'id' => 3,
+                'name' => 'customer',
+            ],
         ];
 
         foreach ($roles as $role) {
             DB::table('role')->updateOrInsert(
-                ['id' => $role['id']],
-                ['name' => $role['name']]
+                ['name' => $role['name']],
+                [
+                    'id' => $role['id'],
+                ]
             );
         }
     }

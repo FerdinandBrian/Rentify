@@ -22,19 +22,20 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon $end_rent
  * @property string $Car_series_number
  * @property int $User_id
+ *
  * @property Car $car
  * @property User $user
  * @property Collection|Payment[] $payments
+ *
+ * @package App\Models
  */
 class Order extends Model
 {
     protected $table = 'order';
-
     protected $primaryKey = 'id';
-
     public $incrementing = false;
-
     public $timestamps = false;
+    protected $keyType = 'string';
 
     protected $casts = [
         'start_rent' => 'datetime',

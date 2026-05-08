@@ -163,6 +163,21 @@
     </div>
 @endsection
 
+@section('extraCSS')
+    <style>
+        .rentify-hero-card {
+            background: linear-gradient(135deg, #102a43 0%, #1f7a8c 55%, #f0a202 120%);
+            border: 0;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .rentify-hero-card .card-body {
+            padding: 32px;
+        }
+    </style>
+@endsection
+
 @section('extraJS')
     <script>
         const orderStatusChart = document.getElementById('orderStatusChart');
@@ -190,19 +205,4 @@
             });
         }
     </script>
-@endsection
-
-@section('extraCSS')
-    <style>
-        .rentify-hero-card {
-            background: linear-gradient(135deg, #102a43 0%, #1f7a8c 55%, #f0a202 120%);
-            border: 0;
-            margin-bottom: 24px;
-            overflow: hidden;
-        }
-
-        .rentify-hero-card .card-body {
-            padding: 32px;
-        }
-    </style>
 @endsection

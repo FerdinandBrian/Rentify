@@ -6,6 +6,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -14,12 +15,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $type
  * @property float|null $total_penalty
+ *
  * @property Collection|Payment[] $payments
+ *
+ * @package App\Models
  */
 class Penalty extends Model
 {
     protected $table = 'penalty';
-
     public $timestamps = false;
 
     protected $casts = [

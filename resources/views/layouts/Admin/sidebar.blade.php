@@ -33,14 +33,14 @@
                         <p>Pesanan</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#">
+                <li class="nav-item {{ request()->routeIs('admin.cars.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.cars.index') }}">
                         <i class="fas fa-car"></i>
                         <p>Mobil</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#">
+                <li class="nav-item {{ request()->routeIs('brands.*') ? 'active' : '' }}">
+                    <a href="{{ route('brands.index') }}">
                         <i class="fas fa-tags"></i>
                         <p>Tipe Mobil</p>
                     </a>
@@ -51,14 +51,14 @@
                         <p>Denda</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#">
+                <li class="nav-item {{ request()->routeIs('admin.addons.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.addons.index') }}">
                         <i class="fas fa-plus-circle"></i>
                         <p>AddOn</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#">
+                <li class="nav-item {{ request()->routeIs('documents.*') || request()->routeIs('document.*') ? 'active' : '' }}">
+                    <a href="{{ route('documents.index') }}">
                         <i class="fas fa-file-alt"></i>
                         <p>Dokumen</p>
                     </a>
