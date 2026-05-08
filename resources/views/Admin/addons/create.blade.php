@@ -15,6 +15,9 @@
         </div>
 
         <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Tambah AddOn Baru</h4>
+            </div>
             <div class="card-body">
                 <form action="{{ route('admin.addons.store') }}" method="POST">
                     @csrf
@@ -22,28 +25,40 @@
                         <label for="name" class="form-label">Nama AddOn <span class="text-danger">*</span></label>
                         <input type="text" name="name" id="name"
                             class="form-control @error('name') is-invalid @enderror"
-                            value="{{ old('name') }}" required>
+                            value="{{ old('name') }}" placeholder="Contoh: Asuransi, Driver, dll." required>
                         @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label for="price_per_unit" class="form-label">Harga per Unit</label>
-                        <input type="number" name="price_per_unit" id="price_per_unit"
-                            class="form-control @error('price_per_unit') is-invalid @enderror"
-                            value="{{ old('price_per_unit') }}" min="0">
-                        @error('price_per_unit') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="price_per_unit" class="form-label">Harga per Unit</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="number" name="price_per_unit" id="price_per_unit"
+                                    class="form-control @error('price_per_unit') is-invalid @enderror"
+                                    value="{{ old('price_per_unit') }}" min="0">
+                            </div>
+                            @error('price_per_unit') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="price_per_day" class="form-label">Harga per Hari</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="number" name="price_per_day" id="price_per_day"
+                                    class="form-control @error('price_per_day') is-invalid @enderror"
+                                    value="{{ old('price_per_day') }}" min="0">
+                            </div>
+                            @error('price_per_day') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="price_per_day" class="form-label">Harga per Hari</label>
-                        <input type="number" name="price_per_day" id="price_per_day"
-                            class="form-control @error('price_per_day') is-invalid @enderror"
-                            value="{{ old('price_per_day') }}" min="0">
-                        @error('price_per_day') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary btn-round">
+                            <i class="fa fa-save"></i> Simpan
+                        </button>
+                        <a href="{{ route('admin.addons.index') }}" class="btn btn-black btn-border btn-round ms-2">Batal</a>
                     </div>
-
-                    <button type="submit" class="btn btn-success"><i class="icon-check"></i> Simpan</button>
-                    <a href="{{ route('admin.addons.index') }}" class="btn btn-secondary">Batal</a>
                 </form>
             </div>
         </div>

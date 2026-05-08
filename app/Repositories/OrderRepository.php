@@ -3,14 +3,20 @@
 namespace App\Repositories;
 
 use App\Models\Order;
+use App\Repositories\BaseRepository;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class OrderRepository implements OrderRepositoryInterface
+class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 {
+    public function __construct(Order $order)
+    {
+        parent::__construct($order);
+    }
+
     public function paginateWithStrategies(array $criteria, array $strategies, int $perPage): LengthAwarePaginator
     {
-        $query = Order::query()
+        $query = $this->model->newQuery()
             ->with(['car', 'payments'])
             ->withSum('payments as total_harga', 'total_price');
 
@@ -21,22 +27,10 @@ class OrderRepository implements OrderRepositoryInterface
         return $query->paginate($perPage)->withQueryString();
     }
 
-    public function findById(string $bookingId): ?Order
+    public function findById($id): ?Order
     {
-        return Order::query()
+        return $this->model->newQuery()
             ->with(['car', 'user', 'payments'])
-            ->find($bookingId);
-    }
-
-    public function update(Order $booking, array $data): Order
-    {
-        $booking->update($data);
-
-        return $booking->refresh();
-    }
-
-    public function delete(string $bookingId): void
-    {
-        Order::query()->whereKey($bookingId)->delete();
+            ->find($id);
     }
 }

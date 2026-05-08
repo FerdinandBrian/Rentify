@@ -32,9 +32,12 @@
                             'formOptions' => $formOptions,
                         ])
                     </div>
-                    <div class="card-action text-end">
-                        <a href="{{ route('denda.index') }}" class="btn btn-danger">Batal</a>
-                        <button type="submit" class="btn btn-success">Simpan</button>
+
+                    <div class="card-action">
+                        <button type="submit" class="btn btn-primary btn-round">
+                            <i class="fa fa-save"></i> Simpan
+                        </button>
+                        <a href="{{ route('denda.index') }}" class="btn btn-black btn-border btn-round ms-2">Batal</a>
                     </div>
                 </form>
             </div>

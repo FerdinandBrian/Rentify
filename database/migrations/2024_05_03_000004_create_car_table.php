@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('type');
             $table->dateTime('year')->nullable();
             $table->string('status');
+            $table->boolean('is_electric')->default(false);
             $table->foreignId('brand_id')->constrained('brand')->cascadeOnDelete();
         });
     }

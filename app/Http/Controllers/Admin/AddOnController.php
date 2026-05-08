@@ -2,15 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Addon;
+use App\Repositories\Contracts\AddOnRepositoryInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class AddOnController extends Controller
 {
+    protected $addOnRepository;
+
+    public function __construct(AddOnRepositoryInterface $addOnRepository)
+    {
+        $this->addOnRepository = $addOnRepository;
+    }
+
     public function index()
     {
-        $addons = Addon::all();
+        $addons = $this->addOnRepository->all();
         return view('admin.addons.index', compact('addons'));
     }
 
@@ -27,7 +34,7 @@ class AddOnController extends Controller
             'price_per_day'  => 'nullable|numeric|min:0',
         ]);
 
-        Addon::create($validated);
+        $this->addOnRepository->create($validated);
 
         return redirect()->route('admin.addons.index')
             ->with('success', 'AddOn berhasil ditambahkan.');
@@ -35,19 +42,28 @@ class AddOnController extends Controller
 
     public function show($id)
     {
-        $addon = Addon::findOrFail($id);
+        $addon = $this->addOnRepository->findById($id);
+        if (!$addon) {
+            abort(404);
+        }
         return view('admin.addons.show', compact('addon'));
     }
 
     public function edit($id)
     {
-        $addon = Addon::findOrFail($id);
+        $addon = $this->addOnRepository->findById($id);
+        if (!$addon) {
+            abort(404);
+        }
         return view('admin.addons.edit', compact('addon'));
     }
 
     public function update(Request $request, $id)
     {
-        $addon = Addon::findOrFail($id);
+        $addon = $this->addOnRepository->findById($id);
+        if (!$addon) {
+            abort(404);
+        }
 
         $validated = $request->validate([
             'name'           => 'required|string|max:100',
@@ -55,7 +71,7 @@ class AddOnController extends Controller
             'price_per_day'  => 'nullable|numeric|min:0',
         ]);
 
-        $addon->update($validated);
+        $this->addOnRepository->update($addon, $validated);
 
         return redirect()->route('admin.addons.index')
             ->with('success', 'AddOn berhasil diperbarui.');
@@ -63,8 +79,7 @@ class AddOnController extends Controller
 
     public function destroy($id)
     {
-        $addon = Addon::findOrFail($id);
-        $addon->delete();
+        $this->addOnRepository->delete($id);
 
         return redirect()->route('admin.addons.index')
             ->with('success', 'AddOn berhasil dihapus.');
