@@ -42,7 +42,7 @@
                 <li class="nav-item {{ request()->routeIs('brands.*') ? 'active' : '' }}">
                     <a href="{{ route('brands.index') }}">
                         <i class="fas fa-tags"></i>
-                        <p>Tipe Mobil</p>
+                        <p>Merek</p>
                     </a>
                 </li>
                 <li class="nav-item {{ request()->routeIs('denda.*') ? 'active' : '' }}">

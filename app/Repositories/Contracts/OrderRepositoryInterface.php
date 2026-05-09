@@ -5,13 +5,7 @@ namespace App\Repositories\Contracts;
 use App\Models\Order;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-interface OrderRepositoryInterface
+interface OrderRepositoryInterface extends BaseRepositoryInterface
 {
     public function paginateWithStrategies(array $criteria, array $strategies, int $perPage): LengthAwarePaginator;
-
-    public function findById(string $bookingId): ?Order;
-
-    public function update(Order $booking, array $data): Order;
-
-    public function delete(string $bookingId): void;
 }

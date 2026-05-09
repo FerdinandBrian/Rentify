@@ -4,67 +4,72 @@
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
-                <h4 class="page-title">Dashboard</h4>
+                <h4 class="page-title">Merek</h4>
                 <ul class="breadcrumbs">
                     <li class="nav-home">
-                        <a href="{{ route('dashboard') }}">
-                            <i class="icon-home"></i>
-                        </a>
+                        <a href="{{ route('dashboard') }}"><i class="icon-home"></i></a>
                     </li>
-                    <li class="separator">
-                        <i class="icon-arrow-right"></i>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('brands.index') }}">Tipe Mobil</a>
-                    </li>
+                    <li class="separator"><i class="icon-arrow-right"></i></li>
+                    <li class="nav-item"><a href="{{ route('brands.index') }}">CRUD Merek</a></li>
                 </ul>
             </div>
 
+            @if (session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+
             <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <h3 class="card-title">List Tipe Mobil</h3>
-                    <a href="{{ route('brands.create') }}" class="btn btn-primary" role="button">Tambah Tipe Mobil</a>
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">Daftar Merek</h4>
+                        <a href="{{ route('brands.create') }}" class="btn btn-primary btn-round ms-auto">
+                            <i class="fa fa-plus"></i>
+                            Tambah Merek
+                        </a>
+                    </div>
                 </div>
 
                 <div class="card-body">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                @if (Auth::user()->role_id == 1)
-                                    <th>Action</th>
-                                @endif
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($brands->isEmpty())
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead>
                                 <tr>
-                                    <td colspan="3" class="text-center">No data available</td>
+                                    <th style="width: 10%">ID</th>
+                                    <th>Nama Merek</th>
+                                    <th class="text-end" style="width: 15%">Aksi</th>
                                 </tr>
-                            @else
-                                @foreach ($brands as $brand)
+                            </thead>
+                            <tbody>
+                                @forelse ($brands as $brand)
                                     <tr>
                                         <td>{{ $brand->id }}</td>
                                         <td>{{ $brand->name }}</td>
-                                        @if (Auth::user()->role_id == 1)
-                                            <td>
-                                                <a href="{{ route('brands.edit', $brand->id) }}"
-                                                    class="btn btn-sm btn-secondary">Edit</a>
-                                                <form action="{{ route('brands.destroy', $brand->id) }}" method="post"
-                                                    style="display: inline;">
+                                        <td class="text-end">
+                                            <div class="form-button-action justify-content-end">
+                                                <a href="{{ route('brands.edit', $brand->id) }}" class="btn btn-link btn-primary btn-lg"
+                                                    data-bs-toggle="tooltip" title="Edit">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <form action="{{ route('brands.destroy', $brand->id) }}" method="post" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger"
-                                                        onclick="return confirm('Are you sure?')">Delete</button>
+                                                    <button class="btn btn-link btn-danger" type="submit"
+                                                        data-bs-toggle="tooltip" title="Hapus"
+                                                        onclick="return confirm('Hapus merek ini?')">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
                                                 </form>
-                                            </td>
-                                        @endif
+                                            </div>
+                                        </td>
                                     </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted py-5">Belum ada data merek.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

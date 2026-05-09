@@ -30,7 +30,7 @@ class DendaService
     {
         $this->validatePaymentMatchesCar((int) $data['payment_id'], $data['car_series_number']);
 
-        return $this->dendaRepository->create(
+        return $this->dendaRepository->createWithPayment(
             $this->onlyPenaltyData($data),
             (int) $data['payment_id']
         );
@@ -41,7 +41,7 @@ class DendaService
         $penalty = $this->getDendaOrFail($id);
         $this->validatePaymentMatchesCar((int) $data['payment_id'], $data['car_series_number']);
 
-        return $this->dendaRepository->update(
+        return $this->dendaRepository->updateWithPayment(
             $penalty,
             $this->onlyPenaltyData($data),
             (int) $data['payment_id']

@@ -3,15 +3,30 @@
 namespace App\Services;
 
 use App\Models\Car;
+use App\Repositories\Contracts\BrandRepositoryInterface;
 use Illuminate\Support\Facades\Log;
 
 class CarFactory
 {
+    protected $brandRepository;
+
+    public function __construct(BrandRepositoryInterface $brandRepository)
+    {
+        $this->brandRepository = $brandRepository;
+    }
+
     public function createCar(array $data): Car
     {
         $data['transmission'] = $data['transmission'] ?? 'manual';
         $data['status'] = $data['status'] ?? 'Tersedia';
         $data['capacity'] = $data['capacity'] ?? $this->defaultCapacityForType($data['type'] ?? '');
+        
+        $brand = $this->brandRepository->findById($data['Brand_id'] ?? 0);
+        if ($brand && strtolower($brand->name) === 'tesla') {
+            $data['is_electric'] = true;
+        } else {
+            $data['is_electric'] = $data['is_electric'] ?? false;
+        }
 
         if (($data['price'] ?? 0) < 100000) {
             throw new \InvalidArgumentException('Harga minimal adalah 100.000');

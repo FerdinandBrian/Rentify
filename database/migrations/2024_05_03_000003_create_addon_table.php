@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('addon', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->float('price', 10, 2);
             $table->float('price_per_unit', 10, 2)->nullable();
             $table->float('price_per_day', 10, 2)->nullable();
         });

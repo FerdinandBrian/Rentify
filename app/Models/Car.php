@@ -48,6 +48,7 @@ class Car extends Model
         'type',
         'year',
         'status',
+        'is_electric',
         'Brand_id',
     ];
 

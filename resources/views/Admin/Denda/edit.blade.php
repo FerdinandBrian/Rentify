@@ -33,9 +33,9 @@
                             'formOptions' => $formOptions,
                         ])
                     </div>
-                    <div class="card-action text-end">
-                        <a href="{{ route('denda.index') }}" class="btn btn-danger">Batal</a>
-                        <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+                    <div class="card-action">
+                        <button type="submit" class="btn btn-primary"><i class="icon-check"></i> Perbarui</button>
+                    <a href="{{ route('admin.addons.index') }}" class="btn btn-secondary">Batal</a>
                     </div>
                 </form>
             </div>
