@@ -47,6 +47,17 @@ class User extends Authenticatable
 		'password',
 		'remember_token',
 		'document',
-		'status'
+		'status',
+        'role_id'
 	];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function getRoleNameAttribute()
+    {
+        return $this->role->name ?? null;
+    }
 }

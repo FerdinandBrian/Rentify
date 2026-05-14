@@ -22,10 +22,12 @@
             <div class="card-header">
                 <div class="d-flex align-items-center">
                     <h4 class="card-title">Daftar AddOn</h4>
+                    @if(auth()->user()->role->name == 'admin')
                     <a href="{{ route('admin.addons.create') }}" class="btn btn-primary btn-round ms-auto">
                         <i class="fa fa-plus"></i>
                         Tambah AddOn
                     </a>
+                    @endif
                 </div>
             </div>
             <div class="card-body">
@@ -53,6 +55,7 @@
                                                 class="btn btn-link btn-info btn-lg" data-bs-toggle="tooltip" title="Detail">
                                                 <i class="fa fa-eye"></i>
                                             </a>
+                                            @if(auth()->user()->role->name == 'admin')
                                             <a href="{{ route('admin.addons.edit', $addon->id) }}"
                                                 class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Edit">
                                                 <i class="fa fa-edit"></i>
@@ -67,6 +70,7 @@
                                                     <i class="fa fa-times"></i>
                                                 </button>
                                             </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

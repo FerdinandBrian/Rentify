@@ -66,6 +66,7 @@
                                                         class="btn btn-link btn-info btn-lg" data-bs-toggle="tooltip" title="Review">
                                                         <i class="fa fa-check-square"></i>
                                                     </a>
+                                                    @if(auth()->user()->role->name == 'admin')
                                                     <form action="{{ route('document.destroy', $user->id) }}"
                                                         method="post" class="d-inline">
                                                         @csrf
@@ -76,6 +77,7 @@
                                                             <i class="fa fa-times"></i>
                                                         </button>
                                                     </form>
+                                                    @endif
                                                 @else
                                                     <span class="text-muted">Tidak ada aksi</span>
                                                 @endif

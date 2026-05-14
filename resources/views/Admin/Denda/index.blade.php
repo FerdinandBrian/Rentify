@@ -26,10 +26,12 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center">
                         <h4 class="card-title">Daftar Denda</h4>
+                        @if(auth()->user()->role->name == 'admin')
                         <a href="{{ route('denda.create') }}" class="btn btn-primary btn-round ms-auto">
                             <i class="fa fa-plus"></i>
                             Tambah Denda
                         </a>
+                        @endif
                     </div>
                 </div>
                 <div class="card-body">
@@ -62,6 +64,7 @@
                                         <td>Rp {{ number_format($denda->total_penalty ?? 0, 0, ',', '.') }}</td>
                                         <td class="text-end">
                                             <div class="form-button-action justify-content-end">
+                                                @if(auth()->user()->role->name == 'admin')
                                                 <a href="{{ route('denda.edit', $denda->id) }}" class="btn btn-link btn-primary btn-lg"
                                                     data-bs-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
@@ -75,6 +78,7 @@
                                                         <i class="fa fa-times"></i>
                                                     </button>
                                                 </form>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
