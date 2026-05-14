@@ -13,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
 
 /**
  * Class User
- * 
+ *
  * @property int $id
  * @property int|null $role_id
  * @property string $name
@@ -33,32 +33,40 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-	protected $table = 'users';
+    protected $table = 'users';
 
-	protected $casts = [
-		'email_verified_at' => 'datetime'
-	];
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-	protected $hidden = [
-		'password',
-		'remember_token'
-	];
+    protected $fillable = [
+        'role_id',
+        'name',
+        'email',
+        'email_verified_at',
+        'call_number',
+        'password',
+        'remember_token',
+        'document',
+        'status',
+    ];
 
-	protected $fillable = [
-		'name',
-		'email',
-		'email_verified_at',
-		'call_number',
-		'password',
-		'remember_token',
-		'document',
-		'status',
-		'role_id'
-	];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 
-	public function role()
-	{
-		return $this->belongsTo(Role::class);
-	}
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
 
+    public function getRoleNameAttribute()
+    {
+        return $this->role->name ?? null;
+    }
 }
