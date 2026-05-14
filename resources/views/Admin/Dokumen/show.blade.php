@@ -49,7 +49,7 @@
                             </table>
 
                             <div class="mt-4">
-                                <h5 class="fw-bold">Aksi Verifikasi</h5>
+                                @if(auth()->user()->role->name == 'admin')
                                 <div class="d-flex gap-2">
                                     <form action="{{ route('document.changeStatus', $user->id) }}" method="POST">
                                         @csrf
@@ -69,6 +69,7 @@
                                         </button>
                                     </form>
                                 </div>
+                                @endif
                                 <a href="{{ route('documents.index') }}" class="btn btn-link mt-3 text-muted">
                                     <i class="fa fa-arrow-left"></i> Kembali ke Daftar
                                 </a>

@@ -43,10 +43,8 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
 
     Route::middleware('role:1,2')->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-
         Route::get('/admin/pesanan', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/admin/pesanan/{id}', [OrderController::class, 'show'])->name('orders.show');
-
         Route::redirect('/denda', '/admin/denda');
         Route::get('/admin/denda', [DendaController::class, 'index'])->name('denda.index');
 
@@ -59,9 +57,7 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
                 Route::put('cars/{series_number}', [CarController::class, 'update'])->name('cars.update');
                 Route::delete('cars/{series_number}', [CarController::class, 'destroy'])->name('cars.destroy');
             });
-            Route::get('cars/{series_number}', [CarController::class, 'show'])
-                ->where('series_number', '^(?!create$).+')
-                ->name('cars.show');
+            Route::get('cars/{series_number}', [CarController::class, 'show'])->where('series_number', '^(?!create$).+')->name('cars.show');
 
             Route::get('addons', [AddOnController::class, 'index'])->name('addons.index');
             Route::middleware('role:1')->group(function () {
@@ -75,7 +71,6 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
         });
 
         Route::get('/admin/brands', [BrandController::class, 'index'])->name('brands.index');
-
         Route::get('/admin/documents', [DocumentController::class, 'index'])->name('documents.index');
         Route::get('/admin/documents/{id}', [DocumentController::class, 'show'])->name('documents.show');
     });
@@ -84,37 +79,30 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
         Route::get('/admin/pesanan/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
         Route::put('/admin/pesanan/{id}', [OrderController::class, 'update'])->name('orders.update');
         Route::delete('/admin/pesanan/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
-
         Route::get('/admin/denda/create', [DendaController::class, 'create'])->name('denda.create');
         Route::post('/admin/denda', [DendaController::class, 'store'])->name('denda.store');
         Route::get('/admin/denda/{id}/edit', [DendaController::class, 'edit'])->name('denda.edit');
         Route::put('/admin/denda/{id}', [DendaController::class, 'update'])->name('denda.update');
         Route::delete('/admin/denda/{id}', [DendaController::class, 'destroy'])->name('denda.destroy');
-
         Route::get('/admin/brands/create', [BrandController::class, 'create'])->name('brands.create');
         Route::post('/admin/brands/store', [BrandController::class, 'store'])->name('brands.store');
         Route::get('/admin/brands/{id}/edit', [BrandController::class, 'edit'])->name('brands.edit');
         Route::put('/admin/brands/{id}', [BrandController::class, 'update'])->name('brands.update');
         Route::delete('/admin/brands/{id}', [BrandController::class, 'destroy'])->name('brands.destroy');
-
         Route::put('/admin/documents/{id}/change-status', [DocumentController::class, 'changeStatus'])->name('document.changeStatus');
         Route::delete('/admin/documents/{id}', [DocumentController::class, 'destroy'])->name('document.destroy');
     });
 
     Route::prefix('user')->name('user.')->middleware('role:3')->group(function () {
         Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
-
         Route::get('/profile', [UserProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [UserProfileController::class, 'update'])->name('profile.update');
-
         Route::get('/cars', [UserCarController::class, 'index'])->name('cars');
         Route::get('/cars/{id}', [UserCarController::class, 'show'])->name('cars.show');
-
         Route::get('/orders', [UserOrderController::class, 'index'])->name('orders');
         Route::get('/orders/{id}', [UserOrderController::class, 'show'])->name('orders.show');
         Route::post('/orders', [UserOrderController::class, 'store'])->name('orders.store');
         Route::post('/orders/{id}/cancel', [UserOrderController::class, 'cancel'])->name('orders.cancel');
-
         Route::get('/documents', [UserDocumentController::class, 'index'])->name('documents');
         Route::get('/documents/create', [UserDocumentController::class, 'create'])->name('documents.create');
         Route::post('/documents', [UserDocumentController::class, 'store'])->name('documents.store');
