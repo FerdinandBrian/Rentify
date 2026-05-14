@@ -33,6 +33,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+<<<<<<< Updated upstream
     /**
      * Get the attributes that should be cast.
      *
@@ -45,4 +46,26 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+=======
+	protected $hidden = [
+		'password',
+		'remember_token'
+	];
+
+	protected $fillable = [
+		'role_id',
+		'name',
+		'email',
+		'email_verified_at',
+		'password',
+		'remember_token',
+		'document',
+		'status'
+	];
+
+	public function role()
+	{
+		return $this->belongsTo(Role::class, 'role_id');
+	}
+>>>>>>> Stashed changes
 }
