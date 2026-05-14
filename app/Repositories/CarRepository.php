@@ -22,7 +22,7 @@ class CarRepository extends BaseRepository implements CarRepositoryInterface
      */
     public function getAllWithBrands()
     {
-        return $this->model->newQuery()->with('brand')->get();
+        return $this->model->newQuery()->with(['brand', 'images'])->get();
     }
 
     /**

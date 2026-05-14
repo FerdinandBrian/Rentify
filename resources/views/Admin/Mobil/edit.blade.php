@@ -51,7 +51,7 @@
                                 <option value="">-- Pilih Merek --</option>
                                 @foreach($brands as $brand)
                                     <option value="{{ $brand->id }}"
-                                        {{ old('Brand_id', $car->Brand_id) == $brand->id ? 'selected' : '' }}>
+                                        {{ old('Brand_id', $car->brand_id) == $brand->id ? 'selected' : '' }}>
                                         {{ $brand->name }}
                                     </option>
                                 @endforeach
@@ -91,7 +91,7 @@
                             <label for="year" class="form-label">Tahun</label>
                             <input type="number" name="year" id="year"
                                 class="form-control @error('year') is-invalid @enderror"
-                                value="{{ old('year', $car->year) }}" min="2000" max="{{ date('Y') }}">
+                                value="{{ old('year', optional($car->year)->format('Y')) }}" min="2000" max="{{ date('Y') }}">
                             @error('year') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 

@@ -59,12 +59,31 @@ class CarController extends Controller
         ]);
 
         $validated['is_electric'] = $request->has('is_electric');
+        $validated['brand_id'] = $validated['Brand_id'];
+        $validated = $this->normalizeCarPayload($validated);
+        unset($validated['Brand_id']);
 
         try {
             $this->carFactory->createCar($validated);
             return redirect()->route('admin.cars.index')->with('success', 'Mobil berhasil ditambahkan.');
         } catch (\Exception $e) {
             return back()->withInput()->withErrors(['error' => 'Gagal menambahkan mobil: ' . $e->getMessage()]);
+        }
+    }
+
+    public function show($series_number)
+    {
+        try {
+            $car = $this->carRepository->findById($series_number);
+            if (!$car) {
+                return redirect()->route('admin.cars.index')->withErrors(['error' => 'Mobil tidak ditemukan.']);
+            }
+
+            $car->load(['brand', 'images']);
+
+            return view('admin.mobil.show', compact('car'));
+        } catch (\Exception $e) {
+            return redirect()->route('admin.cars.index')->withErrors(['error' => 'Gagal memuat detail mobil: ' . $e->getMessage()]);
         }
     }
 
@@ -97,6 +116,9 @@ class CarController extends Controller
         ]);
 
         $validated['is_electric'] = $request->has('is_electric');
+        $validated['brand_id'] = $validated['Brand_id'];
+        $validated = $this->normalizeCarPayload($validated);
+        unset($validated['Brand_id']);
 
         try {
             $car = $this->carRepository->findById($series_number);
@@ -119,5 +141,14 @@ class CarController extends Controller
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Gagal menghapus mobil: ' . $e->getMessage()]);
         }
+    }
+
+    private function normalizeCarPayload(array $payload): array
+    {
+        if (array_key_exists('year', $payload)) {
+            $payload['year'] = $payload['year'] ? $payload['year'] . '-01-01' : null;
+        }
+
+        return $payload;
     }
 }
