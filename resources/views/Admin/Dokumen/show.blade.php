@@ -4,67 +4,92 @@
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
-                <h4 class="page-title">Dashboard</h4>
+                <h4 class="page-title">Review Dokumen</h4>
                 <ul class="breadcrumbs">
                     <li class="nav-home">
-                        <a href="{{ route('dashboard') }}">
-                            <i class="icon-home"></i>
-                        </a>
+                        <a href="{{ route('dashboard') }}"><i class="icon-home"></i></a>
                     </li>
-                    <li class="separator">
-                        <i class="icon-arrow-right"></i>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('document.index') }}">Document</a>
-                    </li>
-                    <li class="separator">
-                        <i class="icon-arrow-right"></i>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#">Document {{ $user->id }}</a>
-                    </li>
+                    <li class="separator"><i class="icon-arrow-right"></i></li>
+                    <li class="nav-item"><a href="{{ route('documents.index') }}">Dokumen</a></li>
+                    <li class="separator"><i class="icon-arrow-right"></i></li>
+                    <li class="nav-item"><span>Review Pelanggan</span></li>
                 </ul>
             </div>
 
             <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <h3 class="card-title">Document {{ $user->id }}</h3>
+                <div class="card-header">
+                    <h4 class="card-title">Detail Dokumen: {{ $user->name }}</h4>
                 </div>
 
                 <div class="card-body">
-                    <p><strong>Name:</strong> {{ $user->name }}</p>
-                    <p><strong>Email:</strong> {{ $user->email }}</p>
-                    <p><strong>Document:</strong>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5 class="fw-bold">Informasi Pelanggan</h5>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th style="width: 30%">Nama</th>
+                                    <td>{{ $user->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td>{{ $user->email }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status Saat Ini</th>
+                                    <td>
+                                        @if ($user->status === 'Verified')
+                                            <span class="badge bg-success">Terverifikasi</span>
+                                        @elseif($user->status === 'Rejected')
+                                            <span class="badge bg-danger">Ditolak</span>
+                                        @else
+                                            <span class="badge bg-warning text-dark">Menunggu Review</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            </table>
 
-                        <img src="{{ asset('storage/' . $user->document) }}" alt="Document"
-                            style="max-width: 100%; height: auto;">
+                            <div class="mt-4">
+                                @if(auth()->user()->role->name == 'admin')
+                                <div class="d-flex gap-2">
+                                    <form action="{{ route('document.changeStatus', $user->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="status" value="Verified">
+                                        <button type="submit" class="btn btn-success btn-round">
+                                            <i class="fa fa-check"></i> Setujui
+                                        </button>
+                                    </form>
 
-                    </p>
-                    <p><strong>Status:</strong>
-                        @if ($user->status == 1)
-                            <div class="badge badge-success">Approved</div>
-                        @elseif ($user->status == 0)
-                            <div class="badge badge-danger">Rejected</div>
-                        @elseif ($user->status == 2)
-                            <div class="badge badge-warning">Pending</div>
-                        @endif
-                    </p>
-
-                    @if ($user->status == 2)
-                        <form action="{{ route('document.changestatus', $user->id) }}" class="form-inline">
-                            @csrf
-                            @method('PUT')
-                            <div class="form-group">
-                                <label for="status">Status:</label>
-                                <select class="form-control" id="status" name="status">
-                                    <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>Approved</option>
-                                    <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>Rejected</option>
-                                </select>
+                                    <form action="{{ route('document.changeStatus', $user->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="status" value="Rejected">
+                                        <button type="submit" class="btn btn-danger btn-round">
+                                            <i class="fa fa-times"></i> Tolak
+                                        </button>
+                                    </form>
+                                </div>
+                                @endif
+                                <a href="{{ route('documents.index') }}" class="btn btn-link mt-3 text-muted">
+                                    <i class="fa fa-arrow-left"></i> Kembali ke Daftar
+                                </a>
                             </div>
-                            <button type="submit" class="btn btn-primary">Update Status</button>
-                        </form>
-                    @endif
-
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="fw-bold">Pratinjau Dokumen</h5>
+                            <div class="border rounded p-2 bg-light text-center">
+                                @if($user->document)
+                                    <img src="{{ asset('storage/' . $user->document) }}" alt="Dokumen Pelanggan"
+                                        class="img-fluid rounded shadow-sm" style="max-height: 600px;">
+                                @else
+                                    <div class="py-5 text-muted">
+                                        <i class="fa fa-file-excel fa-4x mb-3"></i>
+                                        <p>Tidak ada file dokumen untuk ditampilkan.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

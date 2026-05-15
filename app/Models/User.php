@@ -53,12 +53,16 @@ class User extends Authenticatable
 		'remember_token',
 		'document',
 		'status',
-		'role_id'
+        'role_id'
 	];
 
-	public function role()
-	{
-		return $this->belongsTo(Role::class);
-	}
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
 
+    public function getRoleNameAttribute()
+    {
+        return $this->role->name ?? null;
+    }
 }

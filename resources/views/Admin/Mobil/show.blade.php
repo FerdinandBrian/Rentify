@@ -64,9 +64,11 @@
                 </table>
 
                 <a href="{{ route('admin.cars.index') }}" class="btn btn-secondary">Kembali</a>
+                @if(auth()->user()->role->name == 'admin')
                 <a href="{{ route('admin.cars.edit', $car->series_number) }}" class="btn btn-warning">
                     <i class="icon-pencil"></i> Edit
                 </a>
+                @endif
             </div>
         </div>
     </div>
