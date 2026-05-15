@@ -7,12 +7,29 @@ use App\Http\Controllers\Admin\CarController;
 use App\Http\Controllers\Admin\AddOnController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\BrandController;
-use App\Http\Controllers\Admin\DocumentController;
+use App\Http\Controllers\User\UserDashboardController;
+use App\Http\Controllers\User\UserCarController;
+use App\Http\Controllers\User\UserOrderController;
+use App\Http\Controllers\User\UserDocumentController;
+use App\Http\Controllers\User\UserProfileController;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    $user = Auth::user();
+    if ($user && $user->role_id == 1) {
+        return redirect('/admin/dashboard');
+    }
+    return redirect('/user/dashboard');
+})->middleware(['auth', 'verified']);
+
+Route::get('/dashboard', function () {
+    $user = Auth::user();
+    if ($user && $user->role_id == 1) {
+        return redirect('/admin/dashboard');
+    }
+    return redirect('/user/dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
 

@@ -14,6 +14,9 @@ use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Repositories\DashboardRepository;
 use App\Repositories\DendaRepository;
 use App\Repositories\OrderRepository;
+use App\Services\User\UserNavigationService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use App\Repositories\Contracts\BrandRepositoryInterface;
 use App\Repositories\Contracts\CarRepositoryInterface;
 use App\Repositories\Contracts\AddOnRepositoryInterface;
@@ -49,5 +52,13 @@ class AppServiceProvider extends ServiceProvider
         Order::observe(DashboardCacheObserver::class);
         Payment::observe(DashboardCacheObserver::class);
         Penalty::observe(DashboardCacheObserver::class);
+
+        View::composer(['layouts.User.header', 'layouts.User.sidebar'], function ($view): void {
+            if (! Auth::check()) {
+                return;
+            }
+
+            $view->with('userNavMetrics', app(UserNavigationService::class)->metrics(Auth::id()));
+        });
     }
 }
