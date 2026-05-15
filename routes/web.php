@@ -37,6 +37,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Admin Protected Routes
+    Route::middleware(['role:admin'])->group(function () {
+        // CRUD Order Admin
+        Route::get('/admin/pesanan', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/admin/pesanan/{id}', [OrderController::class, 'show'])->name('orders.show');
+
     // Routes accessible by both Admin and Organizer
     Route::middleware('role:1,2')->group(function () {
         // Dashboard
