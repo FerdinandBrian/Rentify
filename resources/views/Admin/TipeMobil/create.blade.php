@@ -4,46 +4,38 @@
     <div class="container">
         <div class="page-inner">
             <div class="page-header">
-                <h4 class="page-title">Dashboard</h4>
+                <h4 class="page-title">Tambah Merek</h4>
                 <ul class="breadcrumbs">
                     <li class="nav-home">
-                        <a href="{{ route('dashboard') }}">
-                            <i class="icon-home"></i>
-                        </a>
+                        <a href="{{ route('dashboard') }}"><i class="icon-home"></i></a>
                     </li>
-                    <li class="separator">
-                        <i class="icon-arrow-right"></i>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('brands.index') }}">Tipe Mobil</a>
-                    </li>
-                    <li class="separator">
-                        <i class="icon-arrow-right"></i>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#">Tambah Tipe Mobil</a>
-                    </li>
+                    <li class="separator"><i class="icon-arrow-right"></i></li>
+                    <li class="nav-item"><a href="{{ route('brands.index') }}">Merek</a></li>
+                    <li class="separator"><i class="icon-arrow-right"></i></li>
+                    <li class="nav-item"><span>Tambah</span></li>
                 </ul>
             </div>
 
             <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <h3 class="card-title">Tambah Tipe Mobil</h3>
+                <div class="card-header">
+                    <h4 class="card-title">Tambah Merek Baru</h4>
                 </div>
 
                 <div class="card-body">
-                    <form method="post" action="{{ route('brands.store') }}" enctype="multipart/form-data">
+                    <form method="post" action="{{ route('brands.store') }}">
                         @csrf
-                        <div class="form-group">
-                            <label for="name">Name</label>
+                        <div class="form-group mb-3">
+                            <label for="name">Nama Merek <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="name" name="name" maxlength="60"
-                                autofocus required>
+                                placeholder="Masukkan nama merek..." autofocus required>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="reset" class="btn btn-secondary">Reset</button>
-                        <button type="button" class="btn btn-danger"
-                            onclick="window.location.href='{{ route('brands.index') }}'">Cancel</button>
+                        <div class="card-action">
+                            <button type="submit" class="btn btn-primary btn-round">
+                                <i class="fa fa-save"></i> Simpan
+                            </button>
+                            <a href="{{ route('brands.index') }}" class="btn btn-black btn-border btn-round ms-2">Batal</a>
+                        </div>
                     </form>
                 </div>
             </div>

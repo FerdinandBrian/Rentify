@@ -11,8 +11,12 @@ class DashboardController extends Controller
 
     public function index()
     {
-        return view('Admin.dashboard', [
-            'dashboard' => $this->dashboardService->getAdminDashboard(),
-        ]);
+        try {
+            return view('Admin.dashboard', [
+                'dashboard' => $this->dashboardService->getAdminDashboard(),
+            ]);
+        } catch (\Exception $e) {
+            abort(500, 'Gagal memuat dashboard: ' . $e->getMessage());
+        }
     }
 }

@@ -5,15 +5,21 @@ namespace App\Repositories;
 use App\Models\Car;
 use App\Models\Payment;
 use App\Models\Penalty;
+use App\Repositories\BaseRepository;
 use App\Repositories\Contracts\DendaRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
-class DendaRepository implements DendaRepositoryInterface
+class DendaRepository extends BaseRepository implements DendaRepositoryInterface
 {
+    public function __construct(Penalty $penalty)
+    {
+        parent::__construct($penalty);
+    }
+
     public function paginate(int $perPage = 10): LengthAwarePaginator
     {
-        return Penalty::query()
+        return $this->model->newQuery()
             ->with(['payments.order.car'])
             ->orderByDesc('id')
             ->paginate($perPage)
@@ -31,22 +37,22 @@ class DendaRepository implements DendaRepositoryInterface
         ];
     }
 
-    public function create(array $penaltyData, int $paymentId): Penalty
+    public function createWithPayment(array $penaltyData, int $paymentId): Penalty
     {
         return DB::transaction(function () use ($penaltyData, $paymentId) {
-            $penalty = Penalty::query()->create($penaltyData);
+            $penalty = $this->model->newQuery()->create($penaltyData);
             $penalty->payments()->attach($paymentId);
 
             return $penalty->load(['payments.order.car']);
         });
     }
 
-    public function findById(int $id): ?Penalty
+    public function findById($id): ?Penalty
     {
-        return Penalty::query()->with(['payments.order.car'])->find($id);
+        return $this->model->newQuery()->with(['payments.order.car'])->find($id);
     }
 
-    public function update(Penalty $penalty, array $penaltyData, int $paymentId): Penalty
+    public function updateWithPayment(Penalty $penalty, array $penaltyData, int $paymentId): Penalty
     {
         return DB::transaction(function () use ($penalty, $penaltyData, $paymentId) {
             $penalty->update($penaltyData);
@@ -56,11 +62,19 @@ class DendaRepository implements DendaRepositoryInterface
         });
     }
 
-    public function delete(Penalty $penalty): void
+    public function delete($model): void
     {
-        DB::transaction(function () use ($penalty) {
-            $penalty->payments()->detach();
-            $penalty->delete();
+        if (!($model instanceof Penalty)) {
+            $model = $this->findById($model);
+        }
+
+        if (!$model) {
+            return;
+        }
+
+        DB::transaction(function () use ($model) {
+            $model->payments()->detach();
+            $model->delete();
         });
     }
 

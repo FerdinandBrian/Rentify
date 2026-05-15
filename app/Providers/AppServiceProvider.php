@@ -17,6 +17,14 @@ use App\Repositories\OrderRepository;
 use App\Services\User\UserNavigationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
+use App\Repositories\Contracts\BrandRepositoryInterface;
+use App\Repositories\Contracts\CarRepositoryInterface;
+use App\Repositories\Contracts\AddOnRepositoryInterface;
+use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Repositories\BrandRepository;
+use App\Repositories\CarRepository;
+use App\Repositories\AddOnRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,6 +37,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DashboardRepositoryInterface::class, DashboardRepository::class);
         $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
         $this->app->bind(DendaRepositoryInterface::class, DendaRepository::class);
+        $this->app->bind(BrandRepositoryInterface::class, BrandRepository::class);
+        $this->app->bind(CarRepositoryInterface::class, CarRepository::class);
+        $this->app->bind(AddOnRepositoryInterface::class, AddOnRepository::class);
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(DashboardComponentFactoryInterface::class, EnterpriseDashboardComponentFactory::class);
     }
 
