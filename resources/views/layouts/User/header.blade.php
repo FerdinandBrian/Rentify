@@ -13,8 +13,9 @@
 <div class="main-header">
     <div class="main-header-logo">
         <div class="logo-header" data-background-color="dark">
-            <a href="{{ route('user.dashboard') }}" class="logo">
-                <span class="text-white fw-bold fs-4">Rentify</span>
+            <a href="{{ route('user.dashboard') }}" class="logo d-flex align-items-center gap-2">
+                <div class="rounded-3 bg-gradient-to-br bg-primary d-flex align-items-center justify-center font-bold text-white shadow-sm" style="width: 32px; height: 32px; font-size: 18px; line-height: 32px; text-align: center;">R</div>
+                <span class="fw-bold fs-4 text-white">Rentify</span>
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
@@ -55,7 +56,7 @@
                         <li>
                             <div class="notif-scroll scrollbar-outer">
                                 <div class="notif-center">
-                                    <a href="{{ route('user.orders', ['status' => 'menunggu']) }}">
+                                    <a href="{{ route('user.orders.index', ['status' => 'menunggu']) }}">
                                         <div class="notif-icon notif-warning">
                                             <i class="fas fa-clock"></i>
                                         </div>
@@ -64,7 +65,7 @@
                                             <span class="time">Perlu konfirmasi admin</span>
                                         </div>
                                     </a>
-                                    <a href="{{ route('user.orders', ['status' => 'aktif']) }}">
+                                    <a href="{{ route('user.orders.index', ['status' => 'aktif']) }}">
                                         <div class="notif-icon notif-success">
                                             <i class="fas fa-car-side"></i>
                                         </div>
@@ -73,7 +74,7 @@
                                             <span class="time">Sedang berjalan</span>
                                         </div>
                                     </a>
-                                    <a href="{{ route('user.documents') }}">
+                                    <a href="{{ route('user.documents.index') }}">
                                         <div class="notif-icon notif-info">
                                             <i class="fas fa-file-signature"></i>
                                         </div>
@@ -82,7 +83,7 @@
                                             <span class="time">{{ $userNavMetrics['approved_documents'] }} dokumen disetujui</span>
                                         </div>
                                     </a>
-                                    <a href="{{ route('user.cars') }}">
+                                    <a href="{{ route('user.cars.index') }}">
                                         <div class="notif-icon notif-primary">
                                             <i class="fas fa-car"></i>
                                         </div>
@@ -111,7 +112,7 @@
                         <div class="quick-actions-scroll scrollbar-outer">
                             <div class="quick-actions-items">
                                 <div class="row m-0">
-                                    <a class="col-6 p-0" href="{{ route('user.cars') }}">
+                                    <a class="col-6 p-0" href="{{ route('user.cars.index') }}">
                                         <div class="quick-actions-item">
                                             <div class="avatar-item bg-primary rounded-circle">
                                                 <i class="fas fa-car"></i>
@@ -119,7 +120,7 @@
                                             <span class="text">Mobil</span>
                                         </div>
                                     </a>
-                                    <a class="col-6 p-0" href="{{ route('user.orders') }}">
+                                    <a class="col-6 p-0" href="{{ route('user.orders.index') }}">
                                         <div class="quick-actions-item">
                                             <div class="avatar-item bg-success rounded-circle">
                                                 <i class="fas fa-clipboard-list"></i>
@@ -127,7 +128,7 @@
                                             <span class="text">Pesanan</span>
                                         </div>
                                     </a>
-                                    <a class="col-6 p-0" href="{{ route('user.documents') }}">
+                                    <a class="col-6 p-0" href="{{ route('user.documents.index') }}">
                                         <div class="quick-actions-item">
                                             <div class="avatar-item bg-warning rounded-circle">
                                                 <i class="fas fa-file-upload"></i>
@@ -135,7 +136,7 @@
                                             <span class="text">Dokumen</span>
                                         </div>
                                     </a>
-                                    <a class="col-6 p-0" href="{{ route('user.profile.edit') }}">
+                                    <a class="col-6 p-0" href="{{ route('user.profile.index') }}">
                                         <div class="quick-actions-item">
                                             <div class="avatar-item bg-info rounded-circle">
                                                 <i class="fas fa-user-cog"></i>
@@ -156,41 +157,11 @@
                             <img src="{{ asset('assets/img/profile.jpg') }}" alt="Foto profil"
                                 class="avatar-img rounded-circle" />
                         </div>
-                        <span class="profile-username">
+                        <span class="profile-username text-white">
                             <span class="op-7">Hi,</span>
                             <span class="fw-bold">{{ Auth::user()->name }}</span>
                         </span>
                     </a>
-                    <ul class="dropdown-menu dropdown-user animated fadeIn dropdown-menu-end">
-                        <div class="dropdown-user-scroll scrollbar-outer">
-                            <li>
-                                <div class="user-box">
-                                    <div class="avatar-lg">
-                                        <img src="{{ asset('assets/img/profile.jpg') }}" alt="Foto profil"
-                                            class="avatar-img rounded" />
-                                    </div>
-                                    <div class="u-text">
-                                        <h4>{{ Auth::user()->name }}</h4>
-                                        <p class="text-muted">{{ Auth::user()->email }}</p>
-                                        <a href="{{ route('user.profile.edit') }}" class="btn btn-xs btn-secondary btn-sm">
-                                            Lihat Profil
-                                        </a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{{ route('user.orders') }}">Pesanan Saya</a>
-                                <a class="dropdown-item" href="{{ route('user.documents') }}">Dokumen Saya</a>
-                                <a class="dropdown-item" href="{{ route('user.profile.edit') }}">Pengaturan Akun</a>
-                                <div class="dropdown-divider"></div>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button class="dropdown-item" type="submit">Logout</button>
-                                </form>
-                            </li>
-                        </div>
-                    </ul>
                 </li>
             </ul>
         </div>

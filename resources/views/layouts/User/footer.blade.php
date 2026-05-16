@@ -3,16 +3,16 @@
         <nav class="pull-left">
             <ul class="nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('user.cars') }}">Mobil</a>
+                    <a class="nav-link" href="{{ route('user.cars.index') }}">Mobil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('user.orders') }}">Pesanan</a>
+                    <a class="nav-link" href="{{ route('user.orders.index') }}">Pesanan</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('user.documents') }}">Dokumen</a>
+                    <a class="nav-link" href="{{ route('user.documents.index') }}">Dokumen</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('user.profile.edit') }}">Profil</a>
+                    <a class="nav-link" href="{{ route('user.profile.index') }}">Profil</a>
                 </li>
             </ul>
         </nav>

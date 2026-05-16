@@ -66,4 +66,9 @@ class Car extends Model
     {
         return $this->hasMany(Order::class, 'Car_series_number', 'series_number');
     }
+
+    public function images()
+    {
+        return $this->belongsToMany(CarImage::class, 'car_car_image', 'car_series_number', 'car_image_id');
+    }
 }

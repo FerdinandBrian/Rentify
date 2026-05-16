@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/premium-rentify.css') }}" />
 
     <style>
         .main-header,
@@ -90,7 +91,10 @@
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 </head>
 
-<body>
+<body class="antialiased">
+    <div class="grid-overlay"></div>
+    <div class="floating-orb bg-orange-500" style="top: 10%; left: 10%; width: 300px; height: 300px;"></div>
+    <div class="floating-orb bg-blue-500" style="bottom: 10%; right: 10%; width: 400px; height: 400px;"></div>
     <div class="wrapper">
         @include('layouts.User.sidebar')
 

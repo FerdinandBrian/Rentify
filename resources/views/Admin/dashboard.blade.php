@@ -32,15 +32,15 @@
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-md-8">
-                            <span class="badge bg-white text-primary mb-3">Admin Control Center</span>
+                            <span class="badge bg-white/20 text-white mb-3 border border-white/30">Admin Control Center</span>
                             <h2 class="fw-bold text-white mb-2">Dashboard Operasional Rentify</h2>
                             <p class="text-white-50 mb-0">
-                                Pantau pesanan, pendapatan, denda, dan status rental dari satu panel yang mengikuti template Kaiadmin.
+                                Pantau pesanan, pendapatan, denda, dan status rental dari satu panel kontrol premium.
                             </p>
                         </div>
                         <div class="col-md-4 text-md-end mt-4 mt-md-0">
-                            <a href="{{ route('orders.index') }}" class="btn btn-light btn-round">
-                                Kelola Pesanan
+                            <a href="{{ route('orders.index') }}" class="btn btn-white btn-round">
+                                <i class="fas fa-clipboard-list me-2"></i>Kelola Pesanan
                             </a>
                         </div>
                     </div>
@@ -166,10 +166,11 @@
 @section('extraCSS')
     <style>
         .rentify-hero-card {
-            background: linear-gradient(135deg, #102a43 0%, #1f7a8c 55%, #f0a202 120%);
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
             border: 0;
             margin-bottom: 24px;
             overflow: hidden;
+            box-shadow: 0 15px 35px rgba(249, 115, 22, 0.2);
         }
 
         .rentify-hero-card .card-body {
