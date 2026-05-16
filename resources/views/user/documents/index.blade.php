@@ -36,7 +36,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('user.documents') }}">Dokumen</a>
+                        <a href="{{ route('user.documents.index') }}">Dokumen</a>
                     </li>
                 </ul>
             </div>

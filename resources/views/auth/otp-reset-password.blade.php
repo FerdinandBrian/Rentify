@@ -1,89 +1,69 @@
 <x-guest-layout>
-    <div class="login-card">
-        <div class="login-header">
-            <div class="neu-icon">
-                <div class="icon-inner">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
-                </div>
-            </div>
-            <h2>Password Baru</h2>
-            <p>Masukkan password baru untuk akun Anda</p>
+    <div class="glass-card rounded-[2.5rem] p-10 border-white/10 relative overflow-hidden">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-black text-white mb-2">Password Baru</h2>
+            <p class="text-slate-400 font-medium">Masukkan password baru untuk akun Anda</p>
         </div>
 
         @if (session('status'))
-            <div class="status-message">
+            <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-6 py-4 rounded-2xl mb-8 text-sm font-bold text-center">
                 {{ session('status') }}
             </div>
         @endif
 
         @if (session('error'))
-            <div class="status-message error">
+            <div class="bg-rose-500/10 border border-rose-500/20 text-rose-400 px-6 py-4 rounded-2xl mb-8 text-sm font-bold text-center">
                 {{ session('error') }}
             </div>
         @endif
 
-        <form method="POST" action="{{ route('password.reset.submit') }}">
+        <form method="POST" action="{{ route('password.reset.submit') }}" class="space-y-6">
             @csrf
 
             <!-- Password -->
-            <div class="form-group @error('password') error @enderror">
-                <div class="neu-input password-group">
-                    <div class="input-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="space-y-2">
+                <label for="password" class="text-sm font-black text-slate-400 uppercase tracking-widest ml-1">Password Baru</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-slate-500 group-focus-within:text-orange-500 transition-colors">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                         </svg>
                     </div>
-                    <input type="password" id="password" name="password" placeholder=" " required autocomplete="new-password">
-                    <label for="password">Password Baru</label>
+                    <input type="password" id="password" name="password" 
+                        class="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-4 pl-14 pr-14 text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-bold" 
+                        placeholder="Minimal 8 karakter" required autocomplete="new-password">
+                    <button type="button" class="absolute inset-y-0 right-0 pr-5 flex items-center text-slate-500 hover:text-orange-500 transition-colors" onclick="togglePassword(this)">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
                 </div>
-                <button type="button" class="neu-toggle" onclick="togglePassword(this)">
-                    <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                        <line x1="1" y1="1" x2="23" y2="23"></line>
-                    </svg>
-                </button>
                 @error('password')
-                    <span class="error-message">{{ $message }}</span>
+                    <p class="text-rose-500 text-xs font-bold mt-1 ml-1">{{ $message }}</p>
                 @enderror
             </div>
 
             <!-- Confirm Password -->
-            <div class="form-group @error('password_confirmation') error @enderror">
-                <div class="neu-input password-group">
-                    <div class="input-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="space-y-2">
+                <label for="password_confirmation" class="text-sm font-black text-slate-400 uppercase tracking-widest ml-1">Konfirmasi</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-slate-500 group-focus-within:text-orange-500 transition-colors">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                         </svg>
                     </div>
-                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder=" " required autocomplete="new-password">
-                    <label for="password_confirmation">Konfirmasi Password Baru</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" 
+                        class="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-4 pl-14 pr-5 text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-bold" 
+                        placeholder="Ulangi password" required autocomplete="new-password">
                 </div>
-                <button type="button" class="neu-toggle" onclick="togglePassword(this)">
-                    <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                        <line x1="1" y1="1" x2="23" y2="23"></line>
-                    </svg>
-                </button>
-                @error('password_confirmation')
-                    <span class="error-message">{{ $message }}</span>
-                @enderror
             </div>
 
             <!-- Submit -->
-            <button type="submit" class="neu-button">
-                <span class="btn-text">Simpan Password</span>
+            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-black py-5 rounded-2xl shadow-lg shadow-orange-500/20 transform hover:-translate-y-1 transition-all active:scale-[0.98] text-lg">
+                Simpan Password
             </button>
         </form>
     </div>

@@ -51,10 +51,6 @@
                                     <td>Rp {{ number_format($addon->price_per_day, 0, ',', '.') }}</td>
                                     <td class="text-end">
                                         <div class="form-button-action justify-content-end">
-                                            <a href="{{ route('admin.addons.show', $addon->id) }}"
-                                                class="btn btn-link btn-info btn-lg" data-bs-toggle="tooltip" title="Detail">
-                                                <i class="fa fa-eye"></i>
-                                            </a>
                                             @if(auth()->user()->role->name == 'admin')
                                             <a href="{{ route('admin.addons.edit', $addon->id) }}"
                                                 class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Edit">

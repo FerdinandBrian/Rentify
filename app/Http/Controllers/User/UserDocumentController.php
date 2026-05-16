@@ -33,7 +33,7 @@ class UserDocumentController extends Controller
 
         $this->documentService->storeFor(Auth::user(), $validated, $request->file('document_file'));
 
-        return redirect()->route('user.documents')
+        return redirect()->route('user.documents.index')
             ->with('success', 'Dokumen berhasil diunggah dan menunggu verifikasi.');
     }
 
@@ -63,7 +63,7 @@ class UserDocumentController extends Controller
 
         $this->documentService->updatePendingDocument($document, $validated, $request->file('document_file'));
 
-        return redirect()->route('user.documents')
+        return redirect()->route('user.documents.index')
             ->with('success', 'Dokumen berhasil diperbarui.');
     }
 
@@ -73,7 +73,7 @@ class UserDocumentController extends Controller
 
         $this->documentService->deletePendingDocument($document);
 
-        return redirect()->route('user.documents')
+        return redirect()->route('user.documents.index')
             ->with('success', 'Dokumen berhasil dihapus.');
     }
 

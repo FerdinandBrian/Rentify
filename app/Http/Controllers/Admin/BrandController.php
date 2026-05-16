@@ -18,12 +18,12 @@ class BrandController extends Controller
     public function index()
     {
         $brands = $this->brandRepository->all();
-        return view('admin.TipeMobil.index', compact('brands'));
+        return view('admin.brands.index', compact('brands'));
     }
 
     public function create()
     {
-        return view('admin.TipeMobil.create');
+        return view('admin.brands.create');
     }
 
     public function store(Request $request)
@@ -47,7 +47,7 @@ class BrandController extends Controller
             if (!$brand) {
                 return redirect()->route('brands.index')->withErrors(['error' => 'Merek tidak ditemukan.']);
             }
-            return view('admin.TipeMobil.edit', compact('brand'));
+            return view('admin.brands.edit', compact('brand'));
         } catch (\Exception $e) {
             return redirect()->route('brands.index')->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }

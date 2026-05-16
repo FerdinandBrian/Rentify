@@ -21,14 +21,14 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('user.cars') }}">Mobil</a>
+                        <a href="{{ route('user.cars.index') }}">Mobil</a>
                     </li>
                 </ul>
             </div>
 
             <div class="card card-round">
                 <div class="card-header">
-                    <form method="GET" action="{{ route('user.cars') }}">
+                    <form method="GET" action="{{ route('user.cars.index') }}">
                         <div class="row g-2 align-items-end">
                             <div class="col-lg-4">
                                 <label for="search" class="form-label">Cari Mobil</label>
@@ -74,7 +74,7 @@
                                 <button type="submit" class="btn btn-primary flex-fill">
                                     <i class="fas fa-filter me-1"></i>Filter
                                 </button>
-                                <a href="{{ route('user.cars') }}" class="btn btn-icon btn-light" title="Reset filter">
+                                <a href="{{ route('user.cars.index') }}" class="btn btn-icon btn-light" title="Reset filter">
                                     <i class="fas fa-redo"></i>
                                 </a>
                             </div>
@@ -148,7 +148,7 @@
                                     <i class="fas fa-car fa-4x text-muted mb-3"></i>
                                     <h5 class="text-muted">Mobil tidak ditemukan</h5>
                                     <p class="text-muted">Coba ubah filter atau kata kunci pencarian.</p>
-                                    <a href="{{ route('user.cars') }}" class="btn btn-primary btn-round">
+                                    <a href="{{ route('user.cars.index') }}" class="btn btn-primary btn-round">
                                         Reset Filter
                                     </a>
                                 </div>
