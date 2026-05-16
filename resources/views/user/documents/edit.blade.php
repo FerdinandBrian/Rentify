@@ -17,7 +17,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('user.documents') }}">Dokumen</a>
+                        <a href="{{ route('user.documents.index') }}">Dokumen</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
@@ -75,7 +75,7 @@
                                 </div>
 
                                 <div class="d-flex justify-content-between gap-2">
-                                    <a href="{{ route('user.documents') }}" class="btn btn-light">
+                                    <a href="{{ route('user.documents.index') }}" class="btn btn-light">
                                         <i class="fas fa-arrow-left me-2"></i>Kembali
                                     </a>
                                     <button type="submit" class="btn btn-primary">

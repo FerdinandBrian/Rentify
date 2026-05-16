@@ -11,8 +11,9 @@
 <div class="sidebar" data-background-color="dark">
     <div class="sidebar-logo">
         <div class="logo-header" data-background-color="dark">
-            <a href="{{ route('user.dashboard') }}" class="logo">
-                <span class="text-white fw-bold fs-4">Rentify</span>
+            <a href="{{ route('user.dashboard') }}" class="logo d-flex align-items-center gap-2">
+                <div class="rounded-3 bg-gradient-to-br bg-primary d-flex align-items-center justify-center font-bold text-white shadow-sm" style="width: 32px; height: 32px; font-size: 18px; line-height: 32px; text-align: center;">R</div>
+                <span class="fw-bold fs-4 text-white">Rentify</span>
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
@@ -35,7 +36,7 @@
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>
                     </span>
-                    <h4 class="text-section">Menu User</h4>
+                    <h4 class="text-white text-section">Menu User</h4>
                 </li>
                 <li class="nav-item {{ request()->routeIs('user.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('user.dashboard') }}">
@@ -43,15 +44,15 @@
                         <p>Dashboard</p>
                     </a>
                 </li>
-                <li class="nav-item {{ request()->routeIs('user.cars') || request()->routeIs('user.cars.*') ? 'active' : '' }}">
-                    <a href="{{ route('user.cars') }}">
+                <li class="nav-item {{ request()->routeIs('user.cars.*') ? 'active' : '' }}">
+                    <a href="{{ route('user.cars.index') }}">
                         <i class="fas fa-car"></i>
                         <p>Mobil</p>
                         <span class="badge badge-count">{{ $userNavMetrics['available_cars'] }}</span>
                     </a>
                 </li>
-                <li class="nav-item {{ request()->routeIs('user.orders') || request()->routeIs('user.orders.*') ? 'active' : '' }}">
-                    <a href="{{ route('user.orders') }}">
+                <li class="nav-item {{ request()->routeIs('user.orders.*') ? 'active' : '' }}">
+                    <a href="{{ route('user.orders.index') }}">
                         <i class="fas fa-clipboard-list"></i>
                         <p>Pesanan Saya</p>
                         @if($userNavMetrics['active_orders'] > 0)
@@ -59,8 +60,8 @@
                         @endif
                     </a>
                 </li>
-                <li class="nav-item {{ request()->routeIs('user.documents') || request()->routeIs('user.documents.*') ? 'active' : '' }}">
-                    <a href="{{ route('user.documents') }}">
+                <li class="nav-item {{ request()->routeIs('user.documents.*') ? 'active' : '' }}">
+                    <a href="{{ route('user.documents.index') }}">
                         <i class="fas fa-file-signature"></i>
                         <p>Autentikasi Dokumen</p>
                         @if($userNavMetrics['pending_documents'] > 0)
@@ -78,7 +79,7 @@
                     <h4 class="text-section">Akun</h4>
                 </li>
                 <li class="nav-item {{ request()->routeIs('user.profile.*') ? 'active' : '' }}">
-                    <a href="{{ route('user.profile.edit') }}">
+                    <a href="{{ route('user.profile.index') }}">
                         <i class="fas fa-user-cog"></i>
                         <p>Profil</p>
                     </a>

@@ -22,7 +22,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('user.cars') }}">Mobil</a>
+                        <a href="{{ route('user.cars.index') }}">Mobil</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>

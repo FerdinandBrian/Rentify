@@ -37,7 +37,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('user.orders') }}">Pesanan Saya</a>
+                        <a href="{{ route('user.orders.index') }}">Pesanan Saya</a>
                     </li>
                 </ul>
             </div>
@@ -54,7 +54,7 @@
                             <p class="card-category">Data berasal dari tabel order dan payment akun Anda.</p>
                         </div>
                         <div class="card-tools">
-                            <a href="{{ route('user.cars') }}" class="btn btn-primary btn-round btn-sm">
+                            <a href="{{ route('user.cars.index') }}" class="btn btn-primary btn-round btn-sm">
                                 <i class="fas fa-plus me-2"></i>Pesan Mobil
                             </a>
                         </div>
@@ -66,7 +66,7 @@
                             @foreach($tabs as $status => $label)
                                 <li class="nav-item">
                                     <a class="nav-link {{ request('status', '') === $status ? 'active' : '' }}"
-                                        href="{{ $status === '' ? route('user.orders') : route('user.orders', ['status' => $status]) }}">
+                                        href="{{ $status === '' ? route('user.orders.index') : route('user.orders.index', ['status' => $status]) }}">
                                         {{ $label }}
                                     </a>
                                 </li>
@@ -150,7 +150,7 @@
                                                 <i class="fas fa-clipboard-list fa-4x text-muted mb-3"></i>
                                                 <h5 class="text-muted">Belum ada pesanan</h5>
                                                 <p class="text-muted">Pilih mobil tersedia lalu buat pesanan pertama Anda.</p>
-                                                <a href="{{ route('user.cars') }}" class="btn btn-primary btn-round">
+                                                <a href="{{ route('user.cars.index') }}" class="btn btn-primary btn-round">
                                                     Lihat Mobil
                                                 </a>
                                             </div>

@@ -36,7 +36,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('user.orders') }}">Pesanan Saya</a>
+                        <a href="{{ route('user.orders.index') }}">Pesanan Saya</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
@@ -210,7 +210,7 @@
                             <div class="card-title">Aksi Pesanan</div>
                         </div>
                         <div class="card-body rentify-action-list d-grid gap-2">
-                            <a href="{{ route('user.orders') }}" class="btn btn-outline-primary">
+                            <a href="{{ route('user.orders.index') }}" class="btn btn-outline-primary">
                                 <i class="fas fa-arrow-left me-2"></i>Kembali ke Pesanan
                             </a>
                             @if($canCancel)

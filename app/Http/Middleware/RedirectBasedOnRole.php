@@ -18,14 +18,14 @@ class RedirectBasedOnRole
         $user = Auth::user();
         
         if ($user) {
-            // Check if user is admin (role_id = 1, assuming admin role)
-            if ($user->role_id == 1) {
+            // Check if user is admin (role_id = 1) or employee (role_id = 2)
+            if (in_array($user->role_id, [1, 2])) {
                 // If trying to access user routes, redirect to admin
                 if ($request->is('user/*')) {
                     return redirect('/admin/dashboard');
                 }
             } else {
-                // Regular user trying to access admin routes
+                // Regular customer (role_id = 3) trying to access admin routes
                 if ($request->is('admin/*')) {
                     return redirect('/user/dashboard');
                 }

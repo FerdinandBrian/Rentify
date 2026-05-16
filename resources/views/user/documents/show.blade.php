@@ -33,7 +33,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('user.documents') }}">Dokumen</a>
+                        <a href="{{ route('user.documents.index') }}">Dokumen</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
@@ -159,7 +159,7 @@
                             <a href="{{ route('user.documents.download', $document->id) }}" class="btn btn-primary">
                                 <i class="fas fa-download me-2"></i>Unduh Dokumen
                             </a>
-                            <a href="{{ route('user.documents') }}" class="btn btn-outline-primary">
+                            <a href="{{ route('user.documents.index') }}" class="btn btn-outline-primary">
                                 <i class="fas fa-arrow-left me-2"></i>Kembali ke Daftar
                             </a>
 

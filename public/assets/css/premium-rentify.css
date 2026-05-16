@@ -1,0 +1,180 @@
+/* Premium Rentify Design System - HYBRID THEME (Dark Sidebar/Header, Light Content) */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+    --rentify-bg: #f8fafc;
+    --rentify-text: #0f172a;
+    --rentify-text-muted: #64748b;
+    --rentify-slate: #f1f5f9;
+    --rentify-orange: #f97316;
+    --rentify-orange-glow: rgba(249, 115, 22, 0.1);
+    --rentify-glass: rgba(255, 255, 255, 0.7);
+    --rentify-glass-border: rgba(0, 0, 0, 0.08);
+    
+    /* Dark Components */
+    --rentify-sidebar-bg: #0f172a;
+    --rentify-header-bg: #1e293b;
+}
+
+body, .wrapper, .main-panel, .content {
+    background-color: var(--rentify-bg) !important;
+    color: var(--rentify-text) !important;
+    font-family: 'Outfit', sans-serif !important;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.grid-overlay {
+    position: fixed;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), 
+        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(circle at center, black, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.floating-orb {
+    position: fixed;
+    border-radius: 9999px;
+    filter: blur(100px);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+    animation: pulse 8s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.1; }
+    100% { transform: scale(1.1); opacity: 0.2; }
+}
+
+/* Sidebar Styling (DARK) */
+.sidebar {
+    background: var(--rentify-sidebar-bg) !important;
+    border-right: 0 !important;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1) !important;
+}
+
+.sidebar .nav > .nav-item > a {
+    color: #94a3b8 !important;
+    transition: all 0.3s ease !important;
+}
+
+.sidebar .nav > .nav-item.active > a,
+.sidebar .nav > .nav-item > a:hover {
+    color: #ffffff !important;
+    background: rgba(249, 115, 22, 0.1) !important;
+}
+
+.sidebar .nav > .nav-item.active > a i,
+.sidebar .nav > .nav-item.active > a p {
+    color: var(--rentify-orange) !important;
+}
+
+.sidebar .text-section {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    opacity: 0.5 !important;
+}
+
+/* Header Styling (DARK) */
+.main-header {
+    background: var(--rentify-header-bg) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-bottom: 0 !important;
+}
+
+.main-header .navbar-header {
+    background: transparent !important;
+}
+
+.main-header .nav-link {
+    color: #94a3b8 !important;
+}
+
+.main-header .nav-link:hover {
+    color: #ffffff !important;
+}
+
+.main-header .fw-semibold,
+.main-header .profile-username {
+    color: #ffffff !important;
+}
+
+.main-header .text-muted {
+    color: #94a3b8 !important;
+}
+
+.main-header .profile-username * {
+    color: #ffffff !important;
+}
+
+/* Card Styling (LIGHT) */
+.card {
+    background: var(--rentify-glass) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border: 1px solid var(--rentify-glass-border) !important;
+    border-radius: 1.5rem !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
+}
+
+.card-title, .card-header, h1, h2, h3, h4, h5, h6 {
+    color: var(--rentify-text) !important;
+    font-weight: 800 !important;
+}
+
+.card-body, p, span, td, th {
+    color: var(--rentify-text-muted) !important;
+}
+
+/* Explicit exclusion for dark areas */
+.sidebar p, 
+.sidebar span:not(.badge), 
+.main-header span:not(.badge), 
+.main-header small {
+    color: inherit;
+}
+
+.text-primary {
+    color: var(--rentify-orange) !important;
+}
+
+.bg-primary {
+    background-color: var(--rentify-orange) !important;
+}
+
+.btn-primary {
+    background: var(--rentify-orange) !important;
+    border-color: var(--rentify-orange) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 10px 20px var(--rentify-orange-glow) !important;
+}
+
+/* Table Styling */
+.table {
+    color: var(--rentify-text) !important;
+}
+
+.table thead th {
+    border-bottom: 2px solid var(--rentify-glass-border) !important;
+    color: var(--rentify-text) !important;
+}
+
+/* Dropdowns & Popovers (Always Light/Glass) */
+.dropdown-menu {
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid var(--rentify-glass-border) !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+}

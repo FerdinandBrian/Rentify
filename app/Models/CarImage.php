@@ -20,4 +20,9 @@ class CarImage extends Model
         return $this->belongsToMany(Car::class, 'car_car_image', 'car_image_id', 'car_series_number')
             ->withTimestamps();
     }
+
+    public function scopePrimary($query)
+    {
+        return $query->where('is_primary', true);
+    }
 }
