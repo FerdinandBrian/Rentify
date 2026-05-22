@@ -28,6 +28,23 @@ class CarRepository extends BaseRepository implements CarRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function getFilteredWithBrands(array $filters)
+    {
+        return $this->model->newQuery()
+            ->with(['brand', 'images'])
+            ->when($filters['brand_id'] ?? null, function ($query, $brandId) {
+                $query->where('brand_id', $brandId);
+            })
+            ->when($filters['type'] ?? null, function ($query, $type) {
+                $query->where('type', $type);
+            })
+            ->orderBy('name')
+            ->get();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getUniqueTypes()
     {
         return $this->model->newQuery()

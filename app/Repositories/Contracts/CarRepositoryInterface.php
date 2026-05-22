@@ -12,6 +12,13 @@ interface CarRepositoryInterface extends BaseRepositoryInterface
     public function getAllWithBrands();
 
     /**
+     * Get cars filtered by brand and type with their associated brands.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getFilteredWithBrands(array $filters);
+
+    /**
      * Get unique car types.
      *
      * @return \Illuminate\Support\Collection

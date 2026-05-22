@@ -23,7 +23,7 @@
                 <h4 class="card-title">Edit Mobil</h4>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.cars.update', $car->series_number) }}" method="POST">
+                <form action="{{ route('admin.cars.update', $car->series_number) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -113,6 +113,60 @@
                         </label>
                     </div>
 
+                    <div class="mb-4">
+                        <label class="form-label">Gambar Saat Ini</label>
+                        @if($car->images->count() > 0)
+                            <div class="row g-3">
+                                @foreach($car->images as $image)
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="car-image-option">
+                                            <span class="car-image-preview">
+                                                <img src="{{ asset($image->image_path) }}" alt="{{ $car->name }}">
+                                            </span>
+                                            <span class="d-flex align-items-center justify-content-between gap-2 mt-2">
+                                                <span class="d-flex align-items-center gap-2">
+                                                    <input type="radio" name="primary_image_id" value="{{ $image->id }}"
+                                                        {{ old('primary_image_id', optional($car->images->firstWhere('is_primary', true))->id) == $image->id ? 'checked' : '' }}>
+                                                    Jadikan utama
+                                                </span>
+                                                <label class="btn btn-danger btn-sm mb-0 car-delete-photo">
+                                                    <input type="checkbox" name="delete_image_ids[]" value="{{ $image->id }}" class="d-none">
+                                                    <i class="fa fa-trash"></i>
+                                                    <span>Hapus</span>
+                                                </label>
+                                            </span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            @error('primary_image_id') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
+                            @error('delete_image_ids') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
+                            @error('delete_image_ids.*') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
+                        @else
+                            <div class="alert alert-warning mb-0">
+                                Belum ada gambar untuk mobil ini.
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="images" class="form-label">Tambah Gambar Baru</label>
+                        <input type="file" name="images[]" id="images"
+                            class="form-control @error('images') is-invalid @enderror @error('images.*') is-invalid @enderror"
+                            accept="image/jpeg,image/png,image/webp" multiple>
+                        <small class="text-muted">Bisa tambah sampai 5 gambar baru.</small>
+                        @error('images') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                        @error('images.*') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        <input type="checkbox" name="make_uploaded_primary" id="make_uploaded_primary"
+                            class="form-check-input" value="1" {{ old('make_uploaded_primary') ? 'checked' : '' }}>
+                        <label class="form-check-label" for="make_uploaded_primary">
+                            Jadikan gambar baru pertama sebagai gambar utama
+                        </label>
+                    </div>
+
                     <div class="card-action">
                         <button type="submit" class="btn btn-primary btn-round">
                             <i class="fa fa-save"></i> Perbarui
@@ -124,4 +178,63 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('extraCSS')
+<style>
+    .car-image-option {
+        display: block;
+        padding: 10px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        background: #fff;
+        cursor: pointer;
+        height: 100%;
+    }
+
+    .car-image-preview {
+        display: block;
+        position: relative;
+    }
+
+    .car-image-option img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 6px;
+        background: #f1f3f5;
+    }
+
+    .car-delete-photo {
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .car-delete-photo.is-marked {
+        background: #495057;
+        border-color: #495057;
+    }
+</style>
+@endsection
+
+@section('extraJS')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.car-delete-photo input[type="checkbox"]').forEach(function (checkbox) {
+            checkbox.addEventListener('change', function () {
+                const button = checkbox.closest('.car-delete-photo');
+                const card = checkbox.closest('.car-image-option');
+                const icon = button.querySelector('i');
+                const label = button.querySelector('span');
+
+                button.classList.toggle('is-marked', checkbox.checked);
+                icon.className = checkbox.checked ? 'fa fa-undo' : 'fa fa-trash';
+                label.textContent = checkbox.checked ? 'Batal' : 'Hapus';
+                card.style.opacity = checkbox.checked ? '.55' : '1';
+            });
+        });
+    });
+</script>
 @endsection

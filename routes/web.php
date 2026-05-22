@@ -52,10 +52,16 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
 
         Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('cars', [CarController::class, 'index'])->name('cars.index');
+            Route::middleware('role:1')->group(function () {
+                Route::get('cars/create', [CarController::class, 'create'])->name('cars.create');
+                Route::post('cars', [CarController::class, 'store'])->name('cars.store');
+                Route::get('cars/{series_number}/edit', [CarController::class, 'edit'])->name('cars.edit');
+                Route::put('cars/{series_number}', [CarController::class, 'update'])->name('cars.update');
+                Route::delete('cars/{series_number}', [CarController::class, 'destroy'])->name('cars.destroy');
+            });
             Route::get('cars/{series_number}', [CarController::class, 'show'])
                 ->where('series_number', '^(?!create$).+')
                 ->name('cars.show');
-
             Route::get('addons', [AddOnController::class, 'index'])->name('addons.index');
             Route::get('addons/{id}', [AddOnController::class, 'show'])->name('addons.show');
         });
@@ -78,12 +84,6 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
         Route::delete('/admin/denda/{id}', [DendaController::class, 'destroy'])->name('denda.destroy');
 
         Route::prefix('admin')->name('admin.')->group(function () {
-            Route::get('cars/create', [CarController::class, 'create'])->name('cars.create');
-            Route::post('cars', [CarController::class, 'store'])->name('cars.store');
-            Route::get('cars/{series_number}/edit', [CarController::class, 'edit'])->name('cars.edit');
-            Route::put('cars/{series_number}', [CarController::class, 'update'])->name('cars.update');
-            Route::delete('cars/{series_number}', [CarController::class, 'destroy'])->name('cars.destroy');
-
             Route::get('addons/create', [AddOnController::class, 'create'])->name('addons.create');
             Route::post('addons', [AddOnController::class, 'store'])->name('addons.store');
             Route::get('addons/{id}/edit', [AddOnController::class, 'edit'])->name('addons.edit');
