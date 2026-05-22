@@ -37,11 +37,20 @@ class UserOrderController extends Controller
 
     public function create(string $carId)
     {
+        if (! $this->orderService->hasApprovedDocument(Auth::user())) {
+            return redirect()->route('user.cars.show', $carId)
+                ->with('error', 'Anda harus memiliki dokumen yang disetujui sebelum membuat pesanan.');
+        }
+
         return view('user.orders.create', $this->carCatalogService->detailData($carId, Auth::id()));
     }
 
     public function store(Request $request)
     {
+        if (! $this->orderService->hasApprovedDocument(Auth::user())) {
+            return back()->with('error', 'Anda harus memiliki dokumen yang disetujui sebelum membuat pesanan.');
+        }
+
         $validated = $request->validate([
             'car_id' => ['required', Rule::exists('car', 'series_number')],
             'start_date' => ['required', 'date', 'after_or_equal:today'],
@@ -56,7 +65,7 @@ class UserOrderController extends Controller
         );
 
         if (! $order) {
-            return back()->with('error', 'Mobil tidak tersedia pada rentang tanggal tersebut.');
+            return back()->with('error', 'Mobil tidak tersedia pada rentang tanggal tersebut atau dokumen belum disetujui.');
         }
 
         return redirect()->route('user.orders.show', $order->id)

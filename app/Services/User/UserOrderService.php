@@ -6,6 +6,7 @@ use App\Models\Car;
 use App\Models\Order;
 use App\Models\User;
 use App\Repositories\User\UserCarRepository;
+use App\Repositories\User\UserDocumentRepository;
 use App\Repositories\User\UserOrderRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
@@ -21,7 +22,8 @@ class UserOrderService
 
     public function __construct(
         private readonly UserCarRepository $carRepository,
-        private readonly UserOrderRepository $orderRepository
+        private readonly UserOrderRepository $orderRepository,
+        private readonly UserDocumentRepository $documentRepository
     ) {}
 
     public function paginatedOrdersFor(User $user, ?string $status): LengthAwarePaginator
@@ -59,6 +61,10 @@ class UserOrderService
 
     public function createPendingOrderForCarSeries(User $user, string $carSeriesNumber, string $startDate, string $endDate): ?Order
     {
+        if (! $this->hasApprovedDocument($user)) {
+            return null;
+        }
+
         $car = $this->carRepository->findWithBrand($carSeriesNumber);
 
         if (! $this->isCarAvailable($car, $startDate, $endDate)) {
@@ -79,11 +85,16 @@ class UserOrderService
 
     public function isCarAvailable(Car $car, string $startDate, string $endDate): bool
     {
-        if (! in_array($car->status, ['tersedia', 'available', 'Tersedia'], true)) {
+        if (! in_array(strtolower($car->status), ['tersedia', 'available'], true)) {
             return false;
         }
 
         return ! $this->orderRepository->hasOverlappingBooking($car->series_number, $startDate, $endDate);
+    }
+
+    public function hasApprovedDocument(User $user): bool
+    {
+        return $this->documentRepository->approvedCountForUser($user->id) > 0;
     }
 
     private function generateOrderId(): string

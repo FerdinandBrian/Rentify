@@ -115,7 +115,7 @@
                                     <div class="card-product-img">
                                         <img src="{{ asset('assets/img/examples/product' . $imageIndex . '.jpg') }}" alt="{{ $car->name }}">
                                         <div class="card-product-badge">
-                                            <span class="badge badge-success">{{ ucfirst($car->status) }}</span>
+                                            <span class="badge badge-success car-status-badge">{{ ucfirst($car->status) }}</span>
                                         </div>
                                     </div>
                                     <div class="card-body d-flex flex-column">
@@ -196,6 +196,10 @@
             position: absolute;
             top: 12px;
             right: 12px;
+        }
+
+        .car-status-badge {
+            background: #31ce36 !important;
         }
 
         .car-specs {

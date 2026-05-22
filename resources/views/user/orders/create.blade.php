@@ -4,7 +4,9 @@
 
 @section('content')
     @php
-        $isAvailable = in_array($car->status, ['tersedia', 'available', 'Tersedia'], true);
+        $isAvailable = in_array(strtolower($car->status), ['tersedia', 'available'], true);
+        $hasApprovedDocument = $verifiedDocuments > 0;
+        $canOrder = $isAvailable && $hasApprovedDocument;
         $carYear = $car->year ? $car->year->format('Y') : '-';
         $customer = auth()->user();
     @endphp
@@ -121,7 +123,7 @@
                             @if($verifiedDocuments < 1)
                                 <div class="alert alert-warning mb-0">
                                     <i class="fas fa-file-signature me-2"></i>
-                                    Belum ada dokumen yang disetujui. Pesanan tetap bisa dibuat, tetapi admin perlu memverifikasi dokumen Anda.
+                                    Belum ada dokumen yang disetujui. Lengkapi dokumen dan tunggu persetujuan admin sebelum membuat pesanan.
                                 </div>
                             @else
                                 <div class="alert alert-success mb-0">
@@ -179,8 +181,15 @@
                                     </div>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary btn-round w-100" {{ $isAvailable ? '' : 'disabled' }}>
-                                    <i class="fas fa-check me-2"></i>{{ $isAvailable ? 'Buat Pesanan' : 'Mobil Tidak Tersedia' }}
+                                <button type="submit" class="btn btn-primary btn-round w-100" {{ $canOrder ? '' : 'disabled' }}>
+                                    <i class="fas fa-check me-2"></i>
+                                    @if(! $isAvailable)
+                                        Mobil Tidak Tersedia
+                                    @elseif(! $hasApprovedDocument)
+                                        Dokumen Belum Disetujui
+                                    @else
+                                        Buat Pesanan
+                                    @endif
                                 </button>
                                 <a href="{{ route('user.cars.show', $car->series_number) }}" class="btn btn-outline-primary btn-round w-100 mt-2">
                                     <i class="fas fa-arrow-left me-2"></i>Kembali ke Detail

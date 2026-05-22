@@ -10,6 +10,8 @@
     --rentify-orange-glow: rgba(249, 115, 22, 0.1);
     --rentify-glass: rgba(255, 255, 255, 0.7);
     --rentify-glass-border: rgba(0, 0, 0, 0.08);
+    --rentify-on-light: #0f172a;
+    --rentify-on-dark: #ffffff;
     
     /* Dark Components */
     --rentify-sidebar-bg: #0f172a;
@@ -152,16 +154,143 @@ body, .wrapper, .main-panel, .content {
 
 .badge.badge-secondary {
     background: rgb(86, 184, 234) !important;
-    color: #fff !important;
+    color: var(--rentify-on-light) !important;
 }
 
 .btn-primary {
     background: var(--rentify-orange) !important;
     border-color: var(--rentify-orange) !important;
-    color: #fff !important;
+    color: var(--rentify-on-light) !important;
     font-weight: 700 !important;
     border-radius: 0.75rem !important;
     box-shadow: 0 10px 20px var(--rentify-orange-glow) !important;
+}
+
+/* Contrast helpers: light backgrounds use dark text, dark backgrounds use white text. */
+.bg-light,
+.bg-white,
+.badge-light,
+.btn-light,
+.alert-light,
+.card,
+.summary-box,
+.spec-card,
+.info-row,
+.dropdown-menu {
+    color: var(--rentify-on-light) !important;
+}
+
+.bg-light *,
+.bg-white *,
+.badge-light *,
+.btn-light *,
+.alert-light * {
+    color: inherit;
+}
+
+.bg-dark,
+.bg-black,
+.badge-dark,
+.btn-dark,
+.btn-black,
+.alert-dark,
+.alert-black,
+.sidebar,
+.main-header {
+    color: var(--rentify-on-dark) !important;
+}
+
+.bg-dark *,
+.bg-black *,
+.badge-dark *,
+.btn-dark *,
+.btn-black *,
+.alert-dark *,
+.alert-black *,
+.sidebar *,
+.main-header * {
+    color: inherit;
+}
+
+.bg-primary,
+.badge-primary,
+.btn-primary,
+.alert-primary,
+.bg-success,
+.badge-success,
+.btn-success,
+.alert-success,
+.bg-warning,
+.badge-warning,
+.btn-warning,
+.alert-warning,
+.bg-danger,
+.badge-danger,
+.btn-danger,
+.alert-danger,
+.bg-info,
+.badge-info,
+.btn-info,
+.alert-info {
+    color: var(--rentify-on-light) !important;
+}
+
+.bg-primary *,
+.badge-primary *,
+.btn-primary *,
+.alert-primary *,
+.bg-success *,
+.badge-success *,
+.btn-success *,
+.alert-success *,
+.bg-warning *,
+.badge-warning *,
+.btn-warning *,
+.alert-warning *,
+.bg-danger *,
+.badge-danger *,
+.btn-danger *,
+.alert-danger *,
+.bg-info *,
+.badge-info *,
+.btn-info *,
+.alert-info * {
+    color: inherit;
+}
+
+.bg-secondary,
+.btn-secondary,
+.alert-secondary {
+    color: var(--rentify-on-dark) !important;
+}
+
+.bg-secondary *,
+.btn-secondary *,
+.alert-secondary * {
+    color: inherit;
+}
+
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-success,
+.btn-outline-danger,
+.btn-outline-warning,
+.btn-outline-info,
+.btn-outline-dark {
+    color: var(--rentify-on-light) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-dark:hover {
+    color: var(--rentify-on-dark) !important;
+}
+
+.btn-outline-success:hover,
+.btn-outline-danger:hover,
+.btn-outline-warning:hover,
+.btn-outline-info:hover {
+    color: var(--rentify-on-light) !important;
 }
 
 /* Table Styling */

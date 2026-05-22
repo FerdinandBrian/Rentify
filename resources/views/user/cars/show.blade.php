@@ -4,7 +4,9 @@
 
 @section('content')
     @php
-        $isAvailable = in_array($car->status, ['tersedia', 'available', 'Tersedia'], true);
+        $isAvailable = in_array(strtolower($car->status), ['tersedia', 'available'], true);
+        $hasApprovedDocument = $verifiedDocuments > 0;
+        $canOrder = $isAvailable && $hasApprovedDocument;
         $carYear = $car->year ? $car->year->format('Y') : '-';
     @endphp
 
@@ -42,7 +44,7 @@
                     <div class="card card-round rentify-soft-card">
                         <div class="car-hero">
                             <img src="{{ asset('assets/img/examples/product1.jpg') }}" alt="{{ $car->name }}">
-                            <span class="badge badge-{{ $isAvailable ? 'success' : 'danger' }} car-hero-badge">
+                            <span class="badge badge-{{ $isAvailable ? 'success' : 'danger' }} car-hero-badge {{ $isAvailable ? 'car-status-badge' : '' }}">
                                 {{ ucfirst($car->status) }}
                             </span>
                         </div>
@@ -137,14 +139,21 @@
                             @if($verifiedDocuments < 1)
                                 <div class="alert alert-warning">
                                     <i class="fas fa-file-signature me-2"></i>
-                                    Belum ada dokumen yang disetujui. Admin perlu memverifikasi dokumen saat pesanan diproses.
+                                    Belum ada dokumen yang disetujui. Lengkapi dokumen dan tunggu persetujuan admin sebelum membuat pesanan.
                                 </div>
                             @endif
 
                             <a href="{{ route('user.orders.create', $car->series_number) }}"
-                                class="btn btn-primary btn-round w-100 {{ $isAvailable ? '' : 'disabled' }}"
-                                aria-disabled="{{ $isAvailable ? 'false' : 'true' }}">
-                                <i class="fas fa-calendar-check me-2"></i>{{ $isAvailable ? 'Lanjut Pesan' : 'Mobil Tidak Tersedia' }}
+                                class="btn btn-primary btn-round w-100 {{ $canOrder ? '' : 'disabled' }}"
+                                aria-disabled="{{ $canOrder ? 'false' : 'true' }}">
+                                <i class="fas fa-calendar-check me-2"></i>
+                                @if(! $isAvailable)
+                                    Mobil Tidak Tersedia
+                                @elseif(! $hasApprovedDocument)
+                                    Dokumen Belum Disetujui
+                                @else
+                                    Lanjut Pesan
+                                @endif
                             </a>
                         </div>
                     </div>
@@ -175,6 +184,10 @@
             position: absolute;
             top: 18px;
             right: 18px;
+        }
+
+        .car-status-badge {
+            background: #31ce36 !important;
         }
 
         .spec-card {
