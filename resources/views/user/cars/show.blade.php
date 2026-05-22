@@ -22,7 +22,7 @@
                         <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('user.cars') }}">Mobil</a>
+                        <a href="{{ route('user.cars.index') }}">Mobil</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
@@ -116,57 +116,36 @@
                     <div class="card card-round sticky-lg-top rentify-booking-card">
                         <div class="card-header">
                             <div class="card-title">Pesan Mobil</div>
-                            <p class="card-category">Tanggal akan dihitung otomatis dari harga database.</p>
+                            <p class="card-category">Lanjutkan ke halaman pemesanan untuk memilih tanggal dan cek estimasi biaya.</p>
                         </div>
                         <div class="card-body">
-                            <form method="POST" action="{{ route('user.orders.store') }}" id="bookingForm">
-                                @csrf
-                                <input type="hidden" name="car_id" value="{{ $car->series_number }}">
-
-                                <div class="mb-3">
-                                    <label for="startDate" class="form-label">Tanggal Mulai</label>
-                                    <input type="date" name="start_date" class="form-control @error('start_date') is-invalid @enderror"
-                                        id="startDate" value="{{ old('start_date') }}" min="{{ date('Y-m-d') }}" required>
-                                    @error('start_date')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                            <div class="summary-box mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Mobil</span>
+                                    <strong>{{ $car->name }}</strong>
                                 </div>
-
-                                <div class="mb-3">
-                                    <label for="endDate" class="form-label">Tanggal Selesai</label>
-                                    <input type="date" name="end_date" class="form-control @error('end_date') is-invalid @enderror"
-                                        id="endDate" value="{{ old('end_date') }}" min="{{ date('Y-m-d') }}" required>
-                                    @error('end_date')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Harga per hari</span>
+                                    <strong>Rp {{ number_format($car->price, 0, ',', '.') }}</strong>
                                 </div>
-
-                                <div class="summary-box mb-3">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span>Durasi</span>
-                                        <strong id="duration">0 hari</strong>
-                                    </div>
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span>Harga per hari</span>
-                                        <strong>Rp {{ number_format($car->price, 0, ',', '.') }}</strong>
-                                    </div>
-                                    <div class="d-flex justify-content-between total-row">
-                                        <span>Total estimasi</span>
-                                        <strong id="totalCost">Rp 0</strong>
-                                    </div>
+                                <div class="d-flex justify-content-between total-row">
+                                    <span>Status</span>
+                                    <strong>{{ ucfirst($car->status) }}</strong>
                                 </div>
+                            </div>
 
-                                @if($verifiedDocuments < 1)
-                                    <div class="alert alert-warning">
-                                        <i class="fas fa-file-signature me-2"></i>
-                                        Belum ada dokumen yang disetujui. Anda tetap bisa membuat pesanan, tetapi admin perlu memverifikasi dokumen.
-                                    </div>
-                                @endif
+                            @if($verifiedDocuments < 1)
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-file-signature me-2"></i>
+                                    Belum ada dokumen yang disetujui. Admin perlu memverifikasi dokumen saat pesanan diproses.
+                                </div>
+                            @endif
 
-                                <button type="submit" class="btn btn-primary btn-round w-100" {{ $isAvailable ? '' : 'disabled' }}>
-                                    <i class="fas fa-check me-2"></i>{{ $isAvailable ? 'Buat Pesanan' : 'Mobil Tidak Tersedia' }}
-                                </button>
-                            </form>
+                            <a href="{{ route('user.orders.create', $car->series_number) }}"
+                                class="btn btn-primary btn-round w-100 {{ $isAvailable ? '' : 'disabled' }}"
+                                aria-disabled="{{ $isAvailable ? 'false' : 'true' }}">
+                                <i class="fas fa-calendar-check me-2"></i>{{ $isAvailable ? 'Lanjut Pesan' : 'Mobil Tidak Tersedia' }}
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -239,49 +218,4 @@
             color: #1572e8;
         }
     </style>
-@endsection
-
-@section('extraJS')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const startDate = document.getElementById('startDate');
-            const endDate = document.getElementById('endDate');
-            const duration = document.getElementById('duration');
-            const totalCost = document.getElementById('totalCost');
-            const carPrice = {{ (float) $car->price }};
-
-            function formatCurrency(value) {
-                return 'Rp ' + value.toLocaleString('id-ID');
-            }
-
-            function calculateDuration() {
-                if (!startDate.value || !endDate.value) {
-                    duration.textContent = '0 hari';
-                    totalCost.textContent = 'Rp 0';
-                    return;
-                }
-
-                const start = new Date(startDate.value);
-                const end = new Date(endDate.value);
-
-                if (end < start) {
-                    duration.textContent = '0 hari';
-                    totalCost.textContent = 'Rp 0';
-                    return;
-                }
-
-                const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
-                duration.textContent = days + ' hari';
-                totalCost.textContent = formatCurrency(days * carPrice);
-            }
-
-            startDate.addEventListener('change', function() {
-                endDate.min = startDate.value;
-                calculateDuration();
-            });
-
-            endDate.addEventListener('change', calculateDuration);
-            calculateDuration();
-        });
-    </script>
 @endsection

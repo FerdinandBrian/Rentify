@@ -150,6 +150,11 @@ body, .wrapper, .main-panel, .content {
     background-color: var(--rentify-orange) !important;
 }
 
+.badge.badge-secondary {
+    background: rgb(86, 184, 234) !important;
+    color: #fff !important;
+}
+
 .btn-primary {
     background: var(--rentify-orange) !important;
     border-color: var(--rentify-orange) !important;

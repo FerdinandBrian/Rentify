@@ -114,6 +114,7 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
         
         // User Orders
         Route::get('/user/orders', [UserOrderController::class, 'index'])->name('user.orders.index');
+        Route::get('/user/orders/create/{carId}', [UserOrderController::class, 'create'])->name('user.orders.create');
         Route::post('/user/orders', [UserOrderController::class, 'store'])->name('user.orders.store');
         Route::get('/user/orders/{id}', [UserOrderController::class, 'show'])->name('user.orders.show');
         Route::post('/user/orders/{id}/cancel', [UserOrderController::class, 'cancel'])->name('user.orders.cancel');

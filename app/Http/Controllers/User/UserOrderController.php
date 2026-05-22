@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Services\User\UserCarCatalogService;
 use App\Services\User\UserOrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,7 +11,10 @@ use Illuminate\Validation\Rule;
 
 class UserOrderController extends Controller
 {
-    public function __construct(private readonly UserOrderService $orderService) {}
+    public function __construct(
+        private readonly UserOrderService $orderService,
+        private readonly UserCarCatalogService $carCatalogService
+    ) {}
 
     public function index(Request $request)
     {
@@ -29,6 +33,11 @@ class UserOrderController extends Controller
         return view('user.orders.show', [
             'order' => $this->orderService->orderDetailFor(Auth::user(), $id),
         ]);
+    }
+
+    public function create(string $carId)
+    {
+        return view('user.orders.create', $this->carCatalogService->detailData($carId, Auth::id()));
     }
 
     public function store(Request $request)
