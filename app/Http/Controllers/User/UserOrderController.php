@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Exceptions\DocumentNotVerifiedException;
 use App\Http\Controllers\Controller;
 use App\Services\User\UserOrderService;
 use Illuminate\Http\Request;
@@ -39,12 +40,16 @@ class UserOrderController extends Controller
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
         ]);
 
-        $order = $this->orderService->createPendingOrderForCarSeries(
-            Auth::user(),
-            $validated['car_id'],
-            $validated['start_date'],
-            $validated['end_date']
-        );
+        try {
+            $order = $this->orderService->createPendingOrderForCarSeries(
+                Auth::user(),
+                $validated['car_id'],
+                $validated['start_date'],
+                $validated['end_date']
+            );
+        } catch (DocumentNotVerifiedException $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         if (! $order) {
             return back()->with('error', 'Mobil tidak tersedia pada rentang tanggal tersebut.');

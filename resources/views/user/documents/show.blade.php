@@ -205,6 +205,14 @@
                                     </p>
                                 </div>
                             </div>
+
+                            {{-- Alasan penolakan --}}
+                            @if($document->status === 'rejected' && $document->rejection_reason)
+                                <div class="alert alert-danger mt-3 mb-0">
+                                    <strong><i class="fas fa-exclamation-circle me-1"></i>Alasan Penolakan:</strong>
+                                    <p class="mb-0 mt-1">{{ $document->rejection_reason }}</p>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

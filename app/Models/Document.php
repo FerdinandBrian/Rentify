@@ -13,6 +13,7 @@ class Document extends Model
         'file_path',
         'description',
         'status',
+        'rejection_reason',
         'user_id',
     ];
 

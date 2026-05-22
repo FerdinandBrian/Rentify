@@ -67,4 +67,26 @@ class OrderController extends Controller
 
         return redirect()->route('orders.index')->with('success', 'Pesanan berhasil dihapus.');
     }
+
+    public function approve(string $id)
+    {
+        try {
+            $this->orderService->approveBooking($id);
+        } catch (BookingNotFoundException $exception) {
+            return back()->withErrors(['booking' => $exception->getMessage()]);
+        }
+
+        return redirect()->route('orders.show', $id)->with('success', 'Pesanan berhasil disetujui dan pembayaran telah dibuat.');
+    }
+
+    public function reject(string $id)
+    {
+        try {
+            $this->orderService->rejectBooking($id);
+        } catch (BookingNotFoundException $exception) {
+            return back()->withErrors(['booking' => $exception->getMessage()]);
+        }
+
+        return redirect()->route('orders.show', $id)->with('success', 'Pesanan telah ditolak.');
+    }
 }
