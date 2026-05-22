@@ -96,6 +96,7 @@
                                                     data-bs-toggle="tooltip" title="Detail">
                                                     <i class="fa fa-eye"></i>
                                                 </a>
+                                                @if(auth()->user()->role->name == 'admin')
                                                 <a href="{{ route('orders.edit', $order->id) }}" class="btn btn-link btn-primary btn-lg"
                                                     data-bs-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
@@ -109,6 +110,7 @@
                                                         <i class="fa fa-times"></i>
                                                     </button>
                                                 </form>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

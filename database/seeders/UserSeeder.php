@@ -27,6 +27,13 @@ class UserSeeder extends Seeder
                 'call_number' => '1234567891',
                 'role_id' => 2,
             ],
+            [
+                'name' => 'Customer',
+                'email' => 'customer@example.com',
+                'password' => bcrypt('customer123'),
+                'call_number' => '1234567892',
+                'role_id' => 3,
+            ]
         ];
 
         foreach ($user as $user) {

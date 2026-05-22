@@ -22,10 +22,12 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center">
                         <h4 class="card-title">Daftar Merek</h4>
+                        @if(auth()->user()->role->name == 'admin')
                         <a href="{{ route('brands.create') }}" class="btn btn-primary btn-round ms-auto">
                             <i class="fa fa-plus"></i>
                             Tambah Merek
                         </a>
+                        @endif
                     </div>
                 </div>
 
@@ -46,6 +48,7 @@
                                         <td>{{ $brand->name }}</td>
                                         <td class="text-end">
                                             <div class="form-button-action justify-content-end">
+                                                @if(auth()->user()->role->name == 'admin')
                                                 <a href="{{ route('brands.edit', $brand->id) }}" class="btn btn-link btn-primary btn-lg"
                                                     data-bs-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
@@ -59,6 +62,7 @@
                                                         <i class="fa fa-times"></i>
                                                     </button>
                                                 </form>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

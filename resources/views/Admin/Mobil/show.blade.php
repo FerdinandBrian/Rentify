@@ -20,6 +20,23 @@
 
         <div class="card">
             <div class="card-body">
+                <div class="row g-3 mb-4">
+                    @forelse($car->images as $image)
+                        <div class="col-md-4 col-lg-3">
+                            <div class="car-detail-image">
+                                <img src="{{ asset($image->image_path) }}" alt="{{ $car->name }}">
+                                @if($image->is_primary)
+                                    <span class="badge bg-primary">Utama</span>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12">
+                            <div class="alert alert-warning mb-0">Belum ada gambar untuk mobil ini.</div>
+                        </div>
+                    @endforelse
+                </div>
+
                 <table class="table table-bordered">
                     <tr>
                         <th>Plat Nomor</th>
@@ -64,11 +81,36 @@
                 </table>
 
                 <a href="{{ route('admin.cars.index') }}" class="btn btn-secondary">Kembali</a>
+                @if(auth()->user()->role->name == 'admin')
                 <a href="{{ route('admin.cars.edit', $car->series_number) }}" class="btn btn-warning">
                     <i class="icon-pencil"></i> Edit
                 </a>
+                @endif
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@section('extraCSS')
+<style>
+    .car-detail-image {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #f1f3f5;
+    }
+
+    .car-detail-image img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+    }
+
+    .car-detail-image .badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+</style>
 @endsection

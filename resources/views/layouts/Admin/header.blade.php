@@ -2,8 +2,9 @@
     <div class="main-header-logo">
         <!-- Logo Header -->
         <div class="logo-header" data-background-color="dark">
-            <a href="{{ route('dashboard') }}" class="logo">
-                <span class="text-white fw-bold fs-4">Rentify</span>
+            <a href="{{ route('dashboard') }}" class="logo d-flex align-items-center gap-2">
+                <div class="rounded-3 bg-gradient-to-br bg-primary d-flex align-items-center justify-center font-bold text-white shadow-sm" style="width: 32px; height: 32px; font-size: 18px; line-height: 32px; text-align: center;">R</div>
+                <span class="fw-bold fs-4 text-white">Rentify</span>
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">
@@ -22,31 +23,11 @@
     <!-- Navbar Header -->
     <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
         <div class="container-fluid">
-            <nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <button type="submit" class="btn btn-search pe-1">
-                            <i class="fa fa-search search-icon"></i>
-                        </button>
-                    </div>
-                    <input type="text" placeholder="Search ..." class="form-control" />
-                </div>
-            </nav>
-
+            <div class="navbar-header-left d-none d-lg-flex flex-column me-4">
+                <span class="fw-semibold">Portal Admin</span>
+                <small class="text-muted">Kelola armada, pesanan, dan sistem Rentify.</small>
+            </div>
             <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                <li class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                        aria-expanded="false" aria-haspopup="true">
-                        <i class="fa fa-search"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-search animated fadeIn">
-                        <form class="navbar-left navbar-form nav-search">
-                            <div class="input-group">
-                                <input type="text" placeholder="Search ..." class="form-control" />
-                            </div>
-                        </form>
-                    </ul>
-                </li>
                 <li class="nav-item topbar-icon dropdown hidden-caret">
                     <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -257,37 +238,6 @@
                             <span class="fw-bold">{{ Auth::user()->name }}</span>
                         </span>
                     </a>
-                    <ul class="dropdown-menu dropdown-user animated fadeIn">
-                        <div class="dropdown-user-scroll scrollbar-outer">
-                            <li>
-                                <div class="user-box">
-                                    <div class="avatar-lg">
-                                        <img src="{{ asset('assets/img/profile.jpg') }}" alt="image profile"
-                                            class="avatar-img rounded" />
-                                    </div>
-                                    <div class="u-text">
-                                        <h4>{{ Auth::user()->name }}</h4>
-                                        <p class="text-muted">{{ Auth::user()->email }}</p>
-                                        <a href="profile.html" class="btn btn-xs btn-secondary btn-sm">View
-                                            Profile</a>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">My Profile</a>
-                                <a class="dropdown-item" href="#">My Balance</a>
-                                <a class="dropdown-item" href="#">Inbox</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Account Setting</a>
-                                <div class="dropdown-divider"></div>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button class="dropdown-item" type="submit">Logout</button>
-                                </form>
-                            </li>
-                        </div>
-                    </ul>
                 </li>
             </ul>
         </div>

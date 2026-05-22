@@ -1,63 +1,61 @@
 <x-guest-layout>
-    <div class="login-card">
-        <div class="login-header">
-            <div class="neu-icon">
-                <div class="icon-inner">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                        <path d="M9 12l2 2 4-4"></path>
-                    </svg>
-                </div>
-            </div>
-            <h2>Verifikasi OTP</h2>
-            <p>Masukkan 6 digit kode yang dikirim ke email Anda</p>
-            <p style="font-weight: 700; color: #1a2035; margin-top: 5px;">{{ $email }}</p>
+    <div class="glass-card rounded-[2.5rem] p-10 border-white/10 relative overflow-hidden">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-black text-white mb-2">Verifikasi OTP</h2>
+            <p class="text-slate-400 font-medium">Masukkan 6 digit kode yang dikirim ke email Anda</p>
+            <p class="text-orange-500 font-black mt-2 tracking-wide">{{ $email }}</p>
         </div>
 
         @if (session('status'))
-            <div class="status-message">
+            <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-6 py-4 rounded-2xl mb-8 text-sm font-bold text-center">
                 {{ session('status') }}
             </div>
         @endif
 
         @if (session('error'))
-            <div class="status-message error">
+            <div class="bg-rose-500/10 border border-rose-500/20 text-rose-400 px-6 py-4 rounded-2xl mb-8 text-sm font-bold text-center">
                 {{ session('error') }}
             </div>
         @endif
 
-        <form method="POST" action="{{ route('otp.verify.submit') }}" id="otpForm">
+        <form method="POST" action="{{ route('otp.verify.submit') }}" id="otpForm" class="space-y-8">
             @csrf
             <input type="hidden" name="email" value="{{ $email }}">
             <input type="hidden" name="type" value="{{ $type }}">
             <input type="hidden" name="otp" id="otp_hidden">
 
-            <div class="form-group @error('otp') error @enderror">
-                <div class="otp-inputs">
+            <div class="space-y-4">
+                <div class="flex justify-between gap-2 sm:gap-4">
                     @for ($i = 0; $i < 6; $i++)
-                        <div class="neu-input" style="border-radius: 10px;">
-                            <input type="text" class="otp-input-single" maxlength="1" oninput="moveToNext(this, event)" onkeydown="moveToPrev(this, event)" placeholder=" " required autofocus="{{ $i === 0 ? 'true' : 'false' }}">
-                        </div>
+                        <input type="text" 
+                            class="otp-input-single w-12 h-14 sm:w-14 sm:h-16 bg-slate-900/50 border border-white/10 rounded-xl text-center text-xl font-black text-white focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all" 
+                            maxlength="1" 
+                            oninput="moveToNext(this, event)" 
+                            onkeydown="moveToPrev(this, event)" 
+                            required 
+                            @if($i === 0) autofocus @endif>
                     @endfor
                 </div>
                 @error('otp')
-                    <span class="error-message" style="text-align: center; margin-left: 0;">{{ $message }}</span>
+                    <p class="text-rose-500 text-xs font-bold mt-2 text-center">{{ $message }}</p>
                 @enderror
             </div>
 
             <!-- Submit -->
-            <button type="button" class="neu-button" onclick="submitOtp()">
-                <span class="btn-text">Verifikasi</span>
+            <button type="button" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-black py-5 rounded-2xl shadow-lg shadow-orange-500/20 transform hover:-translate-y-1 transition-all active:scale-[0.98] text-lg" onclick="submitOtp()">
+                Verifikasi Kode
             </button>
         </form>
 
-        <div class="signup-link">
-            <p>Belum menerima kode? 
-                <form method="POST" action="{{ route('otp.resend') }}" id="resendForm" style="display: inline;">
+        <div class="mt-10 text-center">
+            <p class="text-slate-400 font-bold">
+                Belum menerima kode? 
+                <form method="POST" action="{{ route('otp.resend') }}" id="resendForm" class="inline">
                     @csrf
                     <input type="hidden" name="email" value="{{ $email }}">
                     <input type="hidden" name="type" value="{{ $type }}">
-                    <button type="submit" id="resendBtn" style="background:none; border:none; color:#1572e8; font-weight:700; cursor:pointer; font-size:14px;">Kirim Ulang</button>
+                    <button type="submit" class="text-white hover:text-orange-500 transition-colors border-b border-white/10 hover:border-orange-500/50 pb-0.5 ml-1">Kirim Ulang</button>
                 </form>
             </p>
         </div>
@@ -65,14 +63,12 @@
 
     <script>
         function moveToNext(field, event) {
-            // Allow only numbers
             field.value = field.value.replace(/[^0-9]/g, '');
-            
             if (field.value.length === 1) {
-                const next = field.parentElement.nextElementSibling;
-                if (next && next.classList.contains('neu-input')) {
-                    next.querySelector('input').focus();
-                } else if (!next) {
+                const next = field.nextElementSibling;
+                if (next) {
+                    next.focus();
+                } else {
                     submitOtp();
                 }
             }
@@ -80,32 +76,13 @@
 
         function moveToPrev(field, event) {
             if (event.key === 'Backspace' && field.value.length === 0) {
-                const prev = field.parentElement.previousElementSibling;
-                if (prev && prev.classList.contains('neu-input')) {
-                    const prevInput = prev.querySelector('input');
-                    prevInput.focus();
-                    prevInput.value = '';
+                const prev = field.previousElementSibling;
+                if (prev) {
+                    prev.focus();
+                    prev.value = '';
                 }
             }
         }
-
-        // Paste support
-        document.querySelector('.otp-inputs').addEventListener('paste', function(e) {
-            e.preventDefault();
-            const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 6);
-            const inputs = document.querySelectorAll('.otp-input-single');
-            
-            for (let i = 0; i < pastedData.length; i++) {
-                if (inputs[i]) {
-                    inputs[i].value = pastedData[i];
-                    if (i < 5) inputs[i + 1].focus();
-                    else inputs[i].focus();
-                }
-            }
-            if (pastedData.length === 6) {
-                submitOtp();
-            }
-        });
 
         function submitOtp() {
             const inputs = document.querySelectorAll('.otp-input-single');
