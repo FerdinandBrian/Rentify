@@ -41,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CarRepositoryInterface::class, CarRepository::class);
         $this->app->bind(AddOnRepositoryInterface::class, AddOnRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+        $this->app->bind(\App\Repositories\Contracts\ReturnRepositoryInterface::class, \App\Repositories\ReturnRepository::class);
         $this->app->bind(DashboardComponentFactoryInterface::class, EnterpriseDashboardComponentFactory::class);
     }
 

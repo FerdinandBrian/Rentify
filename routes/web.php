@@ -104,6 +104,14 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
         Route::delete('/admin/documents/{id}', [DocumentController::class, 'destroy'])->name('document.destroy');
     });
 
+    // Employee ONLY Routes (role 2)
+    Route::middleware('role:2')->group(function () {
+        Route::get('/admin/returns', [App\Http\Controllers\Admin\ReturnController::class, 'index'])->name('returns.index');
+        Route::get('/admin/returns/create/{order_id}', [App\Http\Controllers\Admin\ReturnController::class, 'create'])->name('returns.create');
+        Route::post('/admin/returns', [App\Http\Controllers\Admin\ReturnController::class, 'store'])->name('returns.store');
+        Route::get('/admin/returns/{id}', [App\Http\Controllers\Admin\ReturnController::class, 'show'])->name('returns.show');
+    });
+
     // Customer Routes (role 3)
     Route::middleware('role:3')->group(function () {
         Route::get('/user/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
