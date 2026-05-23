@@ -113,7 +113,7 @@
                             <div class="col-md-6 col-xl-4 mb-4">
                                 <div class="card card-product rentify-soft-card h-100">
                                     <div class="card-product-img">
-                                        <img src="{{ asset('assets/img/examples/product' . $imageIndex . '.jpg') }}" alt="{{ $car->name }}">
+                                        <img src="{{ asset($car->primary_image_path) }}" alt="{{ $car->name }}">
                                         <div class="card-product-badge">
                                             <span class="badge badge-success car-status-badge">{{ ucfirst($car->status) }}</span>
                                         </div>

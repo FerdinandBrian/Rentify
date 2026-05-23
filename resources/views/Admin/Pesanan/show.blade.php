@@ -48,10 +48,15 @@
                             <div class="ms-auto">
                                 @php
                                     $badgeClass = [
-                                        'menunggu' => 'bg-warning text-dark',
-                                        'aktif' => 'bg-success',
-                                        'selesai' => 'bg-primary',
+                                        'menunggu'   => 'bg-warning text-dark',
+                                        'pending'    => 'bg-warning text-dark',
+                                        'aktif'      => 'bg-success',
+                                        'active'     => 'bg-success',
+                                        'selesai'    => 'bg-primary',
+                                        'completed'  => 'bg-primary',
                                         'dibatalkan' => 'bg-danger',
+                                        'ditolak'    => 'bg-danger',
+                                        'cancelled'  => 'bg-danger',
                                     ][strtolower($order->status)] ?? 'bg-secondary';
                                 @endphp
                                 <span class="badge {{ $badgeClass }}">{{ ucfirst($order->status) }}</span>
@@ -79,14 +84,39 @@
                                 </div>
                             </div>
 
-                            <div class="mt-4 pt-3 border-top d-flex gap-2">
-                                <a href="{{ route('orders.edit', $order->id) }}" class="btn btn-primary btn-round">
-                                    <i class="fa fa-edit"></i> Edit Pesanan
-                                </a>
+                            <div class="mt-4 pt-3 border-top d-flex flex-wrap gap-2">
+                                {{-- Tombol Approve & Reject hanya muncul saat status menunggu dan user adalah admin (role:1) --}}
+                                @if(in_array(strtolower($order->status), ['menunggu', 'pending']) && auth()->user()->role_id == 1)
+                                    <form action="{{ route('orders.approve', $order->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" class="btn btn-success btn-round"
+                                            onclick="return confirm('Setujui pesanan ini? Payment akan dibuat otomatis.')">
+                                            <i class="fa fa-check me-1"></i> Setujui Pesanan
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ route('orders.reject', $order->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" class="btn btn-danger btn-round"
+                                            onclick="return confirm('Tolak pesanan ini?')">
+                                            <i class="fa fa-times me-1"></i> Tolak Pesanan
+                                        </button>
+                                    </form>
+                                @endif
+
+                                @if(auth()->user()->role_id == 1)
+                                    <a href="{{ route('orders.edit', $order->id) }}" class="btn btn-primary btn-round">
+                                        <i class="fa fa-edit"></i> Edit Pesanan
+                                    </a>
+                                @endif
+
                                 <a href="{{ route('orders.index') }}" class="btn btn-black btn-border btn-round">
                                     <i class="fa fa-arrow-left"></i> Kembali
                                 </a>
                             </div>
+
                         </div>
                     </div>
                 </div>

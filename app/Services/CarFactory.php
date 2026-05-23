@@ -21,7 +21,7 @@ class CarFactory
         $data['status'] = $data['status'] ?? 'Tersedia';
         $data['capacity'] = $data['capacity'] ?? $this->defaultCapacityForType($data['type'] ?? '');
         
-        $brand = $this->brandRepository->findById($data['Brand_id'] ?? 0);
+        $brand = $this->brandRepository->findById($data['brand_id'] ?? $data['Brand_id'] ?? 0);
         if ($brand && strtolower($brand->name) === 'tesla') {
             $data['is_electric'] = true;
         } else {

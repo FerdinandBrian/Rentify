@@ -43,8 +43,8 @@
                 <div class="col-lg-8">
                     <div class="card card-round rentify-soft-card">
                         <div class="car-hero">
-                            <img src="{{ asset('assets/img/examples/product1.jpg') }}" alt="{{ $car->name }}">
-                            <span class="badge badge-{{ $isAvailable ? 'success' : 'danger' }} car-hero-badge {{ $isAvailable ? 'car-status-badge' : '' }}">
+                            <img src="{{ asset($car->primary_image_path) }}" alt="{{ $car->name }}">
+                            <span class="badge badge-{{ $isAvailable ? 'success' : 'danger' }} car-hero-badge">
                                 {{ ucfirst($car->status) }}
                             </span>
                         </div>
@@ -96,7 +96,7 @@
                                     @foreach($relatedCars as $relatedCar)
                                         <div class="col-md-6 col-xl-3 mb-3">
                                             <div class="card rentify-soft-card h-100">
-                                                <img src="{{ asset('assets/img/examples/product' . (($loop->iteration % 6) + 1) . '.jpg') }}"
+                                                <img src="{{ asset($relatedCar->primary_image_path) }}"
                                                     alt="{{ $relatedCar->name }}" class="related-car-img">
                                                 <div class="card-body p-3">
                                                     <h6 class="mb-1">{{ $relatedCar->name }}</h6>

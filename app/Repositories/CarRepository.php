@@ -22,7 +22,24 @@ class CarRepository extends BaseRepository implements CarRepositoryInterface
      */
     public function getAllWithBrands()
     {
-        return $this->model->newQuery()->with('brand')->get();
+        return $this->model->newQuery()->with(['brand', 'images'])->get();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFilteredWithBrands(array $filters)
+    {
+        return $this->model->newQuery()
+            ->with(['brand', 'images'])
+            ->when($filters['brand_id'] ?? null, function ($query, $brandId) {
+                $query->where('brand_id', $brandId);
+            })
+            ->when($filters['type'] ?? null, function ($query, $type) {
+                $query->where('type', $type);
+            })
+            ->orderBy('name')
+            ->get();
     }
 
     /**

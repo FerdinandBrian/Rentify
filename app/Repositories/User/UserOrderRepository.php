@@ -11,7 +11,7 @@ class UserOrderRepository
     public function paginateForUser(int $userId, ?array $statuses = null, int $perPage = 10): LengthAwarePaginator
     {
         $query = Order::query()
-            ->with(['car.brand', 'payments'])
+            ->with(['car.brand', 'car.images', 'payments'])
             ->where('User_id', $userId);
 
         if ($statuses) {
@@ -24,7 +24,7 @@ class UserOrderRepository
     public function findForUser(string $orderId, int $userId): Order
     {
         return Order::query()
-            ->with(['car.brand', 'payments.penaltyorder.penalty'])
+            ->with(['car.brand', 'car.images', 'payments.penaltyorder.penalty'])
             ->where('User_id', $userId)
             ->findOrFail($orderId);
     }

@@ -12,7 +12,7 @@ class UserCarRepository
     public function paginateAvailableCars(array $filters, array $strategies, int $perPage = 12): LengthAwarePaginator
     {
         $query = Car::query()
-            ->with('brand')
+            ->with(['brand', 'images'])
             ->whereIn('status', ['tersedia', 'available', 'Tersedia']);
 
         foreach ($strategies as $strategy) {
@@ -25,15 +25,15 @@ class UserCarRepository
     public function findWithBrand(string $seriesNumber): Car
     {
         return Car::query()
-            ->with('brand')
+            ->with(['brand', 'images'])
             ->findOrFail($seriesNumber);
     }
 
     public function relatedCars(Car $car, int $limit = 4): Collection
     {
         return Car::query()
-            ->with('brand')
-            ->where('Brand_id', $car->Brand_id)
+            ->with(['brand', 'images'])
+            ->where('brand_id', $car->brand_id)
             ->where($car->getKeyName(), '!=', $car->getKey())
             ->whereIn('status', ['tersedia', 'available', 'Tersedia'])
             ->limit($limit)
