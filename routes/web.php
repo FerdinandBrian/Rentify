@@ -16,6 +16,7 @@ use App\Http\Controllers\User\UserProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+// Initial Redirection after Login
 Route::get('/', function () {
     $user = Auth::user();
 

@@ -46,9 +46,12 @@ class User extends Authenticatable
     {
         return $this->role->name ?? null;
     }
+<<<<<<< HEAD
 
     public function documents()
     {
         return $this->hasMany(Document::class, 'user_id');
     }
+=======
+>>>>>>> dfceab44e5d0f988ebd2414eade44c2f3175288c
 }

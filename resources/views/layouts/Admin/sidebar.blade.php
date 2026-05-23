@@ -34,6 +34,14 @@
                         <p>Pesanan</p>
                     </a>
                 </li>
+                @if(Auth::user()->role_id === 2)
+                <li class="nav-item {{ request()->routeIs('returns.*') ? 'active' : '' }}">
+                    <a href="{{ route('returns.index') }}">
+                        <i class="fas fa-undo-alt"></i>
+                        <p>Pengembalian Mobil</p>
+                    </a>
+                </li>
+                @endif
                 <li class="nav-item {{ request()->routeIs('admin.cars.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.cars.index') }}">
                         <i class="fas fa-car"></i>

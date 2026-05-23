@@ -107,6 +107,7 @@
                     <div class="row">
                         @forelse($cars as $car)
                             @php
+                                $imageIndex = ($loop->iteration % 6) + 1;
                                 $carYear = $car->year ? $car->year->format('Y') : '-';
                             @endphp
                             <div class="col-md-6 col-xl-4 mb-4">
