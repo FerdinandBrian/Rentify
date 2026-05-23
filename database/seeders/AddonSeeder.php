@@ -12,11 +12,16 @@ class AddonSeeder extends Seeder
         $addons = [
             [
                 'name' => 'GPS',
-                'price_per_unit' => null,
-                'price_per_day' => 50000.00,
+                'price_per_unit' => 50000.00,
+                'price_per_day' => null,
             ],
             [
                 'name' => 'Baby Seat',
+                'price_per_unit' => 150000.00,
+                'price_per_day' => null,
+            ],
+            [
+                'name' => 'Insurance',
                 'price_per_unit' => 150000.00,
                 'price_per_day' => null,
             ],

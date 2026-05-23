@@ -4,12 +4,13 @@ namespace App\Services\Rental\Decorators;
 
 use App\Models\Addon;
 use App\Services\Rental\AddOnDecorator;
+use App\Services\Rental\Contracts\RentalComponent;
 
-class InsuranceAddOn extends AddOnDecorator
+class BabySeatAddOn extends AddOnDecorator
 {
     protected Addon $addon;
 
-    public function __construct($inner, Addon $addon)
+    public function __construct(RentalComponent $inner, Addon $addon)
     {
         parent::__construct($inner);
         $this->addon = $addon;
@@ -22,6 +23,6 @@ class InsuranceAddOn extends AddOnDecorator
 
     public function getDescription(): string
     {
-        return $this->inner->getDescription() . " + Asuransi";
+        return $this->inner->getDescription() . ' + Baby Seat';
     }
 }

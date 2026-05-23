@@ -13,7 +13,7 @@ class UserOrderBuilder
     public function forUser(User $user): self
     {
         $this->data['name'] = $user->name;
-        $this->data['call_number'] = $user->call_number ?? '-';
+        $this->data['call_number'] = $user->call_number ?? $user->phone ?? '-';
         $this->data['email'] = $user->email;
         $this->data['User_id'] = $user->id;
 

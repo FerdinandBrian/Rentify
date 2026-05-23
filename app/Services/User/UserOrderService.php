@@ -86,11 +86,16 @@ class UserOrderService
 
     public function isCarAvailable(Car $car, string $startDate, string $endDate): bool
     {
-        if (! in_array($car->status, ['tersedia', 'available', 'Tersedia'], true)) {
+        if (! in_array(strtolower($car->status), ['tersedia', 'available'], true)) {
             return false;
         }
 
         return ! $this->orderRepository->hasOverlappingBooking($car->series_number, $startDate, $endDate);
+    }
+
+    public function hasApprovedDocument(User $user): bool
+    {
+        return $this->documentRepository->approvedCountForUser($user->id) > 0;
     }
 
     private function generateOrderId(): string
