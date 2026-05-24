@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DendaController;
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ReturnController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserCarController;
 use App\Http\Controllers\User\UserDashboardController;
@@ -47,6 +48,11 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
 
         Route::get('/admin/pesanan', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/admin/pesanan/{id}', [OrderController::class, 'show'])->name('orders.show');
+
+        Route::get('/admin/returns', [ReturnController::class, 'index'])->name('returns.index');
+        Route::get('/admin/returns/create/{orderId}', [ReturnController::class, 'create'])->name('returns.create');
+        Route::post('/admin/returns', [ReturnController::class, 'store'])->name('returns.store');
+        Route::get('/admin/returns/{id}', [ReturnController::class, 'show'])->name('returns.show');
 
         Route::redirect('/denda', '/admin/denda');
         Route::get('/admin/denda', [DendaController::class, 'index'])->name('denda.index');
