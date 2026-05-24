@@ -18,7 +18,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Detail Dokumen: {{ $user->name }}</h4>
+                    <h4 class="card-title">Detail Dokumen: {{ $document->user->name ?? 'Customer tidak ditemukan' }}</h4>
                 </div>
 
                 <div class="card-body">
@@ -28,18 +28,22 @@
                             <table class="table table-bordered">
                                 <tr>
                                     <th style="width: 30%">Nama</th>
-                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $document->user->name ?? '-' }}</td>
                                 </tr>
                                 <tr>
                                     <th>Email</th>
-                                    <td>{{ $user->email }}</td>
+                                    <td>{{ $document->user->email ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Jenis Dokumen</th>
+                                    <td>{{ $document->document_type }}</td>
                                 </tr>
                                 <tr>
                                     <th>Status Saat Ini</th>
                                     <td>
-                                        @if ($user->status === 'Verified')
+                                        @if ($document->status === 'approved')
                                             <span class="badge bg-success">Terverifikasi</span>
-                                        @elseif($user->status === 'Rejected')
+                                        @elseif($document->status === 'rejected')
                                             <span class="badge bg-danger">Ditolak</span>
                                         @else
                                             <span class="badge bg-warning text-dark">Menunggu Review</span>
@@ -51,19 +55,19 @@
                             <div class="mt-4">
                                 @if(auth()->user()->role->name == 'admin')
                                 <div class="d-flex gap-2">
-                                    <form action="{{ route('document.changeStatus', $user->id) }}" method="POST">
+                                    <form action="{{ route('document.changeStatus', $document->id) }}" method="POST">
                                         @csrf
                                         @method('PUT')
-                                        <input type="hidden" name="status" value="Verified">
+                                        <input type="hidden" name="status" value="approved">
                                         <button type="submit" class="btn btn-success btn-round">
                                             <i class="fa fa-check"></i> Setujui
                                         </button>
                                     </form>
 
-                                    <form action="{{ route('document.changeStatus', $user->id) }}" method="POST">
+                                    <form action="{{ route('document.changeStatus', $document->id) }}" method="POST">
                                         @csrf
                                         @method('PUT')
-                                        <input type="hidden" name="status" value="Rejected">
+                                        <input type="hidden" name="status" value="rejected">
                                         <button type="submit" class="btn btn-danger btn-round">
                                             <i class="fa fa-times"></i> Tolak
                                         </button>
@@ -78,13 +82,21 @@
                         <div class="col-md-8">
                             <h5 class="fw-bold">Pratinjau Dokumen</h5>
                             <div class="border rounded p-2 bg-light text-center">
-                                @if($user->document)
-                                    <img src="{{ asset('storage/' . $user->document) }}" alt="Dokumen Pelanggan"
+                                @php
+                                    $extension = strtolower(pathinfo($document->file_path, PATHINFO_EXTENSION));
+                                    $isImage = in_array($extension, ['jpg', 'jpeg', 'png'], true);
+                                @endphp
+
+                                @if($isImage)
+                                    <img src="{{ asset('storage/' . $document->file_path) }}" alt="Dokumen Pelanggan"
                                         class="img-fluid rounded shadow-sm" style="max-height: 600px;">
                                 @else
-                                    <div class="py-5 text-muted">
-                                        <i class="fa fa-file-excel fa-4x mb-3"></i>
-                                        <p>Tidak ada file dokumen untuk ditampilkan.</p>
+                                    <div class="py-5">
+                                        <i class="fa fa-file-pdf fa-4x mb-3 text-danger"></i>
+                                        <p class="text-muted">File PDF tersedia untuk dibuka di tab baru.</p>
+                                        <a href="{{ asset('storage/' . $document->file_path) }}" target="_blank" class="btn btn-primary">
+                                            <i class="fa fa-external-link-alt"></i> Buka Dokumen
+                                        </a>
                                     </div>
                                 @endif
                             </div>

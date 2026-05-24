@@ -35,25 +35,25 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($users as $user)
+                                @forelse ($documents as $document)
                                     <tr>
-                                        <td>{{ $user->id }}</td>
-                                        <td class="fw-bold">{{ $user->name }}</td>
-                                        <td>
-                                            @if ($user->document)
-                                                <a href="{{ asset('storage/' . $user->document) }}" target="_blank" class="btn btn-xs btn-outline-primary">
-                                                    <i class="fa fa-file-pdf"></i> Lihat Dokumen
-                                                </a>
-                                            @else
-                                                <span class="text-muted">Belum Upload</span>
-                                            @endif
+                                        <td>{{ $document->id }}</td>
+                                        <td class="fw-bold">
+                                            {{ $document->user->name ?? 'Customer tidak ditemukan' }}
+                                            <div class="text-muted small">{{ $document->user->email ?? '-' }}</div>
                                         </td>
                                         <td>
-                                            @if ($user->status === 'Verified')
+                                            <a href="{{ asset('storage/' . $document->file_path) }}" target="_blank" class="btn btn-xs btn-outline-primary">
+                                                <i class="fa fa-file"></i> {{ $document->document_type }}
+                                            </a>
+                                            <div class="text-muted small">{{ basename($document->file_path) }}</div>
+                                        </td>
+                                        <td>
+                                            @if ($document->status === 'approved')
                                                 <span class="badge bg-success">Terverifikasi</span>
-                                            @elseif($user->status === 'Rejected')
+                                            @elseif($document->status === 'rejected')
                                                 <span class="badge bg-danger">Ditolak</span>
-                                            @elseif($user->document)
+                                            @elseif($document->status === 'pending')
                                                 <span class="badge bg-warning text-dark">Menunggu</span>
                                             @else
                                                 <span class="text-muted">-</span>
@@ -61,25 +61,21 @@
                                         </td>
                                         <td class="text-end">
                                             <div class="form-button-action justify-content-end">
-                                                @if ($user->document)
-                                                    <a href="{{ route('documents.show', $user->id) }}"
-                                                        class="btn btn-link btn-info btn-lg" data-bs-toggle="tooltip" title="Review">
-                                                        <i class="fa fa-check-square"></i>
-                                                    </a>
-                                                    @if(auth()->user()->role->name == 'admin')
-                                                    <form action="{{ route('document.destroy', $user->id) }}"
-                                                        method="post" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-link btn-danger"
-                                                            data-bs-toggle="tooltip" title="Hapus"
-                                                            onclick="return confirm('Hapus dokumen ini?')">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </form>
-                                                    @endif
-                                                @else
-                                                    <span class="text-muted">Tidak ada aksi</span>
+                                                <a href="{{ route('documents.show', $document->id) }}"
+                                                    class="btn btn-link btn-info btn-lg" data-bs-toggle="tooltip" title="Review">
+                                                    <i class="fa fa-check-square"></i>
+                                                </a>
+                                                @if(auth()->user()->role->name == 'admin')
+                                                <form action="{{ route('document.destroy', $document->id) }}"
+                                                    method="post" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-link btn-danger"
+                                                        data-bs-toggle="tooltip" title="Hapus"
+                                                        onclick="return confirm('Hapus dokumen ini?')">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                                </form>
                                                 @endif
                                             </div>
                                         </td>

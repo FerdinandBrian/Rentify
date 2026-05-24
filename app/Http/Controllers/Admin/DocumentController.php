@@ -3,23 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Models\Document;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-    protected $userRepository;
-
-    public function __construct(UserRepositoryInterface $userRepository)
-    {
-        $this->userRepository = $userRepository;
-    }
-
     public function index()
     {
         try {
-            $users = $this->userRepository->getCustomers();
-            return view('Admin.Dokumen.index', compact('users'));
+            $documents = Document::query()
+                ->with('user')
+                ->latest()
+                ->get();
+
+            return view('Admin.Dokumen.index', compact('documents'));
         } catch (\Exception $e) {
             return redirect()->route('dashboard')->withErrors(['error' => 'Gagal memuat dokumen pelanggan: ' . $e->getMessage()]);
         }
@@ -28,11 +26,11 @@ class DocumentController extends Controller
     public function show($id)
     {
         try {
-            $user = $this->userRepository->findById($id);
-            if (!$user) {
-                return redirect()->route('documents.index')->withErrors(['error' => 'Pelanggan tidak ditemukan.']);
-            }
-            return view('Admin.Dokumen.show', compact('user'));
+            $document = Document::query()
+                ->with('user')
+                ->findOrFail($id);
+
+            return view('Admin.Dokumen.show', compact('document'));
         } catch (\Exception $e) {
             return redirect()->route('documents.index')->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
@@ -41,12 +39,13 @@ class DocumentController extends Controller
     public function changeStatus($id, Request $request)
     {
         try {
-            $user = $this->userRepository->findById($id);
-            if (!$user) {
-                return redirect()->route('documents.index')->withErrors(['error' => 'Pelanggan tidak ditemukan.']);
-            }
+            $validated = $request->validate([
+                'status' => 'required|in:pending,approved,rejected',
+            ]);
 
-            $this->userRepository->update($user, ['status' => $request->status]);
+            $document = Document::query()->findOrFail($id);
+            $document->update(['status' => $validated['status']]);
+
             return redirect()->route('documents.index')->with('success', 'Status dokumen berhasil diubah.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Gagal mengubah status dokumen: ' . $e->getMessage()]);
@@ -56,16 +55,17 @@ class DocumentController extends Controller
     public function destroy($id)
     {
         try {
-            $user = $this->userRepository->findById($id);
-            if (!$user) {
-                return redirect()->route('documents.index')->withErrors(['error' => 'Pelanggan tidak ditemukan.']);
+            $document = Document::query()->findOrFail($id);
+
+            if ($document->file_path) {
+                Storage::disk('public')->delete($document->file_path);
             }
 
-            $this->userRepository->update($user, ['document' => null, 'status' => null]);
+            $document->delete();
+
             return redirect()->route('documents.index')->with('success', 'Dokumen berhasil dihapus.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Gagal menghapus dokumen: ' . $e->getMessage()]);
         }
     }
 }
-
