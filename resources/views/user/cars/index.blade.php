@@ -107,6 +107,7 @@
                     <div class="row">
                         @forelse($cars as $car)
                             @php
+                                $imageIndex = ($loop->iteration % 6) + 1;
                                 $carYear = $car->year ? $car->year->format('Y') : '-';
                             @endphp
                             <div class="col-md-6 col-xl-4 mb-4">
@@ -114,7 +115,7 @@
                                     <div class="card-product-img">
                                         <img src="{{ asset($car->primary_image_path) }}" alt="{{ $car->name }}">
                                         <div class="card-product-badge">
-                                            <span class="badge badge-success">{{ ucfirst($car->status) }}</span>
+                                            <span class="badge badge-success car-status-badge">{{ ucfirst($car->status) }}</span>
                                         </div>
                                     </div>
                                     <div class="card-body d-flex flex-column">
@@ -195,6 +196,10 @@
             position: absolute;
             top: 12px;
             right: 12px;
+        }
+
+        .car-status-badge {
+            background: #31ce36 !important;
         }
 
         .car-specs {

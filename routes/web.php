@@ -16,6 +16,7 @@ use App\Http\Controllers\User\UserProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+// Initial Redirection after Login
 Route::get('/', function () {
     $user = Auth::user();
 
@@ -76,6 +77,8 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
         Route::get('/admin/pesanan/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
         Route::put('/admin/pesanan/{id}', [OrderController::class, 'update'])->name('orders.update');
         Route::delete('/admin/pesanan/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
+        Route::put('/admin/pesanan/{id}/approve', [OrderController::class, 'approve'])->name('orders.approve');
+        Route::put('/admin/pesanan/{id}/reject', [OrderController::class, 'reject'])->name('orders.reject');
 
         Route::get('/admin/denda/create', [DendaController::class, 'create'])->name('denda.create');
         Route::post('/admin/denda', [DendaController::class, 'store'])->name('denda.store');

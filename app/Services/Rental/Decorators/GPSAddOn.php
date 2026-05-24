@@ -17,7 +17,7 @@ class GPSAddOn extends AddOnDecorator
 
     public function getCost(): float
     {
-        return $this->inner->getCost() + ($this->addon->price_per_day ?? 0);
+        return $this->inner->getCost() + ($this->addon->price_per_unit ?? 0);
     }
 
     public function getDescription(): string

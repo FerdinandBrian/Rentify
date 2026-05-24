@@ -159,7 +159,11 @@
                             <a href="{{ route('user.documents.download', $document->id) }}" class="btn btn-primary">
                                 <i class="fas fa-download me-2"></i>Unduh Dokumen
                             </a>
+<<<<<<< HEAD
                             <a href="{{ route('user.documents.index') }}" class="btn btn-outline-primary">
+=======
+                            <a href="{{ route('user.documents') }}" class="btn btn-outline-primary">
+>>>>>>> dfceab44e5d0f988ebd2414eade44c2f3175288c
                                 <i class="fas fa-arrow-left me-2"></i>Kembali ke Daftar
                             </a>
 
@@ -205,6 +209,17 @@
                                     </p>
                                 </div>
                             </div>
+<<<<<<< HEAD
+
+                            {{-- Alasan penolakan --}}
+                            @if($document->status === 'rejected' && $document->rejection_reason)
+                                <div class="alert alert-danger mt-3 mb-0">
+                                    <strong><i class="fas fa-exclamation-circle me-1"></i>Alasan Penolakan:</strong>
+                                    <p class="mb-0 mt-1">{{ $document->rejection_reason }}</p>
+                                </div>
+                            @endif
+=======
+>>>>>>> dfceab44e5d0f988ebd2414eade44c2f3175288c
                         </div>
                     </div>
                 </div>

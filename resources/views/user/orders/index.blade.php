@@ -62,7 +62,7 @@
                 </div>
                 <div class="card-body">
                     <div class="mb-4 overflow-auto">
-                        <ul class="nav nav-pills nav-pills-primary nav-pills-no-borders flex-nowrap" role="tablist">
+                        <ul class="nav nav-pills rentify-order-tabs flex-nowrap" role="tablist">
                             @foreach($tabs as $status => $label)
                                 <li class="nav-item">
                                     <a class="nav-link {{ request('status', '') === $status ? 'active' : '' }}"
@@ -174,23 +174,37 @@
 
 @section('extraCSS')
     <style>
-        .nav-pills-no-borders {
+        .rentify-order-tabs {
             border-bottom: 1px solid #e9ecef;
+            gap: 8px;
             margin-bottom: 0;
             min-width: max-content;
+            padding-bottom: 10px;
         }
 
-        .nav-pills-no-borders .nav-link {
-            border-radius: 0;
-            border-bottom: 3px solid transparent;
-            margin-bottom: -1px;
+        .rentify-order-tabs .nav-link {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 10px !important;
+            color: #9a3412 !important;
+            font-weight: 700;
+            min-width: 108px;
+            padding: 10px 18px;
+            text-align: center;
             white-space: nowrap;
         }
 
-        .nav-pills-no-borders .nav-link.active {
-            border-bottom-color: #1572e8;
-            background: transparent;
-            color: #1572e8;
+        .rentify-order-tabs .nav-link.active {
+            background: #f97316 !important;
+            border-color: #f97316 !important;
+            box-shadow: 0 10px 20px rgba(249, 115, 22, .16);
+            color: #0f172a !important;
+        }
+
+        .rentify-order-tabs .nav-link:hover {
+            background: #ffedd5;
+            border-color: #fdba74;
+            color: #7c2d12 !important;
         }
 
         .avatar-sm {

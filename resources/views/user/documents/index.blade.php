@@ -124,6 +124,12 @@
                                             <div>
                                                 <h6 class="mb-1">{{ $document->document_type }}</h6>
                                                 <p class="text-muted mb-1">{{ $document->description ?: 'Tidak ada catatan tambahan' }}</p>
+                                                @if($document->status === 'rejected' && $document->rejection_reason)
+                                                    <p class="text-danger mb-1 small">
+                                                        <i class="fas fa-exclamation-circle me-1"></i>
+                                                        <strong>Ditolak:</strong> {{ $document->rejection_reason }}
+                                                    </p>
+                                                @endif
                                                 <small class="text-muted">
                                                     Diunggah {{ optional($document->created_at)->format('d M Y H:i') }}
                                                 </small>
