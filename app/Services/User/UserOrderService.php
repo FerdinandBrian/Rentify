@@ -5,6 +5,7 @@ namespace App\Services\User;
 use App\Models\Car;
 use App\Models\Order;
 use App\Models\User;
+use App\Exceptions\DocumentNotVerifiedException;
 use App\Repositories\User\UserCarRepository;
 use App\Repositories\User\UserDocumentRepository;
 use App\Repositories\User\UserOrderRepository;
@@ -61,8 +62,8 @@ class UserOrderService
 
     public function createPendingOrderForCarSeries(User $user, string $carSeriesNumber, string $startDate, string $endDate): ?Order
     {
-        if (! $this->hasApprovedDocument($user)) {
-            return null;
+        if ($this->documentRepository->approvedCountForUser($user->id) === 0) {
+            throw DocumentNotVerifiedException::forUser();
         }
 
         $car = $this->carRepository->findWithBrand($carSeriesNumber);

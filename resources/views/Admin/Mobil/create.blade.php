@@ -23,7 +23,7 @@
                 <h4 class="card-title">Tambah Mobil Baru</h4>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.cars.store') }}" method="POST">
+                <form action="{{ route('admin.cars.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row">
@@ -109,6 +109,16 @@
                         <label class="form-check-label" for="is_electric">
                             Mobil Listrik (EV)
                         </label>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="images" class="form-label">Gambar Mobil</label>
+                        <input type="file" name="images[]" id="images"
+                            class="form-control @error('images') is-invalid @enderror @error('images.*') is-invalid @enderror"
+                            accept="image/jpeg,image/png,image/webp" multiple>
+                        <small class="text-muted">Bisa upload sampai 5 gambar. Gambar pertama otomatis menjadi gambar utama.</small>
+                        @error('images') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                        @error('images.*') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="card-action">

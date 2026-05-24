@@ -11,6 +11,7 @@ class BrandSeeder extends Seeder
     {
         $brands = [
             ['name' => 'Toyota'],
+            ['name' => 'Daihatsu'],
             ['name' => 'Honda'],
             ['name' => 'Suzuki'],
             ['name' => 'Mitsubishi'],

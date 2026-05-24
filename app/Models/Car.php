@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $type
  * @property Carbon|null $year
  * @property string $status
- * @property int $Brand_id
+ * @property int $brand_id
  *
  * @property Brand $brand
  * @property Collection|Feedback[] $feedback
@@ -38,7 +38,7 @@ class Car extends Model
     protected $casts = [
         'price' => 'float',
         'year' => 'datetime',
-        'Brand_id' => 'int',
+        'brand_id' => 'int',
     ];
 
     protected $fillable = [
@@ -49,12 +49,12 @@ class Car extends Model
         'year',
         'status',
         'is_electric',
-        'Brand_id',
+        'brand_id',
     ];
 
     public function brand()
     {
-        return $this->belongsTo(Brand::class, 'Brand_id');
+        return $this->belongsTo(Brand::class, 'brand_id');
     }
 
     public function feedback()
@@ -69,6 +69,17 @@ class Car extends Model
 
     public function images()
     {
-        return $this->belongsToMany(CarImage::class, 'car_car_image', 'car_series_number', 'car_image_id');
+        return $this->belongsToMany(CarImage::class, 'car_car_image', 'car_series_number', 'car_image_id')
+            ->withTimestamps();
+    }
+
+    public function getPrimaryImagePathAttribute(): string
+    {
+        $images = $this->relationLoaded('images')
+            ? $this->images
+            : $this->images()->get();
+
+        return optional($images->firstWhere('is_primary', true) ?? $images->first())->image_path
+            ?? 'assets/img/examples/product1.jpg';
     }
 }

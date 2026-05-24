@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Document;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,61 +12,50 @@ class DocumentController extends Controller
 {
     public function index()
     {
-        try {
-            $documents = Document::query()
-                ->with('user')
-                ->latest()
-                ->get();
+        $users = User::where('role_id', 3)
+            ->with(['documents' => function ($q) {
+                $q->latest();
+            }])
+            ->get();
 
-            return view('Admin.Dokumen.index', compact('documents'));
-        } catch (\Exception $e) {
-            return redirect()->route('dashboard')->withErrors(['error' => 'Gagal memuat dokumen pelanggan: ' . $e->getMessage()]);
-        }
+        return view('Admin.Dokumen.index', compact('users'));
     }
 
-    public function show($id)
+    public function show($userId)
     {
-        try {
-            $document = Document::query()
-                ->with('user')
-                ->findOrFail($id);
+        $user = User::where('role_id', 3)->with('documents')->findOrFail($userId);
 
-            return view('Admin.Dokumen.show', compact('document'));
-        } catch (\Exception $e) {
-            return redirect()->route('documents.index')->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
-        }
+        return view('Admin.Dokumen.show', compact('user'));
     }
 
-    public function changeStatus($id, Request $request)
+    public function changeStatus($documentId, Request $request)
     {
-        try {
-            $validated = $request->validate([
-                'status' => 'required|in:pending,approved,rejected',
-            ]);
+        $request->validate([
+            'status'           => 'required|in:approved,rejected',
+            'rejection_reason' => 'nullable|string|max:500',
+        ]);
 
-            $document = Document::query()->findOrFail($id);
-            $document->update(['status' => $validated['status']]);
+        $document = Document::findOrFail($documentId);
 
-            return redirect()->route('documents.index')->with('success', 'Status dokumen berhasil diubah.');
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Gagal mengubah status dokumen: ' . $e->getMessage()]);
-        }
+        $document->update([
+            'status'           => $request->status,
+            'rejection_reason' => $request->status === 'rejected' ? $request->rejection_reason : null,
+        ]);
+
+        return redirect()->route('documents.show', $document->user_id)
+            ->with('success', 'Status dokumen berhasil diubah.');
     }
 
-    public function destroy($id)
+    public function destroy($documentId)
     {
-        try {
-            $document = Document::query()->findOrFail($id);
+        $document = Document::findOrFail($documentId);
 
-            if ($document->file_path) {
-                Storage::disk('public')->delete($document->file_path);
-            }
-
-            $document->delete();
-
-            return redirect()->route('documents.index')->with('success', 'Dokumen berhasil dihapus.');
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Gagal menghapus dokumen: ' . $e->getMessage()]);
+        if ($document->file_path) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($document->file_path);
         }
+
+        $document->delete();
+
+        return redirect()->route('documents.index')->with('success', 'Dokumen berhasil dihapus.');
     }
 }

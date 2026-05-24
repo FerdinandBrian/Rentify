@@ -19,6 +19,7 @@
         $total = $paymentTotal ?: (($order->car->price ?? 0) * $days);
         $latestPayment = $order->payments->last();
         $canCancel = in_array($order->status, ['menunggu', 'pending'], true);
+        $orderCarImage = $order->car?->primary_image_path ?? 'assets/img/examples/product1.jpg';
     @endphp
 
     <div class="container">
@@ -107,7 +108,7 @@
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col-md-4 mb-3 mb-md-0">
-                                    <img src="{{ asset('assets/img/examples/product2.jpg') }}" alt="{{ $order->car->name ?? 'Mobil' }}"
+                                    <img src="{{ asset($orderCarImage) }}" alt="{{ $order->car->name ?? 'Mobil' }}"
                                         class="img-fluid rounded order-car-img">
                                 </div>
                                 <div class="col-md-8">
