@@ -34,7 +34,7 @@
                         <p>Pesanan</p>
                     </a>
                 </li>
-                @if(Auth::user()->role_id === 2)
+                @if(Auth::user()->role_id === 2 && Route::has('returns.index'))
                 <li class="nav-item {{ request()->routeIs('returns.*') ? 'active' : '' }}">
                     <a href="{{ route('returns.index') }}">
                         <i class="fas fa-undo-alt"></i>
