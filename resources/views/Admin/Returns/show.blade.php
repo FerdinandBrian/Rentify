@@ -24,11 +24,12 @@
             @endif
 
             @php
-                $payment      = $order->payments->first();
-                $penalties    = $order->payments->flatMap->penalties;
-                $totalPenalty = $penalties->sum('total_penalty');
-                $basePrice    = ($payment?->total_price ?? 0) - $totalPenalty;
-                if ($basePrice < 0) $basePrice = 0;
+                $payment = $paymentSummary['payment'];
+                $penalties = $paymentSummary['penalties'];
+                $totalPenalty = $paymentSummary['total_penalty'];
+                $basePrice = $paymentSummary['base_price'];
+                $returnPayment = $paymentSummary['return_payment'];
+                $remainingPayment = $paymentSummary['remaining_payment'];
             @endphp
 
             <div class="row">
@@ -100,6 +101,25 @@
                         </div>
                     </div>
 
+                    {{-- Return Condition --}}
+                    <div class="card card-round mt-4">
+                        <div class="card-header">
+                            <h4 class="card-title mb-0">
+                                <i class="fa fa-clipboard-check me-2 text-info"></i>Kondisi Mobil Saat Diterima
+                            </h4>
+                        </div>
+                        <div class="card-body d-flex flex-column gap-3">
+                            <div>
+                                <span class="text-muted small fw-bold text-uppercase">Waktu Diterima</span>
+                                <h6 class="mb-0 fw-bold">{{ $order->returned_at?->format('d M Y H:i') ?? '-' }}</h6>
+                            </div>
+                            <div>
+                                <span class="text-muted small fw-bold text-uppercase">Catatan Kondisi</span>
+                                <p class="mb-0">{{ $order->return_condition_note ?: 'Tidak ada catatan kondisi tambahan.' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 {{-- Right Column --}}
@@ -157,7 +177,7 @@
                     <div class="card card-round mb-4">
                         <div class="card-header">
                             <h4 class="card-title mb-0">
-                                <i class="fa fa-money-bill-wave me-2 text-success"></i>Kesimpulan Pembayaran
+                                <i class="fa fa-money-bill-wave me-2 text-success"></i>Pembayaran Setelah Pengembalian
                             </h4>
                         </div>
                         <div class="card-body">
@@ -173,10 +193,16 @@
                                     </span>
                                 </div>
                                 <hr>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-bold fs-5">Pembayaran Customer Setelah Return</span>
+                                    <span class="fw-bold fs-4 {{ $returnPayment > 0 ? 'text-danger' : 'text-success' }}">
+                                        Rp {{ number_format($returnPayment, 0, ',', '.') }}
+                                    </span>
+                                </div>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="fw-bold fs-5">Grand Total</span>
-                                    <span class="fw-bold fs-4 text-success">
-                                        Rp {{ number_format($payment?->total_price ?? 0, 0, ',', '.') }}
+                                    <span class="text-muted">Sisa yang Perlu Dibayar</span>
+                                    <span class="fw-bold {{ $remainingPayment > 0 ? 'text-danger' : 'text-success' }}">
+                                        Rp {{ number_format($remainingPayment, 0, ',', '.') }}
                                     </span>
                                 </div>
                             </div>

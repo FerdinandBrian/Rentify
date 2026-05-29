@@ -34,7 +34,7 @@ class ReturnController extends Controller
     {
         $validated = $request->validate([
             'order_id' => ['required', 'exists:order,id'],
-            'fuel_level' => ['required', 'string'],
+            'return_condition_note' => ['nullable', 'string', 'max:1000'],
             'penalties' => ['nullable', 'array'],
             'penalties.*' => ['string'],
             'custom_penalty_desc' => ['nullable', 'string', 'required_with:custom_penalty_amount'],
@@ -49,7 +49,7 @@ class ReturnController extends Controller
             return redirect()->route('returns.index')->with('error', $e->getMessage());
         }
 
-        return redirect()->route('returns.show', $order->id)->with('success', 'Pengembalian mobil berhasil diproses dan pembayaran telah diselesaikan.');
+        return redirect()->route('returns.show', $order->id)->with('success', 'Pengembalian mobil berhasil diproses. Silakan cek pembayaran customer.');
     }
 
     public function show(string $id)
@@ -60,6 +60,8 @@ class ReturnController extends Controller
             return redirect()->route('returns.index')->with('error', $e->getMessage());
         }
 
-        return view('Admin.Returns.show', compact('order'));
+        $paymentSummary = $this->returnService->calculateReturnPayment($order);
+
+        return view('Admin.Returns.show', compact('order', 'paymentSummary'));
     }
 }

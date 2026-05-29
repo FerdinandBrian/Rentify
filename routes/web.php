@@ -17,7 +17,6 @@ use App\Http\Controllers\User\UserProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// Initial Redirection after Login
 Route::get('/', function () {
     $user = Auth::user();
 
@@ -25,8 +24,12 @@ Route::get('/', function () {
         return redirect('/admin/dashboard');
     }
 
-    return redirect('/user/dashboard');
-})->middleware(['auth', 'verified']);
+    if ($user) {
+        return redirect('/user/dashboard');
+    }
+
+    return view('welcome');
+})->name('home');
 
 Route::get('/dashboard', function () {
     $user = Auth::user();
@@ -70,7 +73,7 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
                 ->where('series_number', '^(?!create$).+')
                 ->name('cars.show');
             Route::get('addons', [AddOnController::class, 'index'])->name('addons.index');
-            Route::get('addons/{id}', [AddOnController::class, 'show'])->name('addons.show');
+            Route::get('addons/{id}', [AddOnController::class, 'show'])->whereNumber('id')->name('addons.show');
         });
 
         Route::get('/admin/brands', [BrandController::class, 'index'])->name('brands.index');
@@ -95,9 +98,9 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
         Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('addons/create', [AddOnController::class, 'create'])->name('addons.create');
             Route::post('addons', [AddOnController::class, 'store'])->name('addons.store');
-            Route::get('addons/{id}/edit', [AddOnController::class, 'edit'])->name('addons.edit');
-            Route::put('addons/{id}', [AddOnController::class, 'update'])->name('addons.update');
-            Route::delete('addons/{id}', [AddOnController::class, 'destroy'])->name('addons.destroy');
+            Route::get('addons/{id}/edit', [AddOnController::class, 'edit'])->whereNumber('id')->name('addons.edit');
+            Route::put('addons/{id}', [AddOnController::class, 'update'])->whereNumber('id')->name('addons.update');
+            Route::delete('addons/{id}', [AddOnController::class, 'destroy'])->whereNumber('id')->name('addons.destroy');
         });
 
         Route::get('/admin/brands/create', [BrandController::class, 'create'])->name('brands.create');
