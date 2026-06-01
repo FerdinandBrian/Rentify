@@ -7,5 +7,5 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface OrderRepositoryInterface extends BaseRepositoryInterface
 {
-    public function paginateWithStrategies(array $criteria, array $strategies, int $perPage): LengthAwarePaginator;
+    public function paginateWithFilters(array $criteria, array $filters, int $perPage): LengthAwarePaginator;
 }
