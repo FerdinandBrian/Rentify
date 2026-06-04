@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Penalty;
-use Illuminate\Http\Request;
+use App\Http\Requests\StorePenaltyRequest;
+use App\Http\Requests\UpdatePenaltyRequest;
+use App\Services\RootCrud\PenaltyService;
 
 class PenaltyController extends Controller
 {
+    public function __construct(private readonly PenaltyService $penaltyService) {}
+
     public function index()
     {
-        $penalties = Penalty::all();
+        $penalties = $this->penaltyService->all();
         return view('penalties.index', compact('penalties'));
     }
 
@@ -18,39 +21,27 @@ class PenaltyController extends Controller
         return view('penalties.create');
     }
 
-    public function store(Request $request)
+    public function store(StorePenaltyRequest $request)
     {
-        $validated = $request->validate([
-            'type'          => 'required',
-            'total_penalty' => 'required|numeric',
-        ]);
-
-        Penalty::create($validated);
+        $this->penaltyService->create($request->validated());
         return redirect()->route('penalties.index')->with('success', 'Jenis denda berhasil ditambahkan.');
     }
 
     public function edit($id)
     {
-        $penalty = Penalty::findOrFail($id);
+        $penalty = $this->penaltyService->getById($id);
         return view('penalties.edit', compact('penalty'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdatePenaltyRequest $request, $id)
     {
-        $penalty = Penalty::findOrFail($id);
-        $validated = $request->validate([
-            'type'          => 'required',
-            'total_penalty' => 'required|numeric',
-        ]);
-
-        $penalty->update($validated);
+        $this->penaltyService->update($id, $request->validated());
         return redirect()->route('penalties.index')->with('success', 'Jenis denda diperbarui.');
     }
 
     public function destroy($id)
     {
-        $penalty = Penalty::findOrFail($id);
-        $penalty->delete();
+        $this->penaltyService->delete($id);
         return redirect()->route('penalties.index')->with('success', 'Jenis denda dihapus.');
     }
 }

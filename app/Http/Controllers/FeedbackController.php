@@ -3,9 +3,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreFeedbackRequest;
 use App\Models\Feedback;
-use App\Models\Car;
-use Illuminate\Http\Request;
 
 class FeedbackController extends Controller
 {
@@ -15,16 +14,9 @@ class FeedbackController extends Controller
         return view('feedbacks.index', compact('feedbacks'));
     }
 
-    public function store(Request $request)
+    public function store(StoreFeedbackRequest $request)
     {
-        $validated = $request->validate([
-            'star'              => 'required|integer|min:1|max:5',
-            'message'           => 'required|string',
-            'Car_series_number' => 'required|exists:car,series_number',
-            'User_id'           => 'required|exists:users,id',
-        ]);
-
-        Feedback::create($validated);
+        Feedback::create($request->validated());
         return back()->with('success', 'Terima kasih atas ulasannya!');
     }
 

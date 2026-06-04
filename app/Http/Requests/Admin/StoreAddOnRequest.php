@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Http\Requests\Admin;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreAddOnRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:100'],
+            'price_per_unit' => ['nullable', 'numeric', 'min:0'],
+            'price_per_day' => ['nullable', 'numeric', 'min:0'],
+        ];
+    }
+}

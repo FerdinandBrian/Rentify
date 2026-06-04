@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon $end_rent
  * @property string $Car_series_number
  * @property int $User_id
+ * @property string|null $return_condition_note
+ * @property Carbon|null $returned_at
  *
  * @property Car $car
  * @property User $user
@@ -40,6 +42,7 @@ class Order extends Model
     protected $casts = [
         'start_rent' => 'datetime',
         'end_rent' => 'datetime',
+        'returned_at' => 'datetime',
         'User_id' => 'int',
     ];
 
@@ -53,6 +56,8 @@ class Order extends Model
         'end_rent',
         'Car_series_number',
         'User_id',
+        'return_condition_note',
+        'returned_at',
     ];
 
     public function car()
