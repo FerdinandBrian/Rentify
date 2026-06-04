@@ -17,8 +17,12 @@ use App\Http\Controllers\User\UserProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// Initial Redirection after Login
+// Initial Redirection after Login (show welcome for guests)
 Route::get('/', function () {
+    if (! Auth::check()) {
+        return view('welcome');
+    }
+
     $user = Auth::user();
 
     if ($user && in_array($user->role_id, [1, 2], true)) {
@@ -26,7 +30,7 @@ Route::get('/', function () {
     }
 
     return redirect('/user/dashboard');
-})->middleware(['auth', 'verified']);
+});
 
 Route::get('/dashboard', function () {
     $user = Auth::user();
