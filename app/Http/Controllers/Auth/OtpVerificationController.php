@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ResendOtpRequest;
+use App\Http\Requests\Auth\VerifyOtpRequest;
 use App\Models\OtpCode;
 use App\Models\User;
 use App\Notifications\SendOtpNotification;
@@ -38,14 +40,8 @@ class OtpVerificationController extends Controller
     /**
      * Verify the OTP code.
      */
-    public function verify(Request $request): RedirectResponse
+    public function verify(VerifyOtpRequest $request): RedirectResponse
     {
-        $request->validate([
-            'email' => ['required', 'email'],
-            'otp' => ['required', 'string', 'size:6'],
-            'type' => ['required', 'in:email_verification,password_reset,login'],
-        ]);
-
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
@@ -71,13 +67,8 @@ class OtpVerificationController extends Controller
     /**
      * Resend OTP code.
      */
-    public function resend(Request $request): RedirectResponse
+    public function resend(ResendOtpRequest $request): RedirectResponse
     {
-        $request->validate([
-            'email' => ['required', 'email'],
-            'type' => ['required', 'in:email_verification,password_reset,login'],
-        ]);
-
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {

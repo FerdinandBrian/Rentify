@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\StoreBrandRequest;
+use App\Http\Requests\Admin\UpdateBrandRequest;
 use App\Repositories\Contracts\BrandRepositoryInterface;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class BrandController extends Controller
@@ -26,11 +27,9 @@ class BrandController extends Controller
         return view('admin.brands.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreBrandRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         try {
             $this->brandRepository->create($validated);
@@ -53,11 +52,9 @@ class BrandController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateBrandRequest $request, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         try {
             $brand = $this->brandRepository->findById($id);
