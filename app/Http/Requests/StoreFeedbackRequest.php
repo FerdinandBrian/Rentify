@@ -8,16 +8,15 @@ class StoreFeedbackRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        // Only customers (role_id = 3) can submit feedback
+        return $this->user() && $this->user()->role_id === 3;
     }
 
     public function rules(): array
     {
         return [
             'star' => ['required', 'integer', 'min:1', 'max:5'],
-            'message' => ['required', 'string'],
-            'Car_series_number' => ['required', 'exists:car,series_number'],
-            'User_id' => ['required', 'exists:users,id'],
+            'message' => ['required', 'string', 'max:1000'],
         ];
     }
 }

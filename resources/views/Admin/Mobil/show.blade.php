@@ -88,6 +88,52 @@
                 @endif
             </div>
         </div>
+
+        {{-- Section Ulasan Pelanggan --}}
+        <div class="card mt-4">
+            <div class="card-header">
+                <div class="card-title">
+                    <i class="fas fa-comments me-2"></i>Ulasan Pelanggan
+                    <span class="badge bg-primary ms-2">{{ $car->feedback->count() }}</span>
+                </div>
+            </div>
+            <div class="card-body">
+                @forelse($car->feedback as $fb)
+                    <div class="feedback-item {{ !$loop->last ? 'mb-3 pb-3 border-bottom' : '' }}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong>{{ $fb->user->name ?? 'User Dihapus' }}</strong>
+                                <div class="feedback-stars my-1">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <i class="fas fa-star {{ $i <= $fb->star ? 'text-warning' : 'text-muted' }}" style="font-size: 14px;"></i>
+                                    @endfor
+                                    <small class="text-muted ms-2">{{ $fb->star }}/5</small>
+                                </div>
+                                <p class="mb-1">{{ $fb->message }}</p>
+                                @if($fb->created_at)
+                                    <small class="text-muted">{{ $fb->created_at->format('d M Y, H:i') }}</small>
+                                @endif
+                            </div>
+                            @if(auth()->user()->role->name == 'admin')
+                                <form action="{{ route('admin.feedback.destroy', $fb->id) }}" method="POST" onsubmit="return confirm('Hapus ulasan ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Hapus ulasan">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-comment-slash" style="font-size: 2rem;"></i>
+                        <p class="mt-2 mb-0">Belum ada ulasan untuk mobil ini.</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+
     </div>
 </div>
 @endsection
