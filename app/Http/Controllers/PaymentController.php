@@ -2,59 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payment;
-use App\Models\Order;
-use Illuminate\Http\Request;
+use App\Http\Requests\StorePaymentRequest;
+use App\Http\Requests\UpdatePaymentRequest;
+use App\Services\RootCrud\PaymentService;
 
 class PaymentController extends Controller
 {
+    public function __construct(private readonly PaymentService $paymentService) {}
+
     public function index()
     {
-        $payments = Payment::with('order')->get();
+        $payments = $this->paymentService->allWithOrder();
         return view('payments.index', compact('payments'));
     }
 
     public function create()
     {
-        $orders = Order::where('status', 'pending')->get();
+        $orders = $this->paymentService->pendingOrders();
         return view('payments.create', compact('orders'));
     }
 
-    public function store(Request $request)
+    public function store(StorePaymentRequest $request)
     {
-        $validated = $request->validate([
-            'id'          => 'required|unique:payment,id',
-            'method'      => 'required',
-            'status'      => 'required',
-            'total_price' => 'nullable|numeric',
-            'Order_id'    => 'required|exists:order,id',
-        ]);
-
-        Payment::create($validated);
+        $this->paymentService->create($request->validated());
         return redirect()->route('payments.index')->with('success', 'Pembayaran berhasil dicatat.');
     }
 
     public function show($id)
     {
-        $payment = Payment::with(['order', 'addons', 'penaltyorder'])->findOrFail($id);
+        $payment = $this->paymentService->getDetail($id);
         return view('payments.show', compact('payment'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdatePaymentRequest $request, $id)
     {
-        $payment = Payment::findOrFail($id);
-        $validated = $request->validate([
-            'status' => 'required',
-        ]);
-
-        $payment->update($validated);
+        $this->paymentService->update($id, $request->validated());
         return redirect()->route('payments.index')->with('success', 'Status pembayaran diperbarui.');
     }
 
     public function destroy($id)
     {
-        $payment = Payment::findOrFail($id);
-        $payment->delete();
+        $this->paymentService->delete($id);
         return redirect()->route('payments.index')->with('success', 'Data pembayaran dihapus.');
     }
 }

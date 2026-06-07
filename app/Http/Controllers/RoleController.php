@@ -2,32 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreRoleRequest;
+use App\Services\RootCrud\RoleService;
 
 class RoleController extends Controller
 {
+    public function __construct(private readonly RoleService $roleService) {}
+
     public function index()
     {
-        $roles = Role::all();
+        $roles = $this->roleService->all();
         return view('roles.index', compact('roles'));
     }
 
-    public function store(Request $request)
+    public function store(StoreRoleRequest $request)
     {
-        $validated = $request->validate([
-            'id'   => 'required|integer|unique:role,id',
-            'name' => 'required',
-        ]);
-
-        Role::create($validated);
+        $this->roleService->create($request->validated());
         return redirect()->route('roles.index')->with('success', 'Role berhasil dibuat.');
     }
 
     public function destroy($id)
     {
-        $role = Role::findOrFail($id);
-        $role->delete();
+        $this->roleService->delete($id);
         return redirect()->route('roles.index')->with('success', 'Role dihapus.');
     }
 }

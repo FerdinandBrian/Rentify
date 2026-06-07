@@ -25,17 +25,19 @@ use Illuminate\Database\Eloquent\Model;
 class Feedback extends Model
 {
 	protected $table = 'feedback';
-	public $timestamps = false;
+
+	const UPDATED_AT = null;
 
 	protected $casts = [
-		'User_id' => 'int'
+		'User_id' => 'int',
+		'star' => 'int',
 	];
 
 	protected $fillable = [
 		'star',
 		'message',
 		'Car_series_number',
-		'User_id'
+		'User_id',
 	];
 
 	public function car()

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Orders\Strategies;
+namespace App\Orders\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class LatestOrderSortStrategy implements OrderQueryStrategyInterface
+class LatestOrderSortFilter implements OrderQueryFilterInterface
 {
     public function apply(Builder $query, array $criteria): Builder
     {
