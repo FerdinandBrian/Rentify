@@ -14,7 +14,7 @@
     <div class="main-header-logo">
         <div class="logo-header" data-background-color="dark">
             <a href="{{ route('user.dashboard') }}" class="logo d-flex align-items-center gap-2">
-                <div class="rounded-3 bg-gradient-to-br bg-primary d-flex align-items-center justify-center font-bold text-white shadow-sm" style="width: 32px; height: 32px; font-size: 18px; line-height: 32px; text-align: center;">R</div>
+                <div class="rounded-3 bg-gradient-to-br bg-primary d-flex align-items-center justify-content-center font-bold text-white shadow-sm" style="width: 32px; height: 32px; font-size: 18px; line-height: 32px; text-align: center;">R</div>
                 <span class="fw-bold fs-4 text-white">Rentify</span>
             </a>
             <div class="nav-toggle">
@@ -39,65 +39,6 @@
             </div>
 
             <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                <li class="nav-item topbar-icon dropdown hidden-caret">
-                    <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-bell"></i>
-                        @if($notificationTotal > 0)
-                            <span class="notification">{{ $notificationTotal }}</span>
-                        @endif
-                    </a>
-                    <ul class="dropdown-menu notif-box animated fadeIn dropdown-menu-end" aria-labelledby="notifDropdown">
-                        <li>
-                            <div class="dropdown-title">
-                                Ringkasan akun dari database
-                            </div>
-                        </li>
-                        <li>
-                            <div class="notif-scroll scrollbar-outer">
-                                <div class="notif-center">
-                                    <a href="{{ route('user.orders.index', ['status' => 'menunggu']) }}">
-                                        <div class="notif-icon notif-warning">
-                                            <i class="fas fa-clock"></i>
-                                        </div>
-                                        <div class="notif-content">
-                                            <span class="block">{{ $userNavMetrics['pending_orders'] }} pesanan menunggu</span>
-                                            <span class="time">Perlu konfirmasi admin</span>
-                                        </div>
-                                    </a>
-                                    <a href="{{ route('user.orders.index', ['status' => 'aktif']) }}">
-                                        <div class="notif-icon notif-success">
-                                            <i class="fas fa-car-side"></i>
-                                        </div>
-                                        <div class="notif-content">
-                                            <span class="block">{{ $userNavMetrics['active_orders'] }} rental aktif</span>
-                                            <span class="time">Sedang berjalan</span>
-                                        </div>
-                                    </a>
-                                    <a href="{{ route('user.documents.index') }}">
-                                        <div class="notif-icon notif-info">
-                                            <i class="fas fa-file-signature"></i>
-                                        </div>
-                                        <div class="notif-content">
-                                            <span class="block">{{ $userNavMetrics['pending_documents'] }} dokumen menunggu</span>
-                                            <span class="time">{{ $userNavMetrics['approved_documents'] }} dokumen disetujui</span>
-                                        </div>
-                                    </a>
-                                    <a href="{{ route('user.cars.index') }}">
-                                        <div class="notif-icon notif-primary">
-                                            <i class="fas fa-car"></i>
-                                        </div>
-                                        <div class="notif-content">
-                                            <span class="block">{{ $userNavMetrics['available_cars'] }} mobil tersedia</span>
-                                            <span class="time">Siap dipesan</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-
                 <li class="nav-item topbar-icon dropdown hidden-caret">
                     <a class="nav-link dropdown-toggle" href="#" id="quickActionsDropdown" role="button"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

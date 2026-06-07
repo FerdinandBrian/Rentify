@@ -41,6 +41,16 @@
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(0, 0, 0, 0.05);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-card:active {
+            transform: translateY(-1px);
         }
 
         .grid-overlay {
@@ -57,18 +67,18 @@
         }
     </style>
 </head>
-<body class="antialiased text-slate-900 selection:bg-orange-500 selection:text-white overflow-x-hidden flex items-center justify-center p-6">
+<body class="antialiased text-slate-900 selection:bg-orange-500 selection:text-white overflow-x-hidden flex items-center justify-center p-4 sm:p-6">
     <div class="fixed inset-0 grid-overlay pointer-events-none"></div>
     
     <!-- Floating Orbs -->
     <div class="fixed top-20 left-20 w-72 h-72 bg-orange-500/10 rounded-full blur-[100px] animate-pulse pointer-events-none"></div>
     <div class="fixed bottom-20 right-20 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] animate-pulse pointer-events-none"></div>
 
-    <div class="relative z-10 w-full max-w-md">
+    <div class="relative z-10 w-full max-w-lg">
         <!-- Logo -->
-        <div class="flex flex-col items-center mb-10 group cursor-pointer" onclick="window.location='{{ url('/') }}'">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center font-bold text-3xl shadow-xl shadow-orange-500/20 group-hover:rotate-[360deg] transition-transform duration-700">R</div>
-            <span class="mt-4 font-bold text-3xl tracking-tight text-slate-900 group-hover:text-orange-500 transition-colors">Rentify</span>
+        <div class="flex flex-col items-center mb-8 group cursor-pointer" onclick="window.location='{{ url('/') }}'">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center font-bold text-2xl shadow-xl shadow-orange-500/20 group-hover:rotate-[360deg] transition-transform duration-700">R</div>
+            <span class="mt-3 font-bold text-2xl tracking-tight text-slate-900 group-hover:text-orange-500 transition-colors">Rentify</span>
         </div>
 
         {{ $slot }}
