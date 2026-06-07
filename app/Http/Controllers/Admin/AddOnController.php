@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\StoreAddOnRequest;
+use App\Http\Requests\Admin\UpdateAddOnRequest;
 use App\Repositories\Contracts\AddOnRepositoryInterface;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class AddOnController extends Controller
 {
@@ -30,13 +31,9 @@ class AddOnController extends Controller
         return view('admin.addons.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreAddOnRequest $request)
     {
-        $validated = $request->validate([
-            'name'           => 'required|string|max:100',
-            'price_per_unit' => 'nullable|numeric|min:0',
-            'price_per_day'  => 'nullable|numeric|min:0',
-        ]);
+        $validated = $request->validated();
 
         try {
             $this->addOnRepository->create($validated);
@@ -73,13 +70,9 @@ class AddOnController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateAddOnRequest $request, $id)
     {
-        $validated = $request->validate([
-            'name'           => 'required|string|max:100',
-            'price_per_unit' => 'nullable|numeric|min:0',
-            'price_per_day'  => 'nullable|numeric|min:0',
-        ]);
+        $validated = $request->validated();
 
         try {
             $addon = $this->addOnRepository->findById($id);

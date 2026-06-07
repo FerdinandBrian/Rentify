@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Addon;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreAddonRequest;
+use App\Http\Requests\UpdateAddonRequest;
+use App\Services\RootCrud\AddonService;
 
 class AddonController extends Controller
 {
+    public function __construct(private readonly AddonService $addonService) {}
+
     public function index()
     {
-        $addons = Addon::all();
+        $addons = $this->addonService->all();
         return view('addons.index', compact('addons'));
     }
 
@@ -18,46 +21,33 @@ class AddonController extends Controller
         return view('addons.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreAddonRequest $request)
     {
-        $validated = $request->validate([
-            'id'    => 'required|integer|unique:addon,id',
-            'name'  => 'required',
-            'price' => 'required|numeric',
-        ]);
-
-        Addon::create($validated);
+        $this->addonService->create($request->validated());
         return redirect()->route('addons.index')->with('success', 'Addon berhasil ditambahkan.');
     }
 
     public function show($id)
     {
-        $addon = Addon::findOrFail($id);
+        $addon = $this->addonService->getById($id);
         return view('addons.show', compact('addon'));
     }
 
     public function edit($id)
     {
-        $addon = Addon::findOrFail($id);
+        $addon = $this->addonService->getById($id);
         return view('addons.edit', compact('addon'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateAddonRequest $request, $id)
     {
-        $addon = Addon::findOrFail($id);
-        $validated = $request->validate([
-            'name'  => 'required',
-            'price' => 'required|numeric',
-        ]);
-
-        $addon->update($validated);
+        $this->addonService->update($id, $request->validated());
         return redirect()->route('addons.index')->with('success', 'Addon berhasil diupdate.');
     }
 
     public function destroy($id)
     {
-        $addon = Addon::findOrFail($id);
-        $addon->delete();
+        $this->addonService->delete($id);
         return redirect()->route('addons.index')->with('success', 'Addon berhasil dihapus.');
     }
 }

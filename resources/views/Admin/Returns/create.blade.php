@@ -81,35 +81,18 @@
                     {{-- Right Column: Return Form --}}
                     <div class="col-md-8">
 
-                        {{-- Fuel Level --}}
+                        {{-- Car Condition --}}
                         <div class="card card-round mb-4">
                             <div class="card-header">
                                 <h4 class="card-title mb-0">
-                                    <i class="fa fa-gas-pump me-2 text-warning"></i>Kondisi Bahan Bakar
+                                    <i class="fa fa-clipboard-check me-2 text-info"></i>Kondisi Mobil Saat Diterima
                                 </h4>
                             </div>
                             <div class="card-body">
-                                <div class="row g-2" id="fuelLevelGroup">
-                                    @foreach ([
-                                        ['value' => 'full',    'label' => 'Full (F)',  'icon' => '🟢'],
-                                        ['value' => '3/4',     'label' => '3/4',       'icon' => '🟡'],
-                                        ['value' => '1/2',     'label' => '1/2',       'icon' => '🟠'],
-                                        ['value' => '1/4',     'label' => '1/4',       'icon' => '🔴'],
-                                        ['value' => 'empty',   'label' => 'Kosong (E)','icon' => '⚫'],
-                                    ] as $fuel)
-                                        <div class="col-auto">
-                                            <input type="radio" class="btn-check" name="fuel_level"
-                                                id="fuel_{{ $fuel['value'] }}" value="{{ $fuel['value'] }}"
-                                                {{ old('fuel_level') === $fuel['value'] ? 'checked' : '' }} required>
-                                            <label class="btn btn-outline-secondary btn-round px-4"
-                                                   for="fuel_{{ $fuel['value'] }}">
-                                                {{ $fuel['icon'] }} {{ $fuel['label'] }}
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                @error('fuel_level')
-                                    <div class="text-danger small mt-2">{{ $message }}</div>
+                                <label for="return_condition_note" class="form-label fw-bold">Catatan Kondisi</label>
+                                <textarea name="return_condition_note" id="return_condition_note" class="form-control" rows="4" maxlength="1000" placeholder="Contoh: ada gores kecil di bumper belakang.">{{ old('return_condition_note') }}</textarea>
+                                @error('return_condition_note')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
