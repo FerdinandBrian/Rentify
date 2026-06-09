@@ -15,9 +15,7 @@ class StoreFeedbackRequest extends FormRequest
     {
         return [
             'star' => ['required', 'integer', 'min:1', 'max:5'],
-            'message' => ['required', 'string'],
-            'Car_series_number' => ['required', 'exists:car,series_number'],
-            'User_id' => ['required', 'exists:users,id'],
+            'message' => ['required', 'string', 'max:1000'],
         ];
     }
 }

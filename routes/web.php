@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DendaController;
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReturnController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserCarController;
 use App\Http\Controllers\User\UserDashboardController;
@@ -120,9 +121,11 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
         Route::get('/cars/{id}', [UserCarController::class, 'show'])->name('cars.show');
 
         Route::get('/orders', [UserOrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/create/{carId}', [UserOrderController::class, 'create'])->name('orders.create');
         Route::post('/orders', [UserOrderController::class, 'store'])->name('orders.store');
         Route::get('/orders/{id}', [UserOrderController::class, 'show'])->name('orders.show');
         Route::post('/orders/{id}/cancel', [UserOrderController::class, 'cancel'])->name('orders.cancel');
+        Route::post('/orders/{order}/feedback', [FeedbackController::class, 'store'])->name('orders.feedback.store');
 
         Route::get('/documents', [UserDocumentController::class, 'index'])->name('documents.index');
         Route::get('/documents/create', [UserDocumentController::class, 'create'])->name('documents.create');

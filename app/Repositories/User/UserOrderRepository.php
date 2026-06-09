@@ -24,7 +24,7 @@ class UserOrderRepository
     public function findForUser(string $orderId, int $userId): Order
     {
         return Order::query()
-            ->with(['car.brand', 'car.images', 'payments.penaltyorder.penalty'])
+            ->with(['car.brand', 'car.images', 'payments.penaltyorder.penalty', 'feedback'])
             ->where('User_id', $userId)
             ->findOrFail($orderId);
     }

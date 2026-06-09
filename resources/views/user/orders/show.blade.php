@@ -50,6 +50,15 @@
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
+            @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
+
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    {{ $errors->first() }}
+                </div>
+            @endif
 
             <div class="row">
                 <div class="col-lg-8">
@@ -165,6 +174,60 @@
                                 <div class="alert alert-warning mb-0">
                                     <i class="fas fa-info-circle me-2"></i>
                                     Belum ada data payment untuk pesanan ini. Estimasi biaya tetap dihitung dari harga mobil dan durasi sewa.
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="card card-round mt-4">
+                        <div class="card-header">
+                            <div class="card-title">Feedback Saya</div>
+                        </div>
+                        <div class="card-body">
+                            @if($order->feedback)
+                                <div class="feedback-result">
+                                    <div class="feedback-stars mb-2" aria-label="{{ $order->feedback->star }} dari 5 bintang">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <i class="{{ $i <= (int) $order->feedback->star ? 'fas' : 'far' }} fa-star"></i>
+                                        @endfor
+                                        <span class="ms-2 fw-bold">{{ $order->feedback->star }}/5</span>
+                                    </div>
+                                    <p class="mb-0">{{ $order->feedback->message }}</p>
+                                </div>
+                            @elseif(in_array(strtolower($order->status), ['selesai', 'completed'], true))
+                                <form method="POST" action="{{ route('user.orders.feedback.store', $order->id) }}">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label for="star" class="form-label fw-bold">Bintang</label>
+                                        <select id="star" name="star" class="form-control @error('star') is-invalid @enderror" required>
+                                            <option value="">Pilih rating</option>
+                                            @for($i = 5; $i >= 1; $i--)
+                                                <option value="{{ $i }}" @selected(old('star') == $i)>
+                                                    {{ $i }} bintang
+                                                </option>
+                                            @endfor
+                                        </select>
+                                        @error('star')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="message" class="form-label fw-bold">Alasan</label>
+                                        <textarea id="message" name="message" rows="4"
+                                            class="form-control @error('message') is-invalid @enderror"
+                                            placeholder="Ceritakan pengalaman rental Anda" required>{{ old('message') }}</textarea>
+                                        @error('message')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane me-2"></i>Kirim Feedback
+                                    </button>
+                                </form>
+                            @else
+                                <div class="alert alert-info mb-0">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Feedback bisa diberikan setelah pesanan selesai.
                                 </div>
                             @endif
                         </div>
@@ -329,6 +392,18 @@
 
         .timeline-mini-item.active > span {
             background: #1572e8;
+        }
+
+        .feedback-result {
+            background: #f8fafc;
+            border: 1px solid #e7ebf0;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .feedback-stars {
+            color: #f59e0b;
+            font-size: 1.1rem;
         }
     </style>
 @endsection

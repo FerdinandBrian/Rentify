@@ -159,6 +159,45 @@
                     </div>
                 </div>
             </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Feedback Pelanggan</h4>
+                </div>
+                <div class="card-body">
+                    @if($order->feedback)
+                        <div class="feedback-box">
+                            <div class="feedback-stars mb-2" aria-label="{{ $order->feedback->star }} dari 5 bintang">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="{{ $i <= (int) $order->feedback->star ? 'fas' : 'far' }} fa-star"></i>
+                                @endfor
+                                <span class="ms-2 fw-bold">{{ $order->feedback->star }}/5</span>
+                            </div>
+                            <p class="mb-0">{{ $order->feedback->message }}</p>
+                        </div>
+                    @else
+                        <div class="text-center text-muted py-4">
+                            Belum ada feedback dari pelanggan untuk pesanan ini.
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
+@endsection
+
+@section('extraCSS')
+    <style>
+        .feedback-box {
+            background: #f8fafc;
+            border: 1px solid #e7ebf0;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .feedback-stars {
+            color: #f59e0b;
+            font-size: 1.1rem;
+        }
+    </style>
 @endsection

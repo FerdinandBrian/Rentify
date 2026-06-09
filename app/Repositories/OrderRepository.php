@@ -31,7 +31,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
     public function findById($id): ?Order
     {
         return $this->model->newQuery()
-            ->with(['car', 'user', 'payments'])
+            ->with(['car', 'user', 'payments', 'feedback'])
             ->find($id);
     }
 

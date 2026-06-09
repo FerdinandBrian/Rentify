@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $returned_at
  *
  * @property Car $car
+ * @property Feedback|null $feedback
  * @property User $user
  * @property Collection|Payment[] $payments
  *
@@ -73,5 +74,10 @@ class Order extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class, 'Order_id');
+    }
+
+    public function feedback()
+    {
+        return $this->hasOne(Feedback::class, 'Order_id');
     }
 }
