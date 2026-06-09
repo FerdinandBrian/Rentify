@@ -112,6 +112,8 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
 
         Route::put('/admin/documents/{id}/change-status', [DocumentController::class, 'changeStatus'])->name('document.changeStatus');
         Route::delete('/admin/documents/{id}', [DocumentController::class, 'destroy'])->name('document.destroy');
+
+        Route::delete('/admin/feedback/{id}', [FeedbackController::class, 'destroy'])->name('admin.feedback.destroy');
     });
 
     Route::prefix('user')->name('user.')->middleware('role:3')->group(function () {
@@ -119,6 +121,7 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
 
         Route::get('/cars', [UserCarController::class, 'index'])->name('cars.index');
         Route::get('/cars/{id}', [UserCarController::class, 'show'])->name('cars.show');
+        Route::post('/cars/{series_number}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 
         Route::get('/orders', [UserOrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/create/{carId}', [UserOrderController::class, 'create'])->name('orders.create');

@@ -8,7 +8,8 @@ class StoreFeedbackRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        // Only customers (role_id = 3) can submit feedback
+        return $this->user() && $this->user()->role_id === 3;
     }
 
     public function rules(): array

@@ -84,7 +84,7 @@ class CarController extends Controller
                 return redirect()->route('admin.cars.index')->withErrors(['error' => 'Mobil tidak ditemukan.']);
             }
 
-            $car->load(['brand', 'images']);
+            $car->load(['brand', 'images', 'feedback.user']);
 
             return view('admin.mobil.show', compact('car'));
         } catch (\Exception $e) {

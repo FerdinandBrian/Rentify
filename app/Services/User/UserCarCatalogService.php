@@ -29,10 +29,15 @@ class UserCarCatalogService
     {
         $car = $this->carRepository->findWithBrand($seriesNumber);
 
+        $hasSubmittedFeedback = $car->feedback()
+            ->where('User_id', $userId)
+            ->exists();
+
         return [
             'car' => $car,
             'relatedCars' => $this->carRepository->relatedCars($car),
             'verifiedDocuments' => $this->documentRepository->approvedCountForUser($userId),
+            'hasSubmittedFeedback' => $hasSubmittedFeedback,
         ];
     }
 

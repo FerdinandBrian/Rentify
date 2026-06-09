@@ -5,36 +5,28 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreFeedbackRequest;
 use App\Models\Feedback;
-use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 
 class FeedbackController extends Controller
 {
-    public function index()
+    public function store(StoreFeedbackRequest $request, string $seriesNumber)
     {
-        $feedbacks = Feedback::with(['car', 'user'])->get();
-        return view('feedbacks.index', compact('feedbacks'));
-    }
+        $userId = Auth::id();
 
-    public function store(StoreFeedbackRequest $request, string $order)
-    {
-        $order = Order::query()
-            ->with('feedback')
-            ->where('User_id', Auth::id())
-            ->findOrFail($order);
+        // Check if user already submitted feedback for this car
+        $existing = Feedback::where('Car_series_number', $seriesNumber)
+            ->where('User_id', $userId)
+            ->exists();
 
-        abort_unless(in_array(strtolower($order->status), ['selesai', 'completed'], true), 403);
-
-        if ($order->feedback) {
-            return back()->with('error', 'Feedback untuk pesanan ini sudah pernah dikirim.');
+        if ($existing) {
+            return back()->with('error', 'Anda sudah memberikan ulasan untuk mobil ini.');
         }
 
         Feedback::create([
             'star' => $request->validated('star'),
             'message' => $request->validated('message'),
-            'Car_series_number' => $order->Car_series_number,
-            'User_id' => Auth::id(),
-            'Order_id' => $order->id,
+            'Car_series_number' => $seriesNumber,
+            'User_id' => $userId,
         ]);
 
         return back()->with('success', 'Terima kasih atas ulasannya!');

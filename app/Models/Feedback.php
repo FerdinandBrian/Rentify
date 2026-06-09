@@ -16,10 +16,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $message
  * @property string $Car_series_number
  * @property int $User_id
- * @property string|null $Order_id
  * 
  * @property Car $car
- * @property Order|null $order
  * @property User $user
  *
  * @package App\Models
@@ -27,10 +25,12 @@ use Illuminate\Database\Eloquent\Model;
 class Feedback extends Model
 {
 	protected $table = 'feedback';
-	public $timestamps = false;
+
+	const UPDATED_AT = null;
 
 	protected $casts = [
-		'User_id' => 'int'
+		'User_id' => 'int',
+		'star' => 'int',
 	];
 
 	protected $fillable = [
@@ -38,7 +38,6 @@ class Feedback extends Model
 		'message',
 		'Car_series_number',
 		'User_id',
-		'Order_id'
 	];
 
 	public function car()
@@ -49,10 +48,5 @@ class Feedback extends Model
 	public function user()
 	{
 		return $this->belongsTo(User::class, 'User_id');
-	}
-
-	public function order()
-	{
-		return $this->belongsTo(Order::class, 'Order_id');
 	}
 }
