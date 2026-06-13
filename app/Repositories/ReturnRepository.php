@@ -69,6 +69,13 @@ class ReturnRepository extends BaseRepository implements ReturnRepositoryInterfa
                 $payment->save();
             }
 
+            $days = $order->start_rent && $order->end_rent ? $order->start_rent->diffInDays($order->end_rent) + 1 : 0;
+            $basePrice = ($order->car->price ?? 0) * $days;
+
+            if ($payment->total_price === null || $payment->total_price == 0) {
+                $payment->total_price = $basePrice;
+            }
+
             $totalPenalty = 0.00;
 
             if (!empty($appliedPenalties)) {

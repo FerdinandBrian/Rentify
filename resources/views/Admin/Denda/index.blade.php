@@ -39,10 +39,6 @@
                         <table class="table table-striped table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th>ID Mobil</th>
-                                    <th>Mobil</th>
-                                    <th>Payment</th>
-                                    <th>Customer</th>
                                     <th>Keterangan</th>
                                     <th>Nominal</th>
                                     <th class="text-end" style="width: 18%">Aksi</th>
@@ -50,16 +46,7 @@
                             </thead>
                             <tbody>
                                 @forelse ($dendas as $denda)
-                                    @php
-                                        $payment = $denda->payments->first();
-                                        $order = $payment?->order;
-                                        $car = $order?->car;
-                                    @endphp
                                     <tr>
-                                        <td class="fw-bold">{{ $car->series_number ?? $order?->Car_series_number ?? '-' }}</td>
-                                        <td>{{ $car->name ?? '-' }}</td>
-                                        <td>#{{ $payment->id ?? '-' }}</td>
-                                        <td>{{ $order->name ?? '-' }}</td>
                                         <td>{{ $denda->type }}</td>
                                         <td>Rp {{ number_format($denda->total_penalty ?? 0, 0, ',', '.') }}</td>
                                         <td class="text-end">
