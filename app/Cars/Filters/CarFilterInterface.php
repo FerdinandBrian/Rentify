@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Cars\Strategies;
+namespace App\Cars\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
-interface CarFilterStrategyInterface
+interface CarFilterInterface
 {
     public function apply(Builder $query, array $filters): Builder;
 }

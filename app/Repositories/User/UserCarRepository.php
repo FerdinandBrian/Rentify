@@ -9,14 +9,14 @@ use Illuminate\Database\Eloquent\Collection;
 
 class UserCarRepository
 {
-    public function paginateAvailableCars(array $filters, array $strategies, int $perPage = 12): LengthAwarePaginator
+    public function paginateAvailableCars(array $filters, array $queryFilters, int $perPage = 12): LengthAwarePaginator
     {
         $query = Car::query()
             ->with(['brand', 'images'])
             ->whereIn('status', ['tersedia', 'available', 'Tersedia']);
 
-        foreach ($strategies as $strategy) {
-            $query = $strategy->apply($query, $filters);
+        foreach ($queryFilters as $filter) {
+            $query = $filter->apply($query, $filters);
         }
 
         return $query->orderBy('name')->paginate($perPage)->withQueryString();

@@ -91,6 +91,95 @@
     <!-- Kaiadmin JS -->
     <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
 
+    <!-- Global SweetAlert Confirmation Interceptor -->
+    <script>
+        $(document).ready(function() {
+            // Bind directly to elements with inline onclick confirm to reliably prevent default submit
+            $('[onclick*="confirm"]').each(function() {
+                var element = $(this);
+                var onclickAttr = element.attr('onclick');
+                var match = onclickAttr.match(/confirm\(\s*['"`](.*?)['"`]\s*\)/);
+                var message = match ? match[1] : 'Apakah Anda yakin?';
+                
+                element.removeAttr('onclick');
+                
+                element.on('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    var form = element.closest('form');
+                    
+                    triggerSweetAlert(message, function() {
+                        if (element.is('a') && element.attr('href') && element.attr('href') !== '#' && !element.attr('href').startsWith('javascript:')) {
+                            window.location.href = element.attr('href');
+                        } else if (form.length > 0) {
+                            form[0].submit(); // Bypasses jQuery listener to avoid recursion
+                        }
+                    });
+                });
+            });
+
+            // Bind directly to forms with inline onsubmit confirm
+            $('form[onsubmit*="confirm"]').each(function() {
+                var form = $(this);
+                var onsubmitAttr = form.attr('onsubmit');
+                var match = onsubmitAttr.match(/confirm\(\s*['"`](.*?)['"`]\s*\)/);
+                var message = match ? match[1] : 'Apakah Anda yakin?';
+                
+                form.removeAttr('onsubmit');
+                
+                form.on('submit', function(e) {
+                    e.preventDefault();
+                    
+                    triggerSweetAlert(message, function() {
+                        form[0].submit(); // Bypasses jQuery listener to avoid recursion
+                    });
+                });
+            });
+
+            function triggerSweetAlert(message, callback) {
+                var isDanger = /hapus|tolak|batal|permanen/i.test(message);
+                var confirmText = "Ya, Lanjutkan";
+                
+                if (isDanger) {
+                    if (/hapus/i.test(message)) confirmText = "Ya, Hapus";
+                    else if (/batal/i.test(message)) confirmText = "Ya, Batalkan";
+                    else if (/tolak/i.test(message)) confirmText = "Ya, Tolak";
+                } else {
+                    if (/setuju/i.test(message)) confirmText = "Ya, Setujui";
+                    else if (/konfirmasi/i.test(message)) confirmText = "Ya, Konfirmasi";
+                }
+
+                swal({
+                    title: isDanger ? "Konfirmasi Hapus / Pembatalan" : "Konfirmasi Tindakan",
+                    text: message,
+                    icon: isDanger ? "warning" : "info",
+                    buttons: {
+                        cancel: {
+                            text: "Batal",
+                            value: null,
+                            visible: true,
+                            className: "btn btn-light",
+                            closeModal: true,
+                        },
+                        confirm: {
+                            text: confirmText,
+                            value: true,
+                            visible: true,
+                            className: isDanger ? "btn btn-danger" : "btn btn-success",
+                            closeModal: true
+                        }
+                    },
+                    dangerMode: isDanger,
+                }).then(function(willSubmit) {
+                    if (willSubmit) {
+                        callback();
+                    }
+                });
+            }
+        });
+    </script>
+
     @yield('extraJS')
 </body>
 

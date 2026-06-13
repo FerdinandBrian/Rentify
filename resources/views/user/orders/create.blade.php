@@ -50,7 +50,7 @@
                 <div class="col-lg-8">
                     <div class="card card-round rentify-soft-card">
                         <div class="booking-hero">
-                            <img src="{{ asset('assets/img/examples/product1.jpg') }}" alt="{{ $car->name }}">
+                            <img src="{{ asset($car->primary_image_path) }}" alt="{{ $car->name }}">
                             <span class="badge badge-{{ $isAvailable ? 'success' : 'danger' }} booking-hero-badge">
                                 {{ ucfirst($car->status) }}
                             </span>

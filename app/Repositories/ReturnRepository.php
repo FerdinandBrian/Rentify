@@ -54,9 +54,9 @@ class ReturnRepository extends BaseRepository implements ReturnRepositoryInterfa
             ->first();
     }
 
-    public function completeReturn(Order $order, array $appliedPenalties, array $paymentData): Order
+    public function completeReturn(Order $order, array $appliedPenalties, array $paymentData, array $returnData = []): Order
     {
-        return DB::transaction(function () use ($order, $appliedPenalties, $paymentData) {
+        return DB::transaction(function () use ($order, $appliedPenalties, $paymentData, $returnData) {
             $payment = $order->payments->first();
             
             if (!$payment) {
@@ -67,6 +67,13 @@ class ReturnRepository extends BaseRepository implements ReturnRepositoryInterfa
                 $payment->total_price = 0.00;
                 $payment->Order_id = $order->id;
                 $payment->save();
+            }
+
+            $days = $order->start_rent && $order->end_rent ? $order->start_rent->diffInDays($order->end_rent) + 1 : 0;
+            $basePrice = ($order->car->price ?? 0) * $days;
+
+            if ($payment->total_price === null || $payment->total_price == 0) {
+                $payment->total_price = $basePrice;
             }
 
             $totalPenalty = 0.00;
@@ -94,6 +101,8 @@ class ReturnRepository extends BaseRepository implements ReturnRepositoryInterfa
             }
 
             $order->status = 'selesai';
+            $order->return_condition_note = $returnData['return_condition_note'] ?? null;
+            $order->returned_at = $returnData['returned_at'] ?? now();
             $order->save();
 
             $car = $order->car;

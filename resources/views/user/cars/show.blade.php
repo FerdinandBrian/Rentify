@@ -112,6 +112,60 @@
                             </div>
                         </div>
                     @endif
+
+                    {{-- Feedback Form Section --}}
+                    <div class="card card-round mt-4">
+                        <div class="card-header">
+                            <div class="card-title"><i class="fas fa-star me-2"></i>Berikan Ulasan</div>
+                        </div>
+                        <div class="card-body">
+                            @if(session('success'))
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                                </div>
+                            @endif
+                            @if(session('error'))
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+                                </div>
+                            @endif
+
+                            @if($hasSubmittedFeedback)
+                                <div class="text-center py-4">
+                                    <i class="fas fa-check-circle text-success" style="font-size: 2.5rem;"></i>
+                                    <p class="mt-3 mb-0 fw-bold">Anda sudah memberikan ulasan untuk mobil ini.</p>
+                                    <small class="text-muted">Terima kasih atas feedback Anda!</small>
+                                </div>
+                            @else
+                                <form action="{{ route('user.feedback.store', $car->series_number) }}" method="POST">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Rating</label>
+                                        <div class="star-rating-input" id="starRating">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <i class="fas fa-star star-select" data-value="{{ $i }}" style="font-size: 28px; cursor: pointer; color: #dee2e6; transition: color 0.2s;"></i>
+                                            @endfor
+                                            <input type="hidden" name="star" id="starValue" value="{{ old('star', '') }}">
+                                        </div>
+                                        @error('star')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="feedbackMessage" class="form-label fw-bold">Pesan Ulasan</label>
+                                        <textarea name="message" id="feedbackMessage" class="form-control @error('message') is-invalid @enderror"
+                                                  rows="4" placeholder="Bagikan pengalaman Anda menggunakan mobil ini..." maxlength="1000">{{ old('message') }}</textarea>
+                                        @error('message')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-round" id="submitFeedback">
+                                        <i class="fas fa-paper-plane me-2"></i>Kirim Ulasan
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col-lg-4">
@@ -230,5 +284,64 @@
             border-top: 1px solid #e7ebf0;
             color: #1572e8;
         }
+
+        .star-rating-input {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .star-rating-input .star-select:hover,
+        .star-rating-input .star-select.active {
+            color: #ffc107 !important;
+        }
+
+        .star-rating-input .star-select.hover-preview {
+            color: #ffdb4d !important;
+        }
     </style>
+@endsection
+
+@section('extraJS')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const stars = document.querySelectorAll('#starRating .star-select');
+            const input = document.getElementById('starValue');
+
+            if (!stars.length || !input) return;
+
+            // Restore old value if validation failed
+            const oldVal = parseInt(input.value);
+            if (oldVal >= 1 && oldVal <= 5) {
+                stars.forEach(function (s) {
+                    if (parseInt(s.dataset.value) <= oldVal) {
+                        s.classList.add('active');
+                    }
+                });
+            }
+
+            stars.forEach(function (star) {
+                star.addEventListener('click', function () {
+                    const val = parseInt(this.dataset.value);
+                    input.value = val;
+                    stars.forEach(function (s) {
+                        s.classList.toggle('active', parseInt(s.dataset.value) <= val);
+                    });
+                });
+
+                star.addEventListener('mouseenter', function () {
+                    const val = parseInt(this.dataset.value);
+                    stars.forEach(function (s) {
+                        s.classList.toggle('hover-preview', parseInt(s.dataset.value) <= val);
+                    });
+                });
+
+                star.addEventListener('mouseleave', function () {
+                    stars.forEach(function (s) {
+                        s.classList.remove('hover-preview');
+                    });
+                });
+            });
+        });
+    </script>
 @endsection

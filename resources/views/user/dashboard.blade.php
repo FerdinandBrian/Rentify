@@ -39,13 +39,13 @@
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-lg-8">
-                            <span class="badge rentify-hero-badge mb-3">User Portal</span>
-                            <h2 class="fw-bold mb-2">Selamat datang, {{ $user->name }}</h2>
+                            <span class="badge rentify-hero-badge mb-2">User Portal</span>
+                            <h2 class="fw-bold mb-1">Selamat datang, {{ $user->name }}</h2>
                             <p class="mb-0">
                                 Pantau pesanan, ketersediaan mobil, dan status autentikasi dokumen Anda dari satu dashboard.
                             </p>
                         </div>
-                        <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
                             <a href="{{ route('user.cars.index') }}" class="btn btn-white btn-round">
                                 <i class="fas fa-car me-2"></i>Sewa Mobil
                             </a>
@@ -260,32 +260,4 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('extraCSS')
-    <style>
-        .rentify-hero-card {
-            background: #fff7ed !important;
-            border: 0;
-            margin-bottom: 24px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(249, 115, 22, 0.2);
-            color: #0f172a !important;
-        }
-
-        .rentify-hero-card .card-body {
-            padding: 32px;
-        }
-
-        .rentify-hero-card h2,
-        .rentify-hero-card p {
-            color: #0f172a !important;
-        }
-
-        .rentify-hero-badge {
-            background: #fed7aa !important;
-            border: 1px solid #fdba74;
-            color: #0f172a !important;
-        }
-    </style>
 @endsection

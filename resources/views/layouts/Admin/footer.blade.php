@@ -3,25 +3,29 @@
         <nav class="pull-left">
             <ul class="nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="http://www.themekita.com">
-                        ThemeKita
-                    </a>
+                    <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"> Help </a>
+                    <a class="nav-link" href="{{ route('orders.index') }}">Pesanan</a>
+                </li>
+                @if(Auth::user()->role_id === 2 && Route::has('returns.index'))
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('returns.index') }}">Pengembalian</a>
+                </li>
+                @endif
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.cars.index') }}">Mobil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"> Licenses </a>
+                    <a class="nav-link" href="{{ route('documents.index') }}">Dokumen</a>
                 </li>
             </ul>
         </nav>
         <div class="copyright">
-            2024, made with <i class="fa fa-heart heart text-danger"></i> by
-            <a href="http://www.themekita.com">ThemeKita</a>
+            {{ date('Y') }}, dibuat untuk <a href="{{ route('dashboard') }}">Rentify</a>
         </div>
         <div>
-            Distributed by
-            <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
+            <span class="text-muted">&copy; {{ date('Y') }} Rentify. All rights reserved.</span>
         </div>
     </div>
 </footer>

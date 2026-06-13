@@ -26,7 +26,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('returns.store') }}" method="POST" id="returnForm">
+            <form action="{{ route('returns.store') }}" method="POST" id="returnForm" onsubmit="return confirm('Konfirmasi pengembalian mobil ini? Tindakan ini tidak dapat dibatalkan.')">
                 @csrf
                 <input type="hidden" name="order_id" value="{{ $order->id }}">
 
@@ -60,8 +60,11 @@
                                     <small class="text-muted">s/d {{ $order->end_rent?->format('d M Y') ?? '-' }}</small>
                                 </div>
                                 @php
+                                    $days = $order->start_rent && $order->end_rent ? $order->start_rent->diffInDays($order->end_rent) + 1 : 0;
                                     $basePayment = $order->payments->first();
-                                    $basePrice = $basePayment?->total_price ?? 0;
+                                    $basePrice = ($basePayment && $basePayment->total_price !== null && $basePayment->total_price > 0)
+                                        ? $basePayment->total_price
+                                        : (($order->car->price ?? 0) * $days);
                                     $isOverdue = $order->end_rent && now()->isAfter($order->end_rent);
                                 @endphp
                                 <div>
@@ -81,35 +84,18 @@
                     {{-- Right Column: Return Form --}}
                     <div class="col-md-8">
 
-                        {{-- Fuel Level --}}
+                        {{-- Car Condition --}}
                         <div class="card card-round mb-4">
                             <div class="card-header">
                                 <h4 class="card-title mb-0">
-                                    <i class="fa fa-gas-pump me-2 text-warning"></i>Kondisi Bahan Bakar
+                                    <i class="fa fa-clipboard-check me-2 text-info"></i>Kondisi Mobil Saat Diterima
                                 </h4>
                             </div>
                             <div class="card-body">
-                                <div class="row g-2" id="fuelLevelGroup">
-                                    @foreach ([
-                                        ['value' => 'full',    'label' => 'Full (F)',  'icon' => '🟢'],
-                                        ['value' => '3/4',     'label' => '3/4',       'icon' => '🟡'],
-                                        ['value' => '1/2',     'label' => '1/2',       'icon' => '🟠'],
-                                        ['value' => '1/4',     'label' => '1/4',       'icon' => '🔴'],
-                                        ['value' => 'empty',   'label' => 'Kosong (E)','icon' => '⚫'],
-                                    ] as $fuel)
-                                        <div class="col-auto">
-                                            <input type="radio" class="btn-check" name="fuel_level"
-                                                id="fuel_{{ $fuel['value'] }}" value="{{ $fuel['value'] }}"
-                                                {{ old('fuel_level') === $fuel['value'] ? 'checked' : '' }} required>
-                                            <label class="btn btn-outline-secondary btn-round px-4"
-                                                   for="fuel_{{ $fuel['value'] }}">
-                                                {{ $fuel['icon'] }} {{ $fuel['label'] }}
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                @error('fuel_level')
-                                    <div class="text-danger small mt-2">{{ $message }}</div>
+                                <label for="return_condition_note" class="form-label fw-bold">Catatan Kondisi</label>
+                                <textarea name="return_condition_note" id="return_condition_note" class="form-control" rows="4" maxlength="1000" placeholder="Contoh: ada gores kecil di bumper belakang.">{{ old('return_condition_note') }}</textarea>
+                                @error('return_condition_note')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
@@ -225,6 +211,104 @@
                                     </div>
                                 </div>
 
+                                <!-- Payment Simulation Area (Dummy) -->
+                                <div id="payment_simulation_wrapper" class="d-none mb-4 card border border-warning bg-light-warning">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold mb-3 text-warning">
+                                            <i class="fas fa-desktop me-2"></i>Simulasi Pembayaran (Dummy)
+                                        </h6>
+                                        
+                                        <!-- QRIS Panel -->
+                                        <div id="sim_QRIS" class="sim-panel d-none text-center">
+                                            <p class="text-muted small">Pindai kode QRIS di bawah ini untuk membayar:</p>
+                                            <div class="d-inline-block p-3 bg-white border rounded mb-3">
+                                                <svg width="150" height="150" viewBox="0 0 100 100" class="d-block mx-auto">
+                                                    <rect width="100" height="100" fill="#f8f9fa"/>
+                                                    <!-- Corner anchor squares -->
+                                                    <rect x="5" y="5" width="25" height="25" fill="#333" stroke="#fff" stroke-width="2"/>
+                                                    <rect x="10" y="10" width="15" height="15" fill="#fff"/>
+                                                    <rect x="13" y="13" width="9" height="9" fill="#333"/>
+                                                    
+                                                    <rect x="70" y="5" width="25" height="25" fill="#333" stroke="#fff" stroke-width="2"/>
+                                                    <rect x="75" y="10" width="15" height="15" fill="#fff"/>
+                                                    <rect x="78" y="13" width="9" height="9" fill="#333"/>
+                                                    
+                                                    <rect x="5" y="70" width="25" height="25" fill="#333" stroke="#fff" stroke-width="2"/>
+                                                    <rect x="10" y="75" width="15" height="15" fill="#fff"/>
+                                                    <rect x="13" y="78" width="9" height="9" fill="#333"/>
+                                                    
+                                                    <!-- Fake QR noise pattern -->
+                                                    <rect x="35" y="10" width="10" height="10" fill="#333"/>
+                                                    <rect x="50" y="20" width="10" height="10" fill="#333"/>
+                                                    <rect x="35" y="40" width="15" height="15" fill="#333"/>
+                                                    <rect x="60" y="40" width="10" height="20" fill="#333"/>
+                                                    <rect x="80" y="80" width="15" height="15" fill="#333"/>
+                                                    <rect x="40" y="75" width="20" height="10" fill="#333"/>
+                                                    <rect x="70" y="70" width="10" height="10" fill="#333"/>
+                                                </svg>
+                                                <span class="fw-bold mt-2 d-block text-uppercase" style="font-size: 0.8rem; letter-spacing: 2px; color: #333;">Rentify QRIS</span>
+                                            </div>
+                                            <p class="text-danger fw-bold mb-0">Total Tagihan: <span class="sim-grand-total">Rp 0</span></p>
+                                        </div>
+
+                                        <!-- Virtual Account Panel -->
+                                        <div id="sim_Virtual_Account" class="sim-panel d-none">
+                                            <p class="text-muted small mb-2">Silakan transfer ke nomor Virtual Account berikut:</p>
+                                            <div class="input-group mb-2">
+                                                <span class="input-group-text bg-primary text-white font-bold" style="font-size: 0.85rem;">Permata / Mandiri VA</span>
+                                                <input type="text" class="form-control fw-bold" id="va_number_val" value="8277081234567890" readonly>
+                                                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('va_number_val')">
+                                                    <i class="fas fa-copy"></i> Salin
+                                                </button>
+                                            </div>
+                                            <p class="text-muted small mb-0">Pembayaran akan diverifikasi secara otomatis oleh sistem.</p>
+                                        </div>
+
+                                        <!-- Transfer Bank Panel -->
+                                        <div id="sim_Transfer_Bank" class="sim-panel d-none">
+                                            <p class="text-muted small mb-2">Silakan transfer manual ke rekening bank berikut:</p>
+                                            <div class="border rounded p-3 bg-white mb-2">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted small">Nama Bank:</span>
+                                                    <span class="fw-bold small">Bank Central Asia (BCA)</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2 align-items-center">
+                                                    <span class="text-muted small">No Rekening:</span>
+                                                    <span class="fw-bold text-primary small">
+                                                        <span id="bank_acc_val">812738471928</span>
+                                                        <button class="btn btn-sm btn-link p-0 ms-2" type="button" onclick="copyToClipboard('bank_acc_val')">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="text-muted small">Atas Nama:</span>
+                                                    <span class="fw-bold small">PT Rentify Mobil Indonesia</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Cash Panel -->
+                                        <div id="sim_Cash" class="sim-panel d-none text-center">
+                                            <p class="mb-0 text-muted small">Customer membayar langsung menggunakan uang tunai (cash) ke kasir Rentify.</p>
+                                            <span class="badge bg-success mt-2">Terima pembayaran tunai di kasir</span>
+                                        </div>
+
+                                        <!-- Debit Card Panel -->
+                                        <div id="sim_Debit_Card" class="sim-panel d-none text-center">
+                                            <p class="mb-0 text-muted small">Gunakan mesin EDC Rentify di meja administrasi untuk memproses kartu Debit/Kredit.</p>
+                                            <span class="badge bg-primary mt-2">Gesek / Tempel Kartu Debit/Kredit</span>
+                                        </div>
+
+                                        <!-- Simulation Success Button -->
+                                        <div class="mt-3 text-center border-top pt-3">
+                                            <button type="button" id="btnSimulatePayment" class="btn btn-success btn-sm btn-round shadow-sm px-4">
+                                                <i class="fas fa-check-circle me-1"></i> Konfirmasi Pembayaran Sukses (Simulasi)
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 {{-- Price Summary --}}
                                 <div class="bg-light rounded-3 p-4">
                                     <div class="d-flex justify-content-between mb-2">
@@ -251,8 +335,7 @@
                             <a href="{{ route('returns.index') }}" class="btn btn-black btn-border btn-round">
                                 <i class="fa fa-arrow-left me-1"></i> Batal
                             </a>
-                            <button type="submit" class="btn btn-primary btn-round px-4"
-                                    onclick="return confirm('Konfirmasi pengembalian mobil ini? Tindakan ini tidak dapat dibatalkan.')">
+                            <button type="submit" class="btn btn-primary btn-round px-4">
                                 <i class="fa fa-check-circle me-1"></i> Selesaikan Pengembalian
                             </button>
                         </div>
@@ -285,6 +368,11 @@
 
         document.getElementById('penaltySummary').textContent = 'Rp ' + formatRp(penaltyTotal);
         document.getElementById('grandTotal').textContent = 'Rp ' + formatRp(grand);
+        
+        // Update simulation total text if function exists
+        if (typeof updateSimTotal === 'function') {
+            updateSimTotal();
+        }
     }
 
     function formatRp(value) {
@@ -314,5 +402,79 @@
             }
         });
     });
+
+    // Payment Simulation Logic
+    const paymentMethodSelect = document.getElementById('payment_method');
+    const paymentStatusSelect = document.getElementById('payment_status');
+    const simulationWrapper = document.getElementById('payment_simulation_wrapper');
+    const btnSimulatePayment = document.getElementById('btnSimulatePayment');
+
+    function updateSimTotal() {
+        const grandTotalText = document.getElementById('grandTotal').textContent;
+        document.querySelectorAll('.sim-grand-total').forEach(el => {
+            el.textContent = grandTotalText;
+        });
+    }
+
+    function handlePaymentMethodChange() {
+        const val = paymentMethodSelect.value;
+        
+        // Hide all panels
+        document.querySelectorAll('.sim-panel').forEach(p => p.classList.add('d-none'));
+        
+        if (val) {
+            simulationWrapper.classList.remove('d-none');
+            // Show corresponding panel
+            const panelId = 'sim_' + val.replace(' ', '_');
+            const panel = document.getElementById(panelId);
+            if (panel) {
+                panel.classList.remove('d-none');
+            }
+            updateSimTotal();
+        } else {
+            simulationWrapper.classList.add('d-none');
+        }
+    }
+
+    if (paymentMethodSelect) {
+        paymentMethodSelect.addEventListener('change', handlePaymentMethodChange);
+        // Run on load to restore state if needed (e.g. on validation error)
+        handlePaymentMethodChange();
+    }
+
+    if (btnSimulatePayment) {
+        btnSimulatePayment.addEventListener('click', function() {
+            if (paymentStatusSelect) {
+                paymentStatusSelect.value = 'paid';
+            }
+            swal({
+                title: "Simulasi Pembayaran Berhasil!",
+                text: "Status pembayaran otomatis diubah menjadi Lunas (Paid).",
+                icon: "success",
+                button: "OK"
+            });
+        });
+    }
+
+    function copyToClipboard(elementId) {
+        const input = document.getElementById(elementId);
+        let text = "";
+        if (input.tagName === 'INPUT') {
+            text = input.value;
+        } else {
+            text = input.textContent;
+        }
+        navigator.clipboard.writeText(text).then(() => {
+            swal({
+                title: "Teks Disalin",
+                text: "Berhasil menyalin ke papan klip!",
+                icon: "success",
+                buttons: false,
+                timer: 1500
+            });
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    }
 </script>
 @endsection

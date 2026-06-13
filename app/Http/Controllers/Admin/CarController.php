@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreCarRequest;
+use App\Http\Requests\Admin\UpdateCarRequest;
 use App\Repositories\Contracts\BrandRepositoryInterface;
 use App\Repositories\Contracts\CarRepositoryInterface;
 use App\Services\CarFactory;
@@ -54,20 +56,9 @@ class CarController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(StoreCarRequest $request)
     {
-        $validated = $request->validate([
-            'series_number' => 'required|unique:car,series_number',
-            'name' => 'required',
-            'price' => 'required|numeric',
-            'type' => 'required',
-            'year' => 'nullable|integer',
-            'status' => 'required',
-            'Brand_id' => 'required|exists:brand,id',
-            'is_electric' => 'boolean',
-            'images' => 'nullable|array|max:5',
-            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
-        ]);
+        $validated = $request->validated();
 
         $images = $request->file('images', []);
         $validated['is_electric'] = $request->has('is_electric');
@@ -93,7 +84,7 @@ class CarController extends Controller
                 return redirect()->route('admin.cars.index')->withErrors(['error' => 'Mobil tidak ditemukan.']);
             }
 
-            $car->load(['brand', 'images']);
+            $car->load(['brand', 'images', 'feedback.user']);
 
             return view('admin.mobil.show', compact('car'));
         } catch (\Exception $e) {
@@ -119,23 +110,9 @@ class CarController extends Controller
         }
     }
 
-    public function update(Request $request, $series_number)
+    public function update(UpdateCarRequest $request, $series_number)
     {
-        $validated = $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric',
-            'type' => 'required',
-            'year' => 'nullable|integer',
-            'status' => 'required',
-            'Brand_id' => 'required|exists:brand,id',
-            'is_electric' => 'boolean',
-            'primary_image_id' => 'nullable|integer|exists:car_images,id',
-            'delete_image_ids' => 'nullable|array',
-            'delete_image_ids.*' => 'integer|exists:car_images,id',
-            'make_uploaded_primary' => 'nullable|boolean',
-            'images' => 'nullable|array|max:5',
-            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
-        ]);
+        $validated = $request->validated();
 
         $primaryImageId = $request->integer('primary_image_id') ?: null;
         $deleteImageIds = $request->input('delete_image_ids', []);

@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\StoreDocumentRequest;
+use App\Http\Requests\User\UpdateDocumentRequest;
 use App\Services\User\UserDocumentService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserDocumentController extends Controller
@@ -23,13 +24,9 @@ class UserDocumentController extends Controller
         return view('user.documents.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreDocumentRequest $request)
     {
-        $validated = $request->validate([
-            'document_type' => 'required|in:KTP,SIM,STNK,Paspor',
-            'document_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'description' => 'nullable|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         $this->documentService->storeFor(Auth::user(), $validated, $request->file('document_file'));
 
@@ -51,15 +48,11 @@ class UserDocumentController extends Controller
         ]);
     }
 
-    public function update(Request $request, int $id)
+    public function update(UpdateDocumentRequest $request, int $id)
     {
         $document = $this->documentService->pendingDocumentFor(Auth::user(), $id);
 
-        $validated = $request->validate([
-            'document_type' => 'required|in:KTP,SIM,STNK,Paspor',
-            'document_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'description' => 'nullable|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         $this->documentService->updatePendingDocument($document, $validated, $request->file('document_file'));
 

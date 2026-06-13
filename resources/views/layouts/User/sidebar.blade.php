@@ -12,7 +12,7 @@
     <div class="sidebar-logo">
         <div class="logo-header" data-background-color="dark">
             <a href="{{ route('user.dashboard') }}" class="logo d-flex align-items-center gap-2">
-                <div class="rounded-3 bg-gradient-to-br bg-primary d-flex align-items-center justify-center font-bold text-white shadow-sm" style="width: 32px; height: 32px; font-size: 18px; line-height: 32px; text-align: center;">R</div>
+                <div class="rounded-3 bg-gradient-to-br bg-primary d-flex align-items-center justify-content-center font-bold text-white shadow-sm" style="width: 32px; height: 32px; font-size: 18px; line-height: 32px; text-align: center;">R</div>
                 <span class="fw-bold fs-4 text-white">Rentify</span>
             </a>
             <div class="nav-toggle">

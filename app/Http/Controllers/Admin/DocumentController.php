@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ChangeDocumentStatusRequest;
 use App\Models\Document;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class DocumentController extends Controller
 {
@@ -27,18 +27,15 @@ class DocumentController extends Controller
         return view('Admin.Dokumen.show', compact('user'));
     }
 
-    public function changeStatus($documentId, Request $request)
+    public function changeStatus($documentId, ChangeDocumentStatusRequest $request)
     {
-        $request->validate([
-            'status'           => 'required|in:approved,rejected',
-            'rejection_reason' => 'nullable|string|max:500',
-        ]);
+        $validated = $request->validated();
 
         $document = Document::findOrFail($documentId);
 
         $document->update([
-            'status'           => $request->status,
-            'rejection_reason' => $request->status === 'rejected' ? $request->rejection_reason : null,
+            'status' => $validated['status'],
+            'rejection_reason' => $validated['status'] === 'rejected' ? ($validated['rejection_reason'] ?? null) : null,
         ]);
 
         return redirect()->route('documents.show', $document->user_id)

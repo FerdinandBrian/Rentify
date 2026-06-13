@@ -3,6 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -25,7 +26,21 @@ class RegistrationTest extends TestCase
             'password_confirmation' => 'password',
         ]);
 
+        $response->assertRedirect(route('otp.verify', [
+            'type' => 'email_verification',
+            'email' => 'test@example.com',
+        ]));
+
+        $otp = Cache::get('otp:email_verification:test@example.com');
+        $this->assertNotNull($otp);
+
+        $verifyResponse = $this->post('/otp/verify', [
+            'email' => 'test@example.com',
+            'type' => 'email_verification',
+            'otp' => $otp,
+        ]);
+
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $verifyResponse->assertRedirect(route('dashboard'));
     }
 }
