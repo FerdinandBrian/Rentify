@@ -6,25 +6,31 @@ use App\Cars\Filters\BrandFilter;
 use App\Cars\Filters\DateAvailabilityFilter;
 use App\Cars\Filters\SearchFilter;
 use App\Cars\Filters\TypeFilter;
+use App\Repositories\Contracts\AddOnRepositoryInterface;
 use App\Repositories\User\UserCarRepository;
 use App\Repositories\User\UserDocumentRepository;
 
 class UserCarCatalogService
 {
     public function __construct(
-        private readonly UserCarRepository $carRepository,
-        private readonly UserDocumentRepository $documentRepository
+        private readonly UserCarRepository      $carRepository,
+        private readonly UserDocumentRepository $documentRepository,
+        private readonly AddOnRepositoryInterface $addonRepository,
     ) {}
 
     public function catalogData(array $filters): array
     {
         return [
-            'cars' => $this->carRepository->paginateAvailableCars($filters, $this->carFilters()),
+            'cars'   => $this->carRepository->paginateAvailableCars($filters, $this->carFilters()),
             'brands' => $this->carRepository->brands(),
-            'types' => $this->carRepository->types(),
+            'types'  => $this->carRepository->types(),
         ];
     }
 
+    /**
+     * Data untuk halaman form pemesanan (create order).
+     * Menyertakan daftar addon agar checkbox bisa ditampilkan di view.
+     */
     public function detailData(string $seriesNumber, int $userId): array
     {
         $car = $this->carRepository->findWithBrand($seriesNumber);
@@ -34,10 +40,11 @@ class UserCarCatalogService
             ->exists();
 
         return [
-            'car' => $car,
-            'relatedCars' => $this->carRepository->relatedCars($car),
-            'verifiedDocuments' => $this->documentRepository->approvedCountForUser($userId),
+            'car'                  => $car,
+            'relatedCars'          => $this->carRepository->relatedCars($car),
+            'verifiedDocuments'    => $this->documentRepository->approvedCountForUser($userId),
             'hasSubmittedFeedback' => $hasSubmittedFeedback,
+            'addons'               => $this->addonRepository->all(), // untuk checkbox di form order
         ];
     }
 
