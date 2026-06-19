@@ -53,22 +53,26 @@ class UserOrderController extends Controller
         $validated = $request->validated();
 
         try {
-            $order = $this->orderService->createPendingOrderForCarSeries(
+            $result = $this->orderService->createPendingOrderForCarSeries(
                 Auth::user(),
                 $validated['car_id'],
                 $validated['start_date'],
-                $validated['end_date']
+                $validated['end_date'],
+                $validated['addon_ids'] ?? [],  // teruskan addon yang dipilih user
             );
         } catch (DocumentNotVerifiedException $e) {
             return back()->with('error', $e->getMessage());
         }
 
-        if (! $order) {
+        if (! $result) {
             return back()->with('error', 'Mobil tidak tersedia pada rentang tanggal tersebut atau dokumen belum disetujui.');
         }
 
-        return redirect()->route('user.orders.show', $order->id)
-            ->with('success', 'Pesanan berhasil dibuat dan menunggu konfirmasi admin.');
+        // Flash estimasi biaya hasil kalkulasi Decorator Pattern ke session
+        return redirect()->route('user.orders.show', $result['order']->id)
+            ->with('success', 'Pesanan berhasil dibuat dan menunggu konfirmasi admin.')
+            ->with('rental_description', $result['rental_description'])
+            ->with('estimated_cost', $result['estimated_cost']);
     }
 
     public function cancel(string $id)

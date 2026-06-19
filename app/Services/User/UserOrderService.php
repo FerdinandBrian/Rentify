@@ -2,29 +2,37 @@
 
 namespace App\Services\User;
 
+use App\Exceptions\DocumentNotVerifiedException;
 use App\Models\Car;
 use App\Models\Order;
 use App\Models\User;
-use App\Exceptions\DocumentNotVerifiedException;
+use App\Orders\Filters\LatestOrderSortFilter;
+use App\Orders\Filters\StatusFilter;
+use App\Repositories\Contracts\AddOnRepositoryInterface;
+use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Repositories\User\UserCarRepository;
 use App\Repositories\User\UserDocumentRepository;
 use App\Repositories\User\UserOrderRepository;
+use App\Services\Rental\RentalBuilderService;
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 class UserOrderService
 {
     private const STATUS_FILTERS = [
-        'menunggu' => ['menunggu', 'pending'],
-        'aktif' => ['aktif', 'active'],
-        'selesai' => ['selesai', 'completed'],
+        'menunggu'   => ['menunggu', 'pending'],
+        'aktif'      => ['aktif', 'active'],
+        'selesai'    => ['selesai', 'completed'],
         'dibatalkan' => ['dibatalkan', 'cancelled', 'canceled'],
     ];
 
     public function __construct(
-        private readonly UserCarRepository $carRepository,
-        private readonly UserOrderRepository $orderRepository,
-        private readonly UserDocumentRepository $documentRepository
+        private readonly UserCarRepository      $carRepository,
+        private readonly UserOrderRepository    $orderRepository,
+        private readonly UserDocumentRepository $documentRepository,
+        private readonly AddOnRepositoryInterface $addonRepository,
+        private readonly RentalBuilderService   $rentalBuilder,
     ) {}
 
     public function paginatedOrdersFor(User $user, ?string $status): LengthAwarePaginator
@@ -45,7 +53,18 @@ class UserOrderService
         return $this->orderRepository->findForUser($orderId, $user->id);
     }
 
-    public function createPendingOrder(User $user, Car $car, string $startDate, string $endDate): Order
+    /**
+     * Buat order dengan status 'menunggu' sekaligus menghitung estimasi biaya
+     * menggunakan Decorator Pattern untuk addon yang dipilih user.
+     *
+     * @param  User        $user
+     * @param  Car         $car
+     * @param  string      $startDate
+     * @param  string      $endDate
+     * @param  int[]       $addonIds   ID addon yang dipilih (boleh kosong)
+     * @return array{order: Order, estimated_cost: float, rental_description: string}
+     */
+    public function createPendingOrder(User $user, Car $car, string $startDate, string $endDate, array $addonIds = []): array
     {
         $builder = new UserOrderBuilder;
 
@@ -57,11 +76,60 @@ class UserOrderService
             ->withStatus('menunggu')
             ->build();
 
-        return $this->orderRepository->create($orderData);
+        $order = $this->orderRepository->create($orderData);
+
+        // Hitung estimasi biaya menggunakan Decorator Pattern
+        $days   = (int) Carbon::parse($startDate)->startOfDay()->diffInDays(Carbon::parse($endDate)->startOfDay()) + 1;
+        $addons = array_filter(
+            array_map(fn (int $id) => $this->addonRepository->findById($id), $addonIds)
+        );
+
+        $rental = $this->rentalBuilder->build($car, $days, $addons);
+
+        // Auto-create Payment record so addons and prices can be stored immediately
+        $payment = \App\Models\Payment::create([
+            'method'      => 'pending',
+            'status'      => 'unpaid',
+            'total_price' => $rental->getCost(),
+            'Order_id'    => $order->id,
+        ]);
+
+        foreach ($addons as $addon) {
+            $name = strtolower($addon->name);
+            $addonCost = 0;
+            if (str_contains($name, 'driver')) {
+                $addonCost = ($addon->price_per_day ?? 0) * $days;
+            } else {
+                $addonCost = $addon->price_per_unit ?? 0;
+            }
+            
+            $payment->addons()->attach($addon->id, ['total_price' => $addonCost]);
+        }
+
+        return [
+            'order'               => $order,
+            'estimated_cost'      => $rental->getCost(),
+            'rental_description'  => $rental->getDescription(),
+        ];
     }
 
-    public function createPendingOrderForCarSeries(User $user, string $carSeriesNumber, string $startDate, string $endDate): ?Order
-    {
+    /**
+     * Validasi dokumen & ketersediaan mobil, lalu delegasikan ke createPendingOrder().
+     *
+     * @param  User   $user
+     * @param  string $carSeriesNumber
+     * @param  string $startDate
+     * @param  string $endDate
+     * @param  int[]  $addonIds
+     * @return array{order: Order, estimated_cost: float, rental_description: string}|null
+     */
+    public function createPendingOrderForCarSeries(
+        User   $user,
+        string $carSeriesNumber,
+        string $startDate,
+        string $endDate,
+        array  $addonIds = []
+    ): ?array {
         if ($this->documentRepository->approvedCountForUser($user->id) === 0) {
             throw DocumentNotVerifiedException::forUser();
         }
@@ -72,7 +140,7 @@ class UserOrderService
             return null;
         }
 
-        return $this->createPendingOrder($user, $car, $startDate, $endDate);
+        return $this->createPendingOrder($user, $car, $startDate, $endDate, $addonIds);
     }
 
     public function cancelPendingOrder(User $user, string $orderId): Order
@@ -107,3 +175,4 @@ class UserOrderService
         return $id;
     }
 }
+

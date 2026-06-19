@@ -14,9 +14,30 @@
             'dibatalkan' => 'danger',
             'cancelled' => 'danger',
         ];
-        $days = $order->start_rent && $order->end_rent ? $order->start_rent->diffInDays($order->end_rent) + 1 : 0;
-        $paymentTotal = $order->payments->sum('total_price');
-        $total = $paymentTotal ?: (($order->car->price ?? 0) * $days);
+        $days = $order->start_rent && $order->end_rent
+            ? (int) $order->start_rent->copy()->startOfDay()->diffInDays($order->end_rent->copy()->startOfDay()) + 1
+            : 0;
+        
+        // Base rental price
+        $baseRentPrice = ($order->car->price ?? 0) * $days;
+        
+        // Find the primary payment (first payment)
+        $payment = $order->payments->first();
+        
+        // Calculate Addons
+        $addonItems = $payment?->addons ?? collect();
+        $addonTotal = 0;
+        foreach ($addonItems as $addon) {
+            $addonTotal += $addon->pivot->total_price ?? 0;
+        }
+        
+        // Calculate Penalties
+        $penalties = $order->payments->flatMap->penalties ?? collect();
+        $penaltyTotal = (float) $penalties->sum('total_penalty');
+        
+        // Grand Total: sum of base, addons, and penalties
+        $grandTotal = $baseRentPrice + $addonTotal + $penaltyTotal;
+        
         $latestPayment = $order->payments->last();
         $canCancel = in_array($order->status, ['menunggu', 'pending'], true);
         $orderCarImage = $order->car?->primary_image_path ?? 'assets/img/examples/product1.jpg';
@@ -49,6 +70,22 @@
 
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+
+            {{-- Estimasi biaya dari Decorator Pattern, hanya tampil sekali setelah order dibuat --}}
+            @if(session('estimated_cost'))
+                <div class="alert alert-info d-flex align-items-start gap-3" role="alert">
+                    <i class="fas fa-receipt fa-lg mt-1"></i>
+                    <div>
+                        <strong>Estimasi Biaya Sewa</strong><br>
+                        <span class="text-muted small">{{ session('rental_description') }}</span><br>
+                        <span class="fw-bold fs-5">Rp {{ number_format(session('estimated_cost'), 0, ',', '.') }}</span>
+                        <div class="text-muted small mt-1">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Ini adalah estimasi. Total akhir dikonfirmasi admin setelah pesanan disetujui.
+                        </div>
+                    </div>
+                </div>
             @endif
 
             <div class="row">
@@ -135,6 +172,49 @@
                         </div>
                     </div>
 
+                    @if($addonItems->count() > 0)
+                        <div class="card card-round mt-4">
+                            <div class="card-header">
+                                <div class="card-title">Layanan Tambahan (Add-on)</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>Nama Add-on</th>
+                                                <th>Ketentuan Tarif</th>
+                                                <th class="text-end">Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($addonItems as $addon)
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <i class="fas fa-plus-circle text-success me-2"></i>
+                                                            <strong>{{ $addon->name }}</strong>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        @if($addon->price_per_day)
+                                                            Rp {{ number_format($addon->price_per_day, 0, ',', '.') }} / hari (× {{ $days }} hari)
+                                                        @elseif($addon->price_per_unit)
+                                                            Rp {{ number_format($addon->price_per_unit, 0, ',', '.') }} / unit (sekali sewa)
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-end fw-bold text-success">
+                                                        Rp {{ number_format($addon->pivot->total_price ?? 0, 0, ',', '.') }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="card card-round mt-4">
                         <div class="card-header">
                             <div class="card-title">Pembayaran</div>
@@ -179,20 +259,50 @@
                         <div class="card-body">
                             <div class="summary-box">
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span>Harga per hari</span>
-                                    <strong>Rp {{ number_format($order->car->price ?? 0, 0, ',', '.') }}</strong>
+                                    <span>Harga Sewa Dasar</span>
+                                    <strong>Rp {{ number_format($baseRentPrice, 0, ',', '.') }}</strong>
                                 </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Jumlah hari</span>
-                                    <strong>{{ $days }}</strong>
+                                <div class="d-flex justify-content-between mb-2 small text-muted">
+                                    <span>Detail Sewa ({{ $days }} hari)</span>
+                                    <span>Rp {{ number_format($order->car->price ?? 0, 0, ',', '.') }} / hari</span>
                                 </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Payment tercatat</span>
-                                    <strong>Rp {{ number_format($paymentTotal, 0, ',', '.') }}</strong>
-                                </div>
+
+                                {{-- List of Add-ons --}}
+                                @if($addonItems->count() > 0)
+                                    <div class="border-top my-2 pt-2">
+                                        <small class="text-muted fw-bold">Add-on yang Dipesan:</small>
+                                        @foreach($addonItems as $addon)
+                                            <div class="d-flex justify-content-between mt-1 text-muted small">
+                                                <span>
+                                                    <i class="fas fa-plus me-1 text-success"></i>{{ $addon->name }}
+                                                    @if($addon->price_per_day)
+                                                        (Rp {{ number_format($addon->price_per_day, 0, ',', '.') }}/hari)
+                                                    @elseif($addon->price_per_unit)
+                                                        (Rp {{ number_format($addon->price_per_unit, 0, ',', '.') }}/unit)
+                                                    @endif
+                                                </span>
+                                                <strong>Rp {{ number_format($addon->pivot->total_price ?? 0, 0, ',', '.') }}</strong>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+
+                                {{-- List of Penalties --}}
+                                @if($penalties->count() > 0)
+                                    <div class="border-top my-2 pt-2">
+                                        <small class="text-danger fw-bold">Denda:</small>
+                                        @foreach($penalties as $penalty)
+                                            <div class="d-flex justify-content-between mt-1 text-danger small">
+                                                <span><i class="fas fa-exclamation-triangle me-1"></i>{{ $penalty->type }}</span>
+                                                <strong>Rp {{ number_format($penalty->total_penalty ?? 0, 0, ',', '.') }}</strong>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+
                                 <div class="d-flex justify-content-between total-row">
-                                    <span>Total</span>
-                                    <strong>Rp {{ number_format($total, 0, ',', '.') }}</strong>
+                                    <span>Total Akhir</span>
+                                    <strong>Rp {{ number_format($grandTotal, 0, ',', '.') }}</strong>
                                 </div>
                             </div>
 
