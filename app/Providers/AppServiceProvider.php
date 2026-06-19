@@ -7,9 +7,7 @@ use App\Dashboard\Factories\EnterpriseDashboardComponentFactory;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Penalty;
-use App\Observers\DashboardCacheObserver; 
-use App\Observers\OrderStatusObserver;
-use App\Observers\CarAvailabilityObserver;
+use App\Observers\DashboardCacheObserver;
 use App\Payments\Strategies\PaymentCalculationStrategy;
 use App\Payments\Strategies\ReturnPaymentCalculationStrategy;
 use App\Repositories\AddOnRepository;
@@ -32,6 +30,8 @@ use App\Repositories\PaymentRepository;
 use App\Repositories\PenaltyRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
+use App\Services\CarFactory;
+use App\Services\Contracts\CarFactoryInterface;
 use App\Services\User\UserNavigationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -56,6 +56,18 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(\App\Repositories\Contracts\ReturnRepositoryInterface::class, \App\Repositories\ReturnRepository::class);
         $this->app->bind(DashboardComponentFactoryInterface::class, EnterpriseDashboardComponentFactory::class);
+
+        // Strategy Pattern — DI untuk PaymentCalculationStrategy
+        $this->app->bind(
+            PaymentCalculationStrategy::class,
+            ReturnPaymentCalculationStrategy::class
+        );
+
+        // Factory Pattern — IoC binding untuk CarFactory
+        $this->app->bind(
+            CarFactoryInterface::class,
+            CarFactory::class
+        );
     }
 
     /**

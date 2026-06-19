@@ -4,7 +4,6 @@ namespace App\Services\Returns;
 
 use App\Models\Order;
 use App\Payments\Strategies\PaymentCalculationStrategy;
-use App\Payments\Strategies\ReturnPaymentCalculationStrategy;
 use App\Repositories\Contracts\ReturnRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use InvalidArgumentException;
@@ -17,7 +16,10 @@ class ReturnService
         'Dirty Interior' => 200000.00,
     ];
 
-    public function __construct(private readonly ReturnRepositoryInterface $returnRepository) {}
+    public function __construct(
+        private readonly ReturnRepositoryInterface $returnRepository,
+        private readonly PaymentCalculationStrategy $paymentStrategy
+    ) {}
 
     public function getActiveOrdersWithPagination(int $perPage = 10): LengthAwarePaginator
     {
@@ -72,12 +74,7 @@ class ReturnService
 
     public function calculateReturnPayment(Order $order): array
     {
-        return $this->paymentStrategy()->calculate($order);
-    }
-
-    private function paymentStrategy(): PaymentCalculationStrategy
-    {
-        return new ReturnPaymentCalculationStrategy;
+        return $this->paymentStrategy->calculate($order);
     }
 
     private function calculatePenalties(array $data): array

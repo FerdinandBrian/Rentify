@@ -7,7 +7,7 @@ use App\Http\Requests\Admin\StoreCarRequest;
 use App\Http\Requests\Admin\UpdateCarRequest;
 use App\Repositories\Contracts\BrandRepositoryInterface;
 use App\Repositories\Contracts\CarRepositoryInterface;
-use App\Services\CarFactory;
+use App\Services\Contracts\CarFactoryInterface;
 use App\Services\CarImageService;
 use Illuminate\Http\Request;
 
@@ -21,7 +21,7 @@ class CarController extends Controller
     public function __construct(
         CarRepositoryInterface $carRepository,
         BrandRepositoryInterface $brandRepository,
-        CarFactory $carFactory,
+        CarFactoryInterface $carFactory,
         CarImageService $carImageService
     ) {
         $this->carRepository = $carRepository;

@@ -45,14 +45,13 @@ Route::get('/dashboard', function () {
 
     return redirect('/user/dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware(['auth', 'redirect.role'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
     Route::middleware('role:1,2')->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
         Route::get('/admin/pesanan', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/admin/pesanan/{id}', [OrderController::class, 'show'])->name('orders.show');
@@ -128,6 +127,7 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
         Route::post('/cars/{series_number}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 
         Route::get('/orders', [UserOrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/create/{carId}', [UserOrderController::class, 'create'])->name('orders.create');
         Route::post('/orders', [UserOrderController::class, 'store'])->name('orders.store');
         Route::get('/orders/{id}', [UserOrderController::class, 'show'])->name('orders.show');
         Route::post('/orders/{id}/cancel', [UserOrderController::class, 'cancel'])->name('orders.cancel');

@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     protected $table = 'payment';
-    public $incrementing = false;
+    public $incrementing = true;
     public $timestamps = false;
 
     protected $casts = [
@@ -39,6 +39,7 @@ class Payment extends Model
         'status',
         'total_price',
         'Order_id',
+        'id',
     ];
 
     public function order()
