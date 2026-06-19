@@ -75,4 +75,28 @@ abstract class BaseRepository implements BaseRepositoryInterface
     {
         return $this->model->paginate($perPage);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function paginateWithFilters(array $criteria, array $filters, int $perPage): LengthAwarePaginator
+    {
+        $query = $this->getFilterQuery();
+
+        foreach ($filters as $filter) {
+            $query = $filter->apply($query, $criteria);
+        }
+
+        return $query->paginate($perPage)->withQueryString();
+    }
+
+    /**
+     * Get the base query builder instance for filtering.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function getFilterQuery()
+    {
+        return $this->model->newQuery();
+    }
 }

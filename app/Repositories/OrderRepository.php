@@ -15,17 +15,11 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         parent::__construct($order);
     }
 
-    public function paginateWithFilters(array $criteria, array $filters, int $perPage): LengthAwarePaginator
+    protected function getFilterQuery()
     {
-        $query = $this->model->newQuery()
+        return parent::getFilterQuery()
             ->with(['car', 'payments'])
             ->withSum('payments as total_harga', 'total_price');
-
-        foreach ($filters as $filter) {
-            $query = $filter->apply($query, $criteria);
-        }
-
-        return $query->paginate($perPage)->withQueryString();
     }
 
     public function findById($id): ?Order

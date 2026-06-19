@@ -76,6 +76,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Order::observe(DashboardCacheObserver::class);
+        Order::observe(OrderStatusObserver::class);
+        Order::observe(CarAvailabilityObserver::class);
         Payment::observe(DashboardCacheObserver::class);
         Penalty::observe(DashboardCacheObserver::class);
 

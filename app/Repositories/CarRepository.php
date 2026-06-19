@@ -25,21 +25,35 @@ class CarRepository extends BaseRepository implements CarRepositoryInterface
         return $this->model->newQuery()->with(['brand', 'images'])->get();
     }
 
+    protected function getFilterQuery()
+    {
+        return parent::getFilterQuery()
+            ->with(['brand', 'images'])
+            ->orderBy('name');
+    }
+
     /**
      * @inheritDoc
      */
     public function getFilteredWithBrands(array $filters)
     {
-        return $this->model->newQuery()
-            ->with(['brand', 'images'])
-            ->when($filters['brand_id'] ?? null, function ($query, $brandId) {
-                $query->where('brand_id', $brandId);
-            })
-            ->when($filters['type'] ?? null, function ($query, $type) {
-                $query->where('type', $type);
-            })
-            ->orderBy('name')
-            ->get();
+        $query = $this->getFilterQuery();
+
+        $criteria = [
+            'brand' => $filters['brand_id'] ?? null,
+            'type'  => $filters['type'] ?? null,
+        ];
+
+        $queryFilters = [
+            new \App\Cars\Filters\BrandFilter,
+            new \App\Cars\Filters\TypeFilter,
+        ];
+
+        foreach ($queryFilters as $filter) {
+            $query = $filter->apply($query, $criteria);
+        }
+
+        return $query->get();
     }
 
     /**

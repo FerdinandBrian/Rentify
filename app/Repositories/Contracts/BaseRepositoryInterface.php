@@ -54,4 +54,14 @@ interface BaseRepositoryInterface
      * @return LengthAwarePaginator
      */
     public function paginate(int $perPage = 10);
+
+    /**
+     * Paginate the models with filters.
+     *
+     * @param array $criteria
+     * @param array $filters
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+    public function paginateWithFilters(array $criteria, array $filters, int $perPage): LengthAwarePaginator;
 }
