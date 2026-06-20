@@ -7,6 +7,7 @@ use App\Models\Car;
 use App\Services\Rental\Contracts\RentalComponent;
 use App\Services\Rental\Decorators\BabySeatAddOn;
 use App\Services\Rental\Decorators\DriverAddOn;
+use App\Services\Rental\Decorators\GenericAddOn;
 use App\Services\Rental\Decorators\GPSAddOn;
 use App\Services\Rental\Decorators\InsuranceAddOn;
 
@@ -32,7 +33,7 @@ class RentalBuilderService
             str_contains($name, 'gps')                                           => new GPSAddOn($rental, $addon),
             str_contains($name, 'insurance') || str_contains($name, 'asuransi') => new InsuranceAddOn($rental, $addon),
             str_contains($name, 'baby') || str_contains($name, 'seat')          => new BabySeatAddOn($rental, $addon),
-            default                                                               => new GPSAddOn($rental, $addon),
+            default                                                               => new GenericAddOn($rental, $addon, $days),
         };
     }
 }
