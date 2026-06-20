@@ -61,8 +61,13 @@ body, .wrapper, .main-panel, .content {
 }
 
 .sidebar .nav > .nav-item > a {
-    color: #94a3b8 !important;
+    color: #cbd5e1 !important;
     transition: all 0.3s ease !important;
+}
+
+.sidebar .nav > .nav-item > a p,
+.sidebar .nav > .nav-item > a i {
+    color: inherit !important;
 }
 
 .sidebar .nav > .nav-item.active > a,
@@ -127,13 +132,29 @@ body, .wrapper, .main-panel, .content {
     box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
 }
 
-.card-title, .card-header, h1, h2, h3, h4, h5, h6 {
+.card-title, .card-header .card-title,
+.page-title, .page-header h4 {
     color: var(--rentify-text) !important;
     font-weight: 800 !important;
 }
 
-.card-body, p, span, td, th {
+.main-panel h1, .main-panel h2, .main-panel h3,
+.main-panel h4, .main-panel h5, .main-panel h6 {
+    color: var(--rentify-text) !important;
+    font-weight: 800 !important;
+}
+
+.main-panel .card-body p,
+.main-panel .card-category,
+.main-panel .text-muted,
+.main-panel .table td,
+.main-panel .table th {
     color: var(--rentify-text-muted) !important;
+}
+
+.main-panel .card-title,
+.main-panel .numbers h4 {
+    color: var(--rentify-text) !important;
 }
 
 /* Explicit exclusion for dark areas */
@@ -311,4 +332,241 @@ body, .wrapper, .main-panel, .content {
     border: 1px solid var(--rentify-glass-border) !important;
     border-radius: 1rem !important;
     box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+}
+
+/* ── Compact layout ── */
+.page-inner {
+    padding: 0.75rem 0 1.25rem !important;
+}
+
+.page-header {
+    margin-bottom: 0.75rem !important;
+    padding-bottom: 0.5rem !important;
+}
+
+.page-title {
+    font-size: 1.15rem !important;
+    margin-bottom: 0 !important;
+}
+
+.breadcrumbs {
+    margin-bottom: 0 !important;
+}
+
+.card {
+    border-radius: 1rem !important;
+    margin-bottom: 0.75rem !important;
+}
+
+.card-body {
+    padding: 1rem 1.15rem !important;
+}
+
+.card-header {
+    padding: 0.65rem 1.15rem !important;
+    min-height: auto !important;
+}
+
+.card-stats .card-body {
+    padding: 0.75rem 1rem !important;
+}
+
+.card-stats .icon-big {
+    width: 46px !important;
+    height: 46px !important;
+    line-height: 46px !important;
+    font-size: 1.15rem !important;
+}
+
+.card-stats .numbers h4 {
+    font-size: 1.35rem !important;
+    margin-bottom: 0 !important;
+}
+
+.card-stats .card-category {
+    font-size: 0.72rem !important;
+    margin-bottom: 0.15rem !important;
+}
+
+.row > [class*="col-"] {
+    margin-bottom: 0.65rem;
+}
+
+.table > :not(caption) > * > * {
+    padding: 0.55rem 0.75rem !important;
+}
+
+.btn {
+    padding: 0.45rem 0.9rem !important;
+    font-size: 0.875rem !important;
+}
+
+.btn-round {
+    border-radius: 0.65rem !important;
+}
+
+.form-control, .form-select {
+    padding: 0.5rem 0.85rem !important;
+    font-size: 0.875rem !important;
+    border-radius: 0.65rem !important;
+}
+
+/* ── Subtle drag / lift effect ── */
+.card,
+.rentify-soft-card {
+    transition: transform 0.22s ease, box-shadow 0.22s ease !important;
+}
+
+.card:hover,
+.rentify-soft-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08) !important;
+}
+
+.card:active,
+.rentify-soft-card:active {
+    transform: translateY(-1px);
+}
+
+/* Hero banner cards (light bg, dark text) */
+.rentify-hero-card {
+    background: #fff7ed !important;
+    border: 1px solid #fed7aa !important;
+    margin-bottom: 0.85rem !important;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.12) !important;
+    color: var(--rentify-on-light) !important;
+}
+
+.rentify-hero-card .card-body {
+    padding: 1.15rem 1.25rem !important;
+}
+
+.rentify-hero-card h2,
+.rentify-hero-card p,
+.rentify-hero-card .card-title {
+    color: var(--rentify-on-light) !important;
+}
+
+.rentify-hero-badge {
+    background: #fed7aa !important;
+    border: 1px solid #fdba74 !important;
+    color: var(--rentify-on-light) !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    padding: 0.3rem 0.65rem !important;
+}
+
+.rentify-hero-card .btn-white {
+    background: #fff !important;
+    color: var(--rentify-on-light) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    font-weight: 700 !important;
+}
+
+.rentify-hero-card .btn-white:hover {
+    background: #fff7ed !important;
+    color: var(--rentify-orange) !important;
+}
+
+/* User portal helpers */
+.rentify-page-lead {
+    max-width: 720px;
+    color: var(--rentify-text-muted) !important;
+}
+
+.rentify-empty {
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+.rentify-empty i {
+    opacity: .45;
+}
+
+.rentify-soft-card {
+    border: 0;
+    box-shadow: 0 4px 14px rgba(31, 58, 90, .07);
+}
+
+.rentify-action-list .btn {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+/* Badge contrast on light cards */
+.main-panel .badge:not(.badge-primary):not(.badge-success):not(.badge-danger):not(.badge-warning):not(.badge-info) {
+    color: var(--rentify-on-light) !important;
+}
+
+.badge-count {
+    font-weight: 700 !important;
+    min-width: 1.75rem;
+    padding: 0.35rem 0.55rem !important;
+}
+
+/* Label buttons on light cards */
+.btn-label-info,
+.btn-label-success,
+.btn-label-warning,
+.btn-label-danger {
+    color: var(--rentify-on-light) !important;
+}
+
+/* Sidebar compact */
+.sidebar .nav > .nav-item > a {
+    padding: 0.55rem 1rem !important;
+}
+
+.sidebar .nav > .nav-item > a p {
+    font-size: 0.875rem !important;
+    margin-bottom: 0 !important;
+}
+
+.sidebar .text-section {
+    font-size: 0.65rem !important;
+    padding: 0.5rem 1rem 0.25rem !important;
+}
+
+/* Header compact */
+.main-header .navbar-header {
+    min-height: 56px !important;
+    padding-top: 0.35rem !important;
+    padding-bottom: 0.35rem !important;
+}
+
+.main-header .navbar-header-left .fw-semibold {
+    font-size: 0.95rem !important;
+}
+
+.main-header .navbar-header-left small {
+    font-size: 0.75rem !important;
+}
+
+.main-header,
+.navbar-header,
+.main-panel {
+    overflow: visible;
+}
+
+.topbar-user .dropdown-menu {
+    z-index: 1080;
+    right: 0;
+    left: auto;
+}
+
+@media (max-width: 575.98px) {
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .profile-username {
+        display: none;
+    }
+
+    .card-body {
+        padding: 0.85rem 1rem !important;
+    }
 }

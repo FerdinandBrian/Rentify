@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreReturnRequest;
 use App\Services\Returns\ReturnService;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
@@ -30,18 +31,9 @@ class ReturnController extends Controller
         return view('Admin.Returns.create', compact('order'));
     }
 
-    public function store(Request $request)
+    public function store(StoreReturnRequest $request)
     {
-        $validated = $request->validate([
-            'order_id' => ['required', 'exists:order,id'],
-            'fuel_level' => ['required', 'string'],
-            'penalties' => ['nullable', 'array'],
-            'penalties.*' => ['string'],
-            'custom_penalty_desc' => ['nullable', 'string', 'required_with:custom_penalty_amount'],
-            'custom_penalty_amount' => ['nullable', 'numeric', 'min:0', 'required_with:custom_penalty_desc'],
-            'payment_method' => ['nullable', 'string'],
-            'payment_status' => ['nullable', 'string'],
-        ]);
+        $validated = $request->validated();
 
         try {
             $order = $this->returnService->processReturn($validated);
@@ -49,7 +41,7 @@ class ReturnController extends Controller
             return redirect()->route('returns.index')->with('error', $e->getMessage());
         }
 
-        return redirect()->route('returns.show', $order->id)->with('success', 'Pengembalian mobil berhasil diproses dan pembayaran telah diselesaikan.');
+        return redirect()->route('returns.show', $order->id)->with('success', 'Pengembalian mobil berhasil diproses. Silakan cek pembayaran customer.');
     }
 
     public function show(string $id)
@@ -60,6 +52,8 @@ class ReturnController extends Controller
             return redirect()->route('returns.index')->with('error', $e->getMessage());
         }
 
-        return view('Admin.Returns.show', compact('order'));
+        $paymentSummary = $this->returnService->calculateReturnPayment($order);
+
+        return view('Admin.Returns.show', compact('order', 'paymentSummary'));
     }
 }

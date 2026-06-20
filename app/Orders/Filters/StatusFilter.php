@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Orders\Strategies;
+namespace App\Orders\Filters;
 
 use App\Exceptions\InvalidFilterException;
 use Illuminate\Database\Eloquent\Builder;
 
-class StatusFilterStrategy implements OrderQueryStrategyInterface
+class StatusFilter implements OrderQueryFilterInterface
 {
     private const ALLOWED_STATUSES = [
         'menunggu',

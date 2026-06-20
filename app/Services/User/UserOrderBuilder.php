@@ -51,6 +51,18 @@ class UserOrderBuilder
 
     public function build(): array
     {
+        if (empty($this->data['User_id'])) {
+            throw new \InvalidArgumentException('User must be set.');
+        }
+
+        if (empty($this->data['Car_series_number'])) {
+            throw new \InvalidArgumentException('Car must be set.');
+        }
+
+        if (empty($this->data['start_rent']) || empty($this->data['end_rent'])) {
+            throw new \InvalidArgumentException('Rental period must be set.');
+        }
+
         return $this->data;
     }
 }

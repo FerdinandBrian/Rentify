@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DendaController;
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ReturnController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\UserCarController;
 use App\Http\Controllers\User\UserDashboardController;
@@ -16,16 +18,23 @@ use App\Http\Controllers\User\UserProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// Initial Redirection after Login
 Route::get('/', function () {
+    if (! Auth::check()) {
+        return view('welcome');
+    }
+
     $user = Auth::user();
 
     if ($user && in_array($user->role_id, [1, 2], true)) {
         return redirect('/admin/dashboard');
     }
 
-    return redirect('/user/dashboard');
-})->middleware(['auth', 'verified']);
+    if ($user) {
+        return redirect('/user/dashboard');
+    }
+
+    return view('welcome');
+})->name('home');
 
 Route::get('/dashboard', function () {
     $user = Auth::user();
@@ -36,17 +45,21 @@ Route::get('/dashboard', function () {
 
     return redirect('/user/dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware(['auth', 'redirect.role'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
     Route::middleware('role:1,2')->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
         Route::get('/admin/pesanan', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/admin/pesanan/{id}', [OrderController::class, 'show'])->name('orders.show');
+
+        Route::get('/admin/returns', [ReturnController::class, 'index'])->name('returns.index');
+        Route::get('/admin/returns/create/{orderId}', [ReturnController::class, 'create'])->name('returns.create');
+        Route::post('/admin/returns', [ReturnController::class, 'store'])->name('returns.store');
+        Route::get('/admin/returns/{id}', [ReturnController::class, 'show'])->name('returns.show');
 
         Route::redirect('/denda', '/admin/denda');
         Route::get('/admin/denda', [DendaController::class, 'index'])->name('denda.index');
@@ -64,7 +77,7 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
                 ->where('series_number', '^(?!create$).+')
                 ->name('cars.show');
             Route::get('addons', [AddOnController::class, 'index'])->name('addons.index');
-            Route::get('addons/{id}', [AddOnController::class, 'show'])->name('addons.show');
+            Route::get('addons/{id}', [AddOnController::class, 'show'])->whereNumber('id')->name('addons.show');
         });
 
         Route::get('/admin/brands', [BrandController::class, 'index'])->name('brands.index');
@@ -89,9 +102,9 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
         Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('addons/create', [AddOnController::class, 'create'])->name('addons.create');
             Route::post('addons', [AddOnController::class, 'store'])->name('addons.store');
-            Route::get('addons/{id}/edit', [AddOnController::class, 'edit'])->name('addons.edit');
-            Route::put('addons/{id}', [AddOnController::class, 'update'])->name('addons.update');
-            Route::delete('addons/{id}', [AddOnController::class, 'destroy'])->name('addons.destroy');
+            Route::get('addons/{id}/edit', [AddOnController::class, 'edit'])->whereNumber('id')->name('addons.edit');
+            Route::put('addons/{id}', [AddOnController::class, 'update'])->whereNumber('id')->name('addons.update');
+            Route::delete('addons/{id}', [AddOnController::class, 'destroy'])->whereNumber('id')->name('addons.destroy');
         });
 
         Route::get('/admin/brands/create', [BrandController::class, 'create'])->name('brands.create');
@@ -102,6 +115,8 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
 
         Route::put('/admin/documents/{id}/change-status', [DocumentController::class, 'changeStatus'])->name('document.changeStatus');
         Route::delete('/admin/documents/{id}', [DocumentController::class, 'destroy'])->name('document.destroy');
+
+        Route::delete('/admin/feedback/{id}', [FeedbackController::class, 'destroy'])->name('admin.feedback.destroy');
     });
 
     Route::prefix('user')->name('user.')->middleware('role:3')->group(function () {
@@ -109,8 +124,10 @@ Route::middleware(['auth', 'redirect.role'])->group(function () {
 
         Route::get('/cars', [UserCarController::class, 'index'])->name('cars.index');
         Route::get('/cars/{id}', [UserCarController::class, 'show'])->name('cars.show');
+        Route::post('/cars/{series_number}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 
         Route::get('/orders', [UserOrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/create/{carId}', [UserOrderController::class, 'create'])->name('orders.create');
         Route::post('/orders', [UserOrderController::class, 'store'])->name('orders.store');
         Route::get('/orders/{id}', [UserOrderController::class, 'show'])->name('orders.show');
         Route::post('/orders/{id}/cancel', [UserOrderController::class, 'cancel'])->name('orders.cancel');

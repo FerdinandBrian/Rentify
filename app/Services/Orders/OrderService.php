@@ -3,8 +3,8 @@
 namespace App\Services\Orders;
 
 use App\Exceptions\BookingNotFoundException;
-use App\Orders\Strategies\LatestOrderSortStrategy;
-use App\Orders\Strategies\StatusFilterStrategy;
+use App\Orders\Filters\LatestOrderSortFilter;
+use App\Orders\Filters\StatusFilter;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -16,9 +16,9 @@ class OrderService
     {
         $perPage = $this->resolvePerPage($filters['per_page'] ?? 10);
 
-        return $this->orderRepository->paginateWithStrategies(
+        return $this->orderRepository->paginateWithFilters(
             $filters,
-            $this->getQueryStrategies(),
+            $this->getQueryFilters(),
             $perPage
         );
     }
@@ -53,14 +53,16 @@ class OrderService
 
         $this->orderRepository->update($booking, ['status' => 'aktif']);
 
-        // Auto-create Payment record
-        \App\Models\Payment::create([
-            'id'          => 'PAY-' . now()->format('ymd') . '-' . \Illuminate\Support\Str::upper(\Illuminate\Support\Str::random(4)),
-            'method'      => 'pending',
-            'status'      => 'unpaid',
-            'total_price' => null,
-            'Order_id'    => $booking->id,
-        ]);
+        // Auto-create Payment record only if it doesn't exist
+        if ($booking->payments()->count() === 0) {
+            \App\Models\Payment::create([
+                'id'          => 'PAY-' . now()->format('ymd') . '-' . \Illuminate\Support\Str::upper(\Illuminate\Support\Str::random(4)),
+                'method'      => 'pending',
+                'status'      => 'unpaid',
+                'total_price' => null,
+                'Order_id'    => $booking->id,
+            ]);
+        }
 
         return $booking->refresh();
     }
@@ -79,11 +81,11 @@ class OrderService
         return min(max((int) $perPage, 5), 50);
     }
 
-    private function getQueryStrategies(): array
+    private function getQueryFilters(): array
     {
         return [
-            new StatusFilterStrategy,
-            new LatestOrderSortStrategy,
+            new StatusFilter,
+            new LatestOrderSortFilter,
         ];
     }
 }

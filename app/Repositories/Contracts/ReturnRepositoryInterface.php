@@ -15,5 +15,5 @@ interface ReturnRepositoryInterface
 
     public function findCompletedOrder(string $orderId): ?Order;
 
-    public function completeReturn(Order $order, array $appliedPenalties, array $paymentData): Order;
+    public function completeReturn(Order $order, array $appliedPenalties, array $paymentData, array $returnData = []): Order;
 }

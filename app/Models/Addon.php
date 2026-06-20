@@ -39,7 +39,7 @@ class Addon extends Model
 
 	public function payments()
 	{
-		return $this->belongsToMany(Payment::class, 'addonpayment', 'AddOn_id', 'Payment_id')
-					->withPivot('total_price', 'Payment_Order_id');
+		return $this->belongsToMany(Payment::class, 'addon_payment', 'addon_id', 'payment_id')
+					->withPivot('total_price');
 	}
 }

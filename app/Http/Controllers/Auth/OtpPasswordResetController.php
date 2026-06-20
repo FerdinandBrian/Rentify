@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ResetOtpPasswordRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
 class OtpPasswordResetController extends Controller
@@ -33,7 +33,7 @@ class OtpPasswordResetController extends Controller
     /**
      * Handle the password reset.
      */
-    public function resetPassword(Request $request): RedirectResponse
+    public function resetPassword(ResetOtpPasswordRequest $request): RedirectResponse
     {
         $email = $request->session()->get('otp_verified_email');
 
@@ -41,10 +41,6 @@ class OtpPasswordResetController extends Controller
             return redirect()->route('password.request')
                 ->withErrors(['email' => 'Sesi verifikasi OTP tidak valid.']);
         }
-
-        $request->validate([
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
 
         $user = User::where('email', $email)->first();
 

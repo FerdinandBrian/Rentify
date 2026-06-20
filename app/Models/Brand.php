@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
 class Brand extends Model
 {
 	protected $table = 'brand';
-	public $incrementing = false;
+	public $incrementing = true;
 	public $timestamps = false;
 
 	protected $casts = [
@@ -30,6 +30,7 @@ class Brand extends Model
 	];
 
 	protected $fillable = [
+		'id',
 		'name'
 	];
 

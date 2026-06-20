@@ -51,7 +51,7 @@ Route::middleware('guest')->group(function () {
         ->name('password.reset.form');
 
     Route::post('password/reset-otp', [OtpPasswordResetController::class, 'resetPassword'])
-        ->name('password.reset.otp');
+        ->name('password.reset.submit');
 });
 
 Route::middleware('auth')->group(function () {

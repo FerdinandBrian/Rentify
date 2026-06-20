@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Car;
 use App\Models\Order;
 use App\Repositories\BaseRepository;
 use App\Repositories\Contracts\OrderRepositoryInterface;
@@ -14,17 +15,11 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         parent::__construct($order);
     }
 
-    public function paginateWithStrategies(array $criteria, array $strategies, int $perPage): LengthAwarePaginator
+    protected function getFilterQuery()
     {
-        $query = $this->model->newQuery()
+        return parent::getFilterQuery()
             ->with(['car', 'payments'])
             ->withSum('payments as total_harga', 'total_price');
-
-        foreach ($strategies as $strategy) {
-            $query = $strategy->apply($query, $criteria);
-        }
-
-        return $query->paginate($perPage)->withQueryString();
     }
 
     public function findById($id): ?Order
@@ -32,5 +27,20 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         return $this->model->newQuery()
             ->with(['car', 'user', 'payments'])
             ->find($id);
+    }
+
+    public function allWithCarAndUser()
+    {
+        return $this->model->newQuery()->with(['car', 'user'])->get();
+    }
+
+    public function availableCars()
+    {
+        return Car::query()->where('status', 'available')->get();
+    }
+
+    public function allCars()
+    {
+        return Car::query()->get();
     }
 }

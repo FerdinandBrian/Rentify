@@ -3,28 +3,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreFeedbackRequest;
 use App\Models\Feedback;
-use App\Models\Car;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FeedbackController extends Controller
 {
-    public function index()
+    public function store(StoreFeedbackRequest $request, string $seriesNumber)
     {
-        $feedbacks = Feedback::with(['car', 'user'])->get();
-        return view('feedbacks.index', compact('feedbacks'));
-    }
+        $userId = Auth::id();
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'star'              => 'required|integer|min:1|max:5',
-            'message'           => 'required|string',
-            'Car_series_number' => 'required|exists:car,series_number',
-            'User_id'           => 'required|exists:users,id',
+        // Check if user already submitted feedback for this car
+        $existing = Feedback::where('Car_series_number', $seriesNumber)
+            ->where('User_id', $userId)
+            ->exists();
+
+        if ($existing) {
+            return back()->with('error', 'Anda sudah memberikan ulasan untuk mobil ini.');
+        }
+
+        Feedback::create([
+            'star' => $request->validated('star'),
+            'message' => $request->validated('message'),
+            'Car_series_number' => $seriesNumber,
+            'User_id' => $userId,
         ]);
 
-        Feedback::create($validated);
         return back()->with('success', 'Terima kasih atas ulasannya!');
     }
 

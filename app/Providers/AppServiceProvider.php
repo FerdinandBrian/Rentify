@@ -7,7 +7,11 @@ use App\Dashboard\Factories\EnterpriseDashboardComponentFactory;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Penalty;
+use App\Observers\CarAvailabilityObserver;
 use App\Observers\DashboardCacheObserver;
+use App\Observers\OrderStatusObserver;
+use App\Payments\Strategies\PaymentCalculationStrategy;
+use App\Payments\Strategies\ReturnPaymentCalculationStrategy;
 use App\Repositories\AddOnRepository;
 use App\Repositories\BrandRepository;
 use App\Repositories\CarRepository;
@@ -17,11 +21,19 @@ use App\Repositories\Contracts\CarRepositoryInterface;
 use App\Repositories\Contracts\DashboardRepositoryInterface;
 use App\Repositories\Contracts\DendaRepositoryInterface;
 use App\Repositories\Contracts\OrderRepositoryInterface;
+use App\Repositories\Contracts\PaymentRepositoryInterface;
+use App\Repositories\Contracts\PenaltyRepositoryInterface;
+use App\Repositories\Contracts\RoleRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\DashboardRepository;
 use App\Repositories\DendaRepository;
 use App\Repositories\OrderRepository;
+use App\Repositories\PaymentRepository;
+use App\Repositories\PenaltyRepository;
+use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
+use App\Services\CarFactory;
+use App\Services\Contracts\CarFactoryInterface;
 use App\Services\User\UserNavigationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -40,9 +52,24 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(BrandRepositoryInterface::class, BrandRepository::class);
         $this->app->bind(CarRepositoryInterface::class, CarRepository::class);
         $this->app->bind(AddOnRepositoryInterface::class, AddOnRepository::class);
+        $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
+        $this->app->bind(PaymentRepositoryInterface::class, PaymentRepository::class);
+        $this->app->bind(PenaltyRepositoryInterface::class, PenaltyRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(\App\Repositories\Contracts\ReturnRepositoryInterface::class, \App\Repositories\ReturnRepository::class);
         $this->app->bind(DashboardComponentFactoryInterface::class, EnterpriseDashboardComponentFactory::class);
+
+        // Strategy Pattern — DI untuk PaymentCalculationStrategy
+        $this->app->bind(
+            PaymentCalculationStrategy::class,
+            ReturnPaymentCalculationStrategy::class
+        );
+
+        // Factory Pattern — IoC binding untuk CarFactory
+        $this->app->bind(
+            CarFactoryInterface::class,
+            CarFactory::class
+        );
     }
 
     /**
@@ -51,6 +78,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Order::observe(DashboardCacheObserver::class);
+        Order::observe(OrderStatusObserver::class);
+        Order::observe(CarAvailabilityObserver::class);
         Payment::observe(DashboardCacheObserver::class);
         Penalty::observe(DashboardCacheObserver::class);
 

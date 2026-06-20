@@ -4,11 +4,11 @@ namespace App\Http\Controllers\User;
 
 use App\Exceptions\DocumentNotVerifiedException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\OrderIndexRequest;
+use App\Http\Requests\User\StoreOrderRequest;
 use App\Services\User\UserCarCatalogService;
 use App\Services\User\UserOrderService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class UserOrderController extends Controller
 {
@@ -17,11 +17,9 @@ class UserOrderController extends Controller
         private readonly UserCarCatalogService $carCatalogService
     ) {}
 
-    public function index(Request $request)
+    public function index(OrderIndexRequest $request)
     {
-        $filters = $request->validate([
-            'status' => ['nullable', 'string'],
-        ]);
+        $filters = $request->validated();
 
         return view('user.orders.index', [
             'orders' => $this->orderService->paginatedOrdersFor(Auth::user(), $filters['status'] ?? null),
@@ -46,35 +44,35 @@ class UserOrderController extends Controller
         return view('user.orders.create', $this->carCatalogService->detailData($carId, Auth::id()));
     }
 
-    public function store(Request $request)
+    public function store(StoreOrderRequest $request)
     {
         if (! $this->orderService->hasApprovedDocument(Auth::user())) {
             return back()->with('error', 'Anda harus memiliki dokumen yang disetujui sebelum membuat pesanan.');
         }
 
-        $validated = $request->validate([
-            'car_id' => ['required', Rule::exists('car', 'series_number')],
-            'start_date' => ['required', 'date', 'after_or_equal:today'],
-            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
-        ]);
+        $validated = $request->validated();
 
         try {
-            $order = $this->orderService->createPendingOrderForCarSeries(
+            $result = $this->orderService->createPendingOrderForCarSeries(
                 Auth::user(),
                 $validated['car_id'],
                 $validated['start_date'],
-                $validated['end_date']
+                $validated['end_date'],
+                $validated['addon_ids'] ?? [],  // teruskan addon yang dipilih user
             );
         } catch (DocumentNotVerifiedException $e) {
             return back()->with('error', $e->getMessage());
         }
 
-        if (! $order) {
+        if (! $result) {
             return back()->with('error', 'Mobil tidak tersedia pada rentang tanggal tersebut atau dokumen belum disetujui.');
         }
 
-        return redirect()->route('user.orders.show', $order->id)
-            ->with('success', 'Pesanan berhasil dibuat dan menunggu konfirmasi admin.');
+        // Flash estimasi biaya hasil kalkulasi Decorator Pattern ke session
+        return redirect()->route('user.orders.show', $result['order']->id)
+            ->with('success', 'Pesanan berhasil dibuat dan menunggu konfirmasi admin.')
+            ->with('rental_description', $result['rental_description'])
+            ->with('estimated_cost', $result['estimated_cost']);
     }
 
     public function cancel(string $id)

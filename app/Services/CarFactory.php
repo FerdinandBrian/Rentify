@@ -4,9 +4,10 @@ namespace App\Services;
 
 use App\Models\Car;
 use App\Repositories\Contracts\BrandRepositoryInterface;
+use App\Services\Contracts\CarFactoryInterface;
 use Illuminate\Support\Facades\Log;
 
-class CarFactory
+class CarFactory implements CarFactoryInterface
 {
     protected $brandRepository;
 

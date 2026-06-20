@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Cars\Strategies;
+namespace App\Cars\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class BrandFilterStrategy implements CarFilterStrategyInterface
+class BrandFilter implements CarFilterInterface
 {
     public function apply(Builder $query, array $filters): Builder
     {
@@ -12,10 +12,6 @@ class BrandFilterStrategy implements CarFilterStrategyInterface
             return $query;
         }
 
-<<<<<<< HEAD
         return $query->where('brand_id', $filters['brand']);
-=======
-        return $query->where('Brand_id', $filters['brand']);
->>>>>>> dfceab44e5d0f988ebd2414eade44c2f3175288c
     }
 }
