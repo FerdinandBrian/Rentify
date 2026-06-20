@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             mobilseeder::class,
             AddonSeeder::class,
             PenaltySeeder::class,
+            RentifyDemoSeeder::class,
         ]);
     }
 }
