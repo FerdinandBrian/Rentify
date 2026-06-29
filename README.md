@@ -48,6 +48,19 @@ DB_PASSWORD=password_database_anda
 ```
 *Catatan: Pastikan Anda telah membuat database kosong di MySQL dengan nama `pdpl_tugasbesar` (atau nama lain sesuai isian `DB_DATABASE`).*
 
+Lalu sesuaikan juga konfigurasi **email SMTP** agar fitur OTP bisa mengirim email:
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=email-gmail-anda@gmail.com
+MAIL_PASSWORD=app-password-gmail-anda
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="email-gmail-anda@gmail.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+*Catatan: `MAIL_PASSWORD` harus menggunakan **App Password** dari Google, bukan password Gmail biasa. Buat di: https://myaccount.google.com/apppasswords*
+
 ### 3. Install Dependency PHP
 Jalankan perintah berikut untuk mengunduh semua library PHP yang dibutuhkan oleh Laravel:
 ```bash
