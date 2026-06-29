@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisteredUserRequest;
 use App\Models\OtpCode;
+use App\Models\Role;
 use App\Models\User;
 use App\Notifications\SendOtpNotification;
 use Illuminate\Auth\Events\Registered;
@@ -31,11 +32,15 @@ class RegisteredUserController extends Controller
     {
         $validated = $request->validated();
 
+        $customerRole = Role::where('name', 'customer')->first();
+        $roleId = $customerRole ? $customerRole->id : 3;
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'call_number' => $validated['call_number'] ?? null,
             'password' => Hash::make($validated['password']),
+            'role_id' => $roleId,
         ]);
 
         event(new Registered($user));
