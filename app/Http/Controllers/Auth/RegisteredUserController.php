@@ -32,6 +32,7 @@ class RegisteredUserController extends Controller
         $validated = $request->validated();
 
         $user = User::create([
+            'role_id' => 3, // 3 = Customer
             'name' => $validated['name'],
             'email' => $validated['email'],
             'call_number' => $validated['call_number'] ?? null,

@@ -19,6 +19,8 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
+        \App\Models\Role::create(['id' => 3, 'name' => 'customer']);
+
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
